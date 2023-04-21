@@ -31,31 +31,22 @@ ASFBuffBot 介绍 & 使用指南: [https://keylol.com/t876377-1-1](https://keylo
 
 1. 从 [GitHub Releases](https://github.com/chr233/ASFBuffBot/releases) 下载插件的最新版本
 2. 解压后将 `ASFBuffBot.dll` 丢进 `ArchiSteamFarm` 目录下的 `plugins` 文件夹
-3. 重新启动 `ArchiSteamFarm` , 使用命令 `CTE` 来检查插件是否正常工作
+3. 重新启动 `ArchiSteamFarm` , 使用命令 `ABB` 来检查插件是否正常工作
+4. 访问 [buff.163.com](https://buff.163.com) 复制 Cookies, 并使用命令 `UPDATECOOKIES xxx` 更新 Cookies, xxx 为网站的 Cookies
 
 ### 使用命令升级插件
 
 > 可以使用插件自带的命令自带更新插件
 > ASF 版本升级有可能出现不兼容情况, 如果发现插件无法加载请尝试更新 ASF
 
-- `CTEVERSION` / `CTEV` 检查插件更新
-- `CTEUPDATE` / `CTEU` 自动更新插件到最新版本 (需要手动重启 ASF)
+- `ABBVERSION` / `ABBV` 检查插件更新
+- `ABBUPDATE` / `ABBU` 自动更新插件到最新版本 (需要手动重启 ASF)
 
 ### 更新日志
 
 | ASFBuffBot 版本                                                      | 适配 ASF 版本 | 更新说明   |
-| ---------------------------------------------------------------------------- | :-----------: | ---------- |
-| [1.0.2.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.2.0) |    5.4.4.5    | Bug 修复   |
-| [1.0.0.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.0.0) |   5.4.2.13    | 第一个版本 |
-
-<details>
-  <summary>历史版本</summary>
-
-| ASFBuffBot 版本 | 依赖 ASF 版本 | 5.3.1.2 | 5.3.2.4 | 5.4.0.3 | 5.4.1.11 |
-| ----------------------- | :-----------: | :-----: | :-----: | :-----: | :------: |
-| -                       |       -       |   ❌    |   ❌    |   ✔️    |    ✔️    |
-
-</details>
+| -------------------------------------------------------------------- | :-----------: | ---------- |
+| [1.0.0.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.0.0) |    5.4.4.5    | 第一个版本 |
 
 ## 插件配置说明
 
@@ -71,25 +62,23 @@ ASF.json
   "...": "...",
   //ASFBuffBot 配置
   "ASFBuffBot": {
-    "EULA": true,
     "Statistic": true,
     "DisabledCmds": ["foo", "bar"],
-    "MaxItemPerTrade": 255
+    "BotName": "Buff关联的机器人名称",
+    "BuffCheckInterval": 60,
+    "CustomUserAgent": null
   }
 }
 ```
 
-| 配置项            | 类型   | 默认值 | 说明                                                                                      |
-| ----------------- | ------ | ------ | ----------------------------------------------------------------------------------------- |
-| `EULA`            | bool   | `true` | 是否同意 [EULA](#EULA)\*                                                                  |
-| `Statistic`       | bool   | `true` | 是否允许发送统计数据, 仅用于统计插件用户数量, 不会发送任何其他信息                        |
-| `DisabledCmds`    | list   | `null` | 在此列表中的命令将会被禁用\*\* , **不区分大小写**, 仅对 `ASFBuffBot` 中的命令生效 |
-| `MaxItemPerTrade` | ushort | `255`  | 单个交易最多物品数量, ASF 的默认值是 255, 如果报价中的物品超过此数量会自动拆分成多个报价  |
+| 配置项              | 类型   | 默认值 | 说明                                                                              |
+| ------------------- | ------ | ------ | --------------------------------------------------------------------------------- |
+| `Statistic`         | bool   | `true` | 是否允许发送统计数据, 仅用于统计插件用户数量, 不会发送任何其他信息                |
+| `DisabledCmds`      | list   | `null` | 在此列表中的命令将会被禁用\*\* , **不区分大小写**, 仅对 `ASFBuffBot` 中的命令生效 |
+| `BotName`           | string | `null` | 需要监听交易信息的 `机器人名`, 不是账号昵称也不是 SteamID                         |
+| `BuffCheckInterval` | int    | `180`  | 检查 Buff 是否需要发货的周期, 单位秒, 访问频率过快容易被 ban                      |
+| `CustomUserAgent`   | string | `null` | 自定义 `User-Agent` 用于向 Buff 发送请求                                          |
 
-> \* 同意 [EULA](#EULA) 后, ASFBuffBot 将会开放全部命令
->
-> \* 禁用 [EULA](#EULA) 后, ASFBuffBot 将无法使用大部分命令
->
 > \*\* `DisabledCmds` 配置说明: 该项配置**不区分大小写**, 仅对 `ASFBuffBot` 中的命令有效
 > 例如配置为 `["foo","BAR"]` , 则代表 `FOO` 和 `BAR` 命令将会被禁用
 > 如果无需禁用任何命令, 请将此项配置为 `null` 或者 `[]`
@@ -99,37 +88,15 @@ ASF.json
 
 ### 插件更新
 
-| 命令                 | 缩写   | 权限            | 说明                                                      |
-| -------------------- | ------ | --------------- | --------------------------------------------------------- |
-| `ASFBuffBot` | `CTE`  | `FamilySharing` | 查看 ASFBuffBot 的版本                            |
-| `CTEVERSION`         | `CTEV` | `Operator`      | 检查 ASFBuffBot 是否为最新版本                    |
-| `CTEUPDATE`          | `CTEU` | `Owner`         | 自动更新 ASFBuffBot 到最新版本 (需要手动重启 ASF) |
+| 命令         | 缩写   | 权限            | 说明                                              |
+| ------------ | ------ | --------------- | ------------------------------------------------- |
+| `ASFBuffBot` | `ABB`  | `FamilySharing` | 查看 ASFBuffBot 的版本                            |
+| `ABBVERSION` | `ABBV` | `Operator`      | 检查 ASFBuffBot 是否为最新版本                    |
+| `ABBUPDATE`  | `ABBU` | `Owner`         | 自动更新 ASFBuffBot 到最新版本 (需要手动重启 ASF) |
 
-### 卡牌交易
+### 功能指令
 
-| 命令                                           | 缩写   | 权限       | 说明                                                         |
-| ---------------------------------------------- | ------ | ---------- | ------------------------------------------------------------ |
-| `FULLSETLIST [Bots] [Config]`                  | `FSL`  | `Operator` | 显示卡牌套数信息, 可用参数 \[-page 页码\] \[-line 显示行数\] |
-| `FULLSET [Bots] <appIds>`                      | `FS`   | `Operator` | 显示指定 App 的卡牌套数信息                                  |
-| `SENDCARDSET [Bots] AppId SetCount TradeLink`  | `SCS`  | `Master`   | 向指定交易链接发送指定`SetCount`套指定`AppId`的卡牌          |
-| `2SENDCARDSET [Bots] AppId SetCount TradeLink` | `2SCS` | `Master`   | 同 `SENDCARDSET`, 发送交易后自动确认交易 (需要配置 2FA)      |
-
-### CSGO 库存交易
-
-| 命令                                     | 缩写   | 权限       | 说明                                                                         |
-| ---------------------------------------- | ------ | ---------- | ---------------------------------------------------------------------------- |
-| `CSITEMLIST [Bots] [Config]`             | `CIL`  | `Operator` | 显示卡牌套数信息, 可用参数 \[-page 页码\] \[-line 显示行数\]                 |
-| `CSSENDITEM [Bots]`                      | `CSI`  | `Master`   | 发送 Bots 的 CSGO 库存到其余在线 Bot                                         |
-| `2CSSENDITEM [Bots]`                     | `2CSI` | `Master`   | 同 `CSSENDITEM`, 发送交易后自动确认交易 (需要配置 2FA)                       |
-| `CSSENDITEM [Bots] ClassId CountPerBot`  | `CSI`  | `Master`   | 发送 Bots 的 CSGO 库存到其余在线 Bot, 指定物品 ClassId 和每个 Bot 接收的数量 |
-| `2CSSENDITEM [Bots] ClassId CountPerBot` | `2CSI` | `Master`   | 同 `SENDCARDSET`, 发送交易后自动确认交易 (需要配置 2FA)                      |
-
----
-
-[![Repobeats analytics image](https://repobeats.axiom.co/api/embed/c7bad85b243c7305a5de1fa591469f64125c4048.svg "Repobeats analytics image")](https://github.com/chr233/ASFBuffBot/pulse)
-
----
-
-[![Stargazers over time](https://starchart.cc/chr233/ASFBuffBot.svg)](https://github.com/chr233/ASFBuffBot/stargazers)
-
----
+| 命令                 | 缩写 | 权限     | 说明                                |
+| -------------------- | ---- | -------- | ----------------------------------- |
+| `VALIDCOOKIES`       | `VC` | `Master` | 手动测试当前设置的 Cookies 是否有效 |
+| `UPDATECOOKIES text` | `UC` | `Master` | 手动更新 Cookies                    |
