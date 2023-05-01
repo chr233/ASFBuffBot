@@ -11,13 +11,10 @@ public sealed record PluginConfig
     public List<string>? DisabledCmds { get; set; }
 
     [JsonProperty(Required = Required.Default)]
-    public string? BotName { get; set; }
+    public List<string>? EnabledBotNames { get; set; }
 
     [JsonProperty(Required = Required.DisallowNull)]
     public uint BuffCheckInterval { get; set; } = 180;
-
-    [JsonIgnore]
-    public string? BuffCookies { get; set; }
 
     [JsonProperty(Required = Required.Default)]
     public string? CustomUserAgent { get; set; }

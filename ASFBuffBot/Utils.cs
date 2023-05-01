@@ -15,6 +15,11 @@ internal static class Utils
     internal static PluginConfig Config { get; set; } = new();
 
     /// <summary>
+    /// BuffCookies
+    /// </summary>
+    internal static Dictionary<string, string> BuffCooies = new();
+
+    /// <summary>
     /// 更新已就绪
     /// </summary>
     internal static bool UpdatePadding { get; set; }
@@ -107,7 +112,7 @@ internal static class Utils
     /// 读取Cookies
     /// </summary>
     /// <returns></returns>
-    internal static async Task<string?> LoadCookiesFile()
+    internal static async Task<bool> LoadCookiesFile()
     {
         try
         {

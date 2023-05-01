@@ -89,14 +89,14 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotTradeOffer, IBotTrade
             }
         }
 
-        if (string.IsNullOrEmpty(Config.BotName))
-        {
-            Config.BotName = null;
-            warning.AppendLine(Static.Line);
-            warning.AppendLine("未设置BotName, 插件将无法正常工作, 请指定交易用的机器人名称");
-            warning.AppendLine("插件只会监听指定机器人的交易状态, 请设置为与Buff绑定的ASF机器人名称");
-            warning.AppendLine(Static.Line);
-        }
+        //if (Config.EnabledBotNames == null)
+        //{
+        //    Config.BotName = null;
+        //    warning.AppendLine(Static.Line);
+        //    warning.AppendLine("未设置BotName, 插件将无法正常工作, 请指定交易用的机器人名称");
+        //    warning.AppendLine("插件只会监听指定机器人的交易状态, 请设置为与Buff绑定的ASF机器人名称");
+        //    warning.AppendLine(Static.Line);
+        //}
 
         if (Config.BuffCheckInterval < 30)
         {
@@ -106,19 +106,15 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotTradeOffer, IBotTrade
             warning.AppendLine(Static.Line);
         }
 
-        var cookies = await Utils.LoadCookiesFile().ConfigureAwait(false);
-        if (string.IsNullOrEmpty(cookies))
-        {
-            Config.BuffCookies = null;
-            warning.AppendLine(Static.Line);
-            warning.AppendLine("BuffCookies未设置, 正确设置前插件将不会工作");
-            warning.AppendLine("可以使用命令 SETBUFF xxx 设置");
-            warning.AppendLine(Static.Line);
-        }
-        else
-        {
-            Config.BuffCookies = cookies;
-        }
+        //var cookiesCount = await Utils.LoadCookiesFile().ConfigureAwait(false);
+        //if (string.IsNullOrEmpty(cookies))
+        //{
+        //    Config.BuffCookies = null;
+        //    warning.AppendLine(Static.Line);
+        //    warning.AppendLine("BuffCookies未设置, 正确设置前插件将不会工作");
+        //    warning.AppendLine("可以使用命令 SETBUFF xxx 设置");
+        //    warning.AppendLine(Static.Line);
+        //}
 
         if (string.IsNullOrEmpty(Config.CustomUserAgent))
         {
