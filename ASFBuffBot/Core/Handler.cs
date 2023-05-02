@@ -27,7 +27,7 @@ internal static class Handler
             return;
         }
 
-        if (!Utils.BuffCookies.TryGetValue(bot.BotName,out string? cookies))
+        if (!Utils.BuffCookies.TryGetValue(bot.BotName, out string? cookies))
         {
             Utils.Logger.LogGenericWarning("未设置有效的 BuffCookies, 跳过执行");
             return;
@@ -39,7 +39,7 @@ internal static class Handler
             var valid = await WebRequest.CheckCookiesValid(bot).ConfigureAwait(false);
             if (!valid)
             {
-                Utils.BuffCookies = null;
+                Utils.BuffCookies[bot.BotName] = null;
             }
             CheckCount = 0;
         }
