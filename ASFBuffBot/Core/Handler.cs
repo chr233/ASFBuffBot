@@ -1,3 +1,4 @@
+using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Exchange;
 using ArchiSteamFarm.Steam.Security;
@@ -7,7 +8,7 @@ namespace ASFBuffBot.Core;
 
 internal static class Handler
 {
-    private static ConcurrentDictionary<string, TradeOffer> TradeCache { get; } = new();
+    private static ConcurrentDictionary<string, ConcurrentDictionary<string, TradeOffer>> BotTradeCache { get; } = new();
 
     private static int CheckCount { get; set; }
 
@@ -18,22 +19,15 @@ internal static class Handler
     /// </summary>
     /// <param name="bot"></param>
     /// <returns></returns>
-    internal static async Task CheckDeliver()
+    internal static async Task CheckDeliver(Bot bot)
     {
-        var bot = Utils.GetTargetBot();
-        if (bot == null || !bot.IsConnectedAndLoggedOn)
-        {
-            Utils.Logger.LogGenericWarning("无指定Bot或者指定Bot离线中, 跳过执行");
-            return;
-        }
-
         if (!bot.HasMobileAuthenticator)
         {
             Utils.Logger.LogGenericWarning("当前Bot未设置两步验证令牌, 跳过执行");
             return;
         }
 
-        if (string.IsNullOrEmpty(Utils.Config.BuffCookies))
+        if (!Utils.BuffCookies.TryGetValue(bot.BotName,out string? cookies))
         {
             Utils.Logger.LogGenericWarning("未设置有效的 BuffCookies, 跳过执行");
             return;
@@ -45,7 +39,7 @@ internal static class Handler
             var valid = await WebRequest.CheckCookiesValid(bot).ConfigureAwait(false);
             if (!valid)
             {
-                Utils.Config.BuffCookies = null;
+                Utils.BuffCookies = null;
             }
             CheckCount = 0;
         }
@@ -87,7 +81,7 @@ internal static class Handler
         foreach (var buffTrade in tradeResponse.Data)
         {
             var tradeId = buffTrade.TradeOfferId;
-            if (TradeCache.TryGetValue(tradeId, out var steamTrade))
+            if (BotTradeCache.TryGetValue(tradeId, out var steamTrade))
             {
                 //检查物品信息是否匹配
                 int matchCount = 0;
@@ -141,14 +135,14 @@ internal static class Handler
 
                             if (success)
                             {
-                                TradeCache.TryRemove(tradeId, out _);
+                                BotTradeCache.TryRemove(tradeId, out _);
                             }
                             continue;
                         }
                         else
                         {
                             Utils.Logger.LogGenericInfo(string.Format("同意报价成功, 无需两步验证, Id: {0}", tradeId));
-                            TradeCache.TryRemove(tradeId, out _);
+                            BotTradeCache.TryRemove(tradeId, out _);
                             continue;
                         }
 
@@ -160,7 +154,7 @@ internal static class Handler
                 {
                     var result = await WebRequest.DeclineTradeOffer(bot, tradeId).ConfigureAwait(false);
                     Utils.Logger.LogGenericWarning(string.Format("拒绝交易{0}, Id: {1}", result ? Langs.Success : Langs.Failure, tradeId));
-                    TradeCache.TryRemove(tradeId, out _);
+                    BotTradeCache.TryRemove(tradeId, out _);
                     continue;
                 }
             }
@@ -172,12 +166,18 @@ internal static class Handler
         }
     }
 
-    internal static void AddTradeCache(TradeOffer tradeOffer)
+    internal static void AddTradeCache(Bot bot, TradeOffer tradeOffer)
     {
-        var tradeId = tradeOffer.TradeOfferID.ToString();
-        if (!TradeCache.TryAdd(tradeId, tradeOffer))
+        if (!BotTradeCache.TryGetValue(bot.BotName, out var tradeCache))
         {
-            TradeCache[tradeId] = tradeOffer;
+            tradeCache = new ConcurrentDictionary<string, TradeOffer>();
+            BotTradeCache[bot.BotName] = tradeCache;
+        }
+
+        var tradeId = tradeOffer.TradeOfferID.ToString();
+        if (!tradeCache.TryAdd(tradeId, tradeOffer))
+        {
+            tradeCache[tradeId] = tradeOffer;
             Utils.Logger.LogGenericDebug(string.Format("更新交易, ID: {0}", tradeId));
         }
         else
@@ -186,12 +186,18 @@ internal static class Handler
         }
     }
 
-    internal static void RemoveTradeCache(IReadOnlyCollection<ParseTradeResult> tradeResult)
+    internal static void RemoveTradeCache(Bot bot, IReadOnlyCollection<ParseTradeResult> tradeResult)
     {
+        if (!BotTradeCache.TryGetValue(bot.BotName, out var tradeCache))
+        {
+            tradeCache = new ConcurrentDictionary<string, TradeOffer>();
+            BotTradeCache[bot.BotName] = tradeCache;
+        }
+
         foreach (var trade in tradeResult)
         {
             var tradeId = trade.TradeOfferID.ToString();
-            TradeCache.TryRemove(tradeId, out _);
+            tradeCache.TryRemove(tradeId, out _);
             Utils.Logger.LogGenericDebug(string.Format("交易已完成, ID: {0} => {1}", tradeId, trade.Result.ToString()));
         }
     }

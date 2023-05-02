@@ -32,7 +32,6 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotTradeOffer, IBotTrade
     /// <returns></returns>
     public async Task OnASFInit(IReadOnlyDictionary<string, JToken>? additionalConfigProperties = null)
     {
-
         PluginConfig? config = null;
 
         if (additionalConfigProperties != null)
@@ -89,15 +88,6 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotTradeOffer, IBotTrade
             }
         }
 
-        //if (Config.EnabledBotNames == null)
-        //{
-        //    Config.BotName = null;
-        //    warning.AppendLine(Static.Line);
-        //    warning.AppendLine("未设置BotName, 插件将无法正常工作, 请指定交易用的机器人名称");
-        //    warning.AppendLine("插件只会监听指定机器人的交易状态, 请设置为与Buff绑定的ASF机器人名称");
-        //    warning.AppendLine(Static.Line);
-        //}
-
         if (Config.BuffCheckInterval < 30)
         {
             Config.BuffCheckInterval = 30;
@@ -106,15 +96,15 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotTradeOffer, IBotTrade
             warning.AppendLine(Static.Line);
         }
 
-        //var cookiesCount = await Utils.LoadCookiesFile().ConfigureAwait(false);
-        //if (string.IsNullOrEmpty(cookies))
-        //{
-        //    Config.BuffCookies = null;
-        //    warning.AppendLine(Static.Line);
-        //    warning.AppendLine("BuffCookies未设置, 正确设置前插件将不会工作");
-        //    warning.AppendLine("可以使用命令 SETBUFF xxx 设置");
-        //    warning.AppendLine(Static.Line);
-        //}
+        var succ = await Utils.LoadCookiesFile().ConfigureAwait(false);
+        if (!succ || Utils.BuffCookies.Count == 0)
+        {
+            warning.AppendLine(Static.Line);
+            warning.AppendLine("BuffCookies未设置, 正确设置前插件将不会工作");
+            warning.AppendLine("可以使用命令 SETBUFF [Bot] xxx 为指定机器人设置Buff Cookies");
+            warning.AppendLine("未设置Cookies的机器人将不会监听交易事件");
+            warning.AppendLine(Static.Line);
+        }
 
         if (string.IsNullOrEmpty(Config.CustomUserAgent))
         {
@@ -191,7 +181,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotTradeOffer, IBotTrade
     /// <param name="steamId"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
-    private static async Task<string?> ResponseCommand(EAccess access, string message, string[] args)
+    private static async Task<string?> ResponseCommand(Bot bot, EAccess access, string message, string[] args)
     {
         string cmd = args[0].ToUpperInvariant();
 
@@ -220,7 +210,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotTradeOffer, IBotTrade
                     //Core
                     case "VALIDCOOKIES" when access >= EAccess.Master:
                     case "VC" when access >= EAccess.Master:
-                        return await Core.Command.ResponseValidCoolies().ConfigureAwait(false);
+                        return await Core.Command.ResponseValidCoolies(bot).ConfigureAwait(false);
 
                     //Update
                     case "ASFBUFFBOT" when access >= EAccess.FamilySharing:
@@ -242,9 +232,17 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotTradeOffer, IBotTrade
                 switch (cmd)
                 {
                     //Core
-                    case "UPDATECOOKIES" when access >= EAccess.Master:
-                    case "UC" when access >= EAccess.Master:
-                        return await Core.Command.ResponseUpdateCoolies(Utilities.GetArgsAsText(message, 1)).ConfigureAwait(false);
+                    case "VALIDCOOKIES" when access >= EAccess.Master:
+                    case "VC" when access >= EAccess.Master:
+                        return await Core.Command.ResponseValidCoolies(Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
+
+                    case "UPDATECOOKIES" when argLength == 3 && access >= EAccess.Master:
+                    case "UC" when argLength == 3 && access >= EAccess.Master:
+                        return await Core.Command.ResponseUpdateCoolies(args[1], args[2]).ConfigureAwait(false);
+
+                    case "UPDATECOOKIES" when argLength == 2 && access >= EAccess.Master:
+                    case "UC" when argLength == 2 && access >= EAccess.Master:
+                        return await Core.Command.ResponseUpdateCoolies(bot, args[1]).ConfigureAwait(false);
 
                     default:
                         return null;
@@ -272,7 +270,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotTradeOffer, IBotTrade
 
         try
         {
-            return await ResponseCommand(access, message, args).ConfigureAwait(false);
+            return await ResponseCommand(bot, access, message, args).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
@@ -317,10 +315,9 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotTradeOffer, IBotTrade
     /// <returns></returns>
     public Task<bool> OnBotTradeOffer(Bot bot, TradeOffer tradeOffer)
     {
-        var targetBotName = Utils.Config.BotName;
-        if (bot.BotName == targetBotName)
+        if (Utils.BuffCookies.ContainsKey(bot.BotName))
         {
-            Core.Handler.AddTradeCache(tradeOffer);
+            Core.Handler.AddTradeCache(bot, tradeOffer);
         }
         return Task.FromResult(false);
     }

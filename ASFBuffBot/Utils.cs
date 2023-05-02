@@ -3,6 +3,7 @@ using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Integration;
 using ASFBuffBot.Data;
+using Newtonsoft.Json;
 using System.Reflection;
 
 namespace ASFBuffBot;
@@ -17,7 +18,7 @@ internal static class Utils
     /// <summary>
     /// BuffCookies
     /// </summary>
-    internal static Dictionary<string, string> BuffCooies = new();
+    internal static CookiesStorage BuffCookies = new();
 
     /// <summary>
     /// 更新已就绪
@@ -85,26 +86,10 @@ internal static class Utils
         return steamId | 0x110000100000000;
     }
 
-    /// <summary>
-    /// 获取第一个在线Bot
-    /// </summary>
-    /// <returns></returns>
-    internal static Bot? GetTargetBot()
-    {
-        if (!string.IsNullOrEmpty(Config.BotName))
-        {
-            return Bot.GetBot(Config.BotName);
-        }
-        else
-        {
-            return null;
-        }
-    }
-
     internal static string GetCookiesFilePath()
     {
         string pluginFolder = Path.GetDirectoryName(MyLocation) ?? ".";
-        string cookieFilePath = Path.Combine(pluginFolder, "BuffCookies.txt");
+        string cookieFilePath = Path.Combine(pluginFolder, "BuffCookies.json");
         return cookieFilePath;
     }
 
@@ -119,13 +104,22 @@ internal static class Utils
             string cookieFilePath = GetCookiesFilePath();
             using var fs = File.Open(cookieFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
             using var sr = new StreamReader(fs);
-            string? cookies = await sr.ReadLineAsync().ConfigureAwait(false);
-            return cookies;
+            string? raw = await sr.ReadLineAsync().ConfigureAwait(false);
+            if (!string.IsNullOrEmpty(raw))
+            {
+                var json = JsonConvert.DeserializeObject<CookiesStorage>(raw);
+                if (json != null)
+                {
+                    BuffCookies = json;
+                    return true;
+                }
+            }
+            return false;
         }
         catch (Exception ex)
         {
-            Logger.LogGenericException(ex, "读取Cookies文件失败");
-            return null;
+            Logger.LogGenericException(ex, "读取Cookies文件出错");
+            return false;
         }
     }
 
@@ -133,19 +127,20 @@ internal static class Utils
     /// 写入Cookies
     /// </summary>
     /// <returns></returns>
-    internal static async Task<bool> SaveCookiesFile(string cookies)
+    internal static async Task<bool> SaveCookiesFile()
     {
         try
         {
             string cookieFilePath = GetCookiesFilePath();
             using var fs = File.Open(cookieFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
             using var sw = new StreamWriter(fs);
-            await sw.WriteAsync(cookies).ConfigureAwait(false);
+            string json = JsonConvert.SerializeObject(BuffCookies);
+            await sw.WriteAsync(json).ConfigureAwait(false);
             return true;
         }
         catch (Exception ex)
         {
-            Logger.LogGenericException(ex, "写入Cookies文件失败");
+            Logger.LogGenericException(ex, "写入Cookies文件出错");
             return false;
         }
     }

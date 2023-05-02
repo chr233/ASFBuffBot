@@ -2,8 +2,6 @@ using Newtonsoft.Json;
 
 namespace ASFBuffBot.Data;
 
-public sealed record CookiesStorage
+public sealed class CookiesStorage : Dictionary<string, string>
 {
-    [JsonProperty(Required = Required.Default)]
-    public Dictionary<string, string>? Data { get; set; }
 }
