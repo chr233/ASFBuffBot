@@ -26,7 +26,7 @@ public sealed record PluginConfig
     /// 每个Bot检测间隔
     /// </summary>
     [JsonProperty(Required = Required.DisallowNull)]
-    public uint BotInterval { get; set; } = 180;
+    public uint BotInterval { get; set; } = 30;
 
     /// <summary>
     /// 自定义浏览器UA
