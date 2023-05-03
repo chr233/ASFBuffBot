@@ -67,6 +67,7 @@ internal static partial class Command
             }
             else
             {
+                Utils.BuffCookies[bot.BotName] = null;
                 return bot.FormatBotResponse("当前Cookies无效, 请重新设置");
             }
         }
@@ -75,7 +76,6 @@ internal static partial class Command
             return bot.FormatBotResponse("未设置Cookies");
         }
     }
-
 
     /// <summary>
     /// 手动校验Cookies (多个Bot)

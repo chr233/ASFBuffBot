@@ -17,10 +17,16 @@ public sealed record PluginConfig
     public List<string>? DisabledCmds { get; set; }
 
     /// <summary>
-    /// 单个Bot检测间隔
+    /// Buff检测检测间隔
     /// </summary>
     [JsonProperty(Required = Required.DisallowNull)]
     public uint BuffCheckInterval { get; set; } = 180;
+
+    /// <summary>
+    /// 每个Bot检测间隔
+    /// </summary>
+    [JsonProperty(Required = Required.DisallowNull)]
+    public uint BotInterval { get; set; } = 180;
 
     /// <summary>
     /// 自定义浏览器UA

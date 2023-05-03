@@ -128,6 +128,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotTradeOffer, IBotTrade
                        if (Utils.BuffCookies.ContainsKey(bot.BotName))
                        {
                            await Core.Handler.CheckDeliver(bot).ConfigureAwait(false);
+                           await Task.Delay(TimeSpan.FromSeconds(Utils.Config.BotInterval)).ConfigureAwait(false);
                        }
                    }
                }
