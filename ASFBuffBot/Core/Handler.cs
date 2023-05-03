@@ -27,9 +27,17 @@ internal static class Handler
             return;
         }
 
-        if (!Utils.BuffCookies.TryGetValue(bot.BotName, out string? cookies))
+        if (!Utils.BuffCookies.TryGetValue(bot.BotName, out string? cookies) || string.IsNullOrEmpty(cookies))
         {
             Utils.Logger.LogGenericWarning("未设置有效的 BuffCookies, 跳过执行");
+            return;
+        }
+
+        if (!BotTradeCache.TryGetValue(bot.BotName, out var tradeCache))
+        {
+            tradeCache = new();
+            BotTradeCache[bot.BotName] = tradeCache;
+            Utils.Logger.LogGenericWarning("无Trade缓存信息, 跳过执行");
             return;
         }
 
@@ -78,10 +86,11 @@ internal static class Handler
             Utils.Logger.LogGenericInfo(string.Format("检测到共有 {0} 个物品等待发货", totalItems));
         }
 
+
         foreach (var buffTrade in tradeResponse.Data)
         {
             var tradeId = buffTrade.TradeOfferId;
-            if (BotTradeCache.TryGetValue(tradeId, out var steamTrade))
+            if (tradeCache.TryGetValue(tradeId, out var steamTrade))
             {
                 //检查物品信息是否匹配
                 int matchCount = 0;

@@ -11,9 +11,9 @@ internal static class WebRequest
     /// </summary>
     /// <param name="cookies"></param>
     /// <returns></returns>
-    private static Dictionary<string, string>? GenerateBuffHeader(string? cookies = null)
+    private static Dictionary<string, string>? GenerateBuffHeader(Bot bot, string? cookies = null)
     {
-        if (string.IsNullOrEmpty(Utils.Config.BuffCookies) && string.IsNullOrEmpty(cookies))
+        if (!Utils.BuffCookies.TryGetValue(bot.BotName, out var storeCookies) && string.IsNullOrEmpty(cookies))
         {
             return null;
         }
@@ -22,7 +22,7 @@ internal static class WebRequest
             var header = new Dictionary<string, string>
             {
                 { "user-agent", Utils.Config.CustomUserAgent?? Static.DefaultUserAgent },
-                { "cookie", cookies ?? Utils.Config.BuffCookies ?? "" },
+                { "cookie", cookies ?? storeCookies ?? "" },
             };
             return header;
         }
@@ -37,7 +37,7 @@ internal static class WebRequest
     {
         var request = new Uri("https://buff.163.com/account/api/user/info");
 
-        var headers = GenerateBuffHeader(cookies);
+        var headers = GenerateBuffHeader(bot, cookies);
         if (headers == null)
         {
             return false;
@@ -57,7 +57,7 @@ internal static class WebRequest
     {
         var request = new Uri("https://buff.163.com/api/message/notification");
 
-        var headers = GenerateBuffHeader();
+        var headers = GenerateBuffHeader(bot);
         if (headers == null)
         {
             return null;
@@ -76,7 +76,7 @@ internal static class WebRequest
     {
         var request = new Uri("https://buff.163.com/api/market/steam_trade");
 
-        var headers = GenerateBuffHeader();
+        var headers = GenerateBuffHeader(bot);
         if (headers == null)
         {
             return null;

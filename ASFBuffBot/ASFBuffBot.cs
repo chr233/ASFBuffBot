@@ -120,7 +120,17 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotTradeOffer, IBotTrade
         BuffTimer = new Timer(
            async (_) =>
            {
-               await Core.Handler.CheckDeliver().ConfigureAwait(false);
+               var bots = Bot.GetBots("ASD");
+               if (bots != null)
+               {
+                   foreach (var bot in bots)
+                   {
+                       if (Utils.BuffCookies.ContainsKey(bot.BotName))
+                       {
+                           await Core.Handler.CheckDeliver(bot).ConfigureAwait(false);
+                       }
+                   }
+               }
            },
            null,
            TimeSpan.FromSeconds(30),
