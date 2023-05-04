@@ -255,4 +255,13 @@
   <data name="Approve" xml:space="preserve">
     <value>接受</value>
   </data>
+  <data name="BotNotificationRequestFailedSkip" xml:space="preserve">
+    <value>BuffNotification网络请求失败, Code: {0}</value>
+  </data>
+  <data name="BotIntervalWarn" xml:space="preserve">
+    <value>BuffCheckInterval值过小, 容易被Buff封禁, 推荐设定为180或者更大的值</value>
+  </data>
+  <data name="BuffCheckIntervalWarn" xml:space="preserve">
+    <value>BuffCheckInterval值过小, 容易被Buff封禁, 推荐设定为180或者更大的值878</value>
+  </data>
 </root>

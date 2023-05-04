@@ -18,7 +18,7 @@ internal static class Utils
     /// <summary>
     /// BuffCookies
     /// </summary>
-    internal static CookiesStorage BuffCookies = new();
+    internal static CookiesStorage BuffCookies { get; private set; } = new();
 
     /// <summary>
     /// 更新已就绪
@@ -64,26 +64,6 @@ internal static class Utils
         string flag = UpdateFlag();
 
         return $"<{bot.BotName}{flag}> {message}";
-    }
-
-    /// <summary>
-    /// 转换SteamId
-    /// </summary>
-    /// <param name="steamId"></param>
-    /// <returns></returns>
-    internal static ulong SteamId2Steam32(ulong steamId)
-    {
-        return steamId & 0x001111011111111;
-    }
-
-    /// <summary>
-    /// 转换SteamId
-    /// </summary>
-    /// <param name="steamId"></param>
-    /// <returns></returns>
-    internal static ulong Steam322SteamId(ulong steamId)
-    {
-        return steamId | 0x110000100000000;
     }
 
     internal static string GetCookiesFilePath()
@@ -163,12 +143,7 @@ internal static class Utils
     /// <summary>
     /// Steam社区链接
     /// </summary>
-    internal static Uri SteamCommunityURL = ArchiWebHandler.SteamCommunityURL;
-
-    /// <summary>
-    /// Steam API链接
-    /// </summary>
-    internal static Uri SteamApiURL => new("https://api.steampowered.com");
+    internal static Uri SteamCommunityURL => ArchiWebHandler.SteamCommunityURL;
 
     /// <summary>
     /// 日志
