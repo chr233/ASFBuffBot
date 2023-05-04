@@ -97,4 +97,4 @@ ASF.json
 | 命令                       | 缩写 | 权限     | 说明                                |
 | -------------------------- | ---- | -------- | ----------------------------------- |
 | `VALIDCOOKIES [Bots]`      | `VC` | `Master` | 手动测试当前设置的 Cookies 是否有效 |
-| `UPDATECOOKIES [Bot] text` | `UC` | `Master` | 手动更新 Cookies                    |
+| `UPDATECOOKIES Bot text` | `UC` | `Master` | 手动更新 Cookies                    |
