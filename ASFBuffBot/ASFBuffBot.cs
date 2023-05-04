@@ -255,13 +255,9 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotTradeOffer, IBotTrade
                     case "VC" when access >= EAccess.Master:
                         return await Core.Command.ResponseValidCoolies(Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 
-                    case "UPDATECOOKIES" when argLength == 3 && access >= EAccess.Master:
-                    case "UC" when argLength == 3 && access >= EAccess.Master:
-                        return await Core.Command.ResponseUpdateCoolies(args[1], args[2]).ConfigureAwait(false);
-
-                    case "UPDATECOOKIES" when argLength == 2 && access >= EAccess.Master:
-                    case "UC" when argLength == 2 && access >= EAccess.Master:
-                        return await Core.Command.ResponseUpdateCoolies(bot, args[1]).ConfigureAwait(false);
+                    case "UPDATECOOKIES" when argLength >= 3 && access >= EAccess.Master:
+                    case "UC" when argLength >= 3 && access >= EAccess.Master:
+                        return await Core.Command.ResponseUpdateCoolies(args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
 
                     default:
                         return null;
