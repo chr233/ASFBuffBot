@@ -23,13 +23,13 @@ internal static class Handler
     {
         if (!bot.HasMobileAuthenticator)
         {
-            Utils.Logger.LogGenericWarning("当前Bot未设置两步验证令牌, 跳过执行");
+            Utils.Logger.LogGenericWarning(Langs.No2FaSetSkip);
             return;
         }
 
         if (!Utils.BuffCookies.TryGetValue(bot.BotName, out string? cookies) || string.IsNullOrEmpty(cookies))
         {
-            Utils.Logger.LogGenericWarning("未设置有效的 BuffCookies, 跳过执行");
+            Utils.Logger.LogGenericWarning(Langs.NoBuffCookiesSkip);
             return;
         }
 
@@ -37,7 +37,7 @@ internal static class Handler
         {
             tradeCache = new();
             BotTradeCache[bot.BotName] = tradeCache;
-            Utils.Logger.LogGenericWarning("无Trade缓存信息, 跳过执行");
+            Utils.Logger.LogGenericWarning(Langs.NoTradeCacheSkip);
             return;
         }
 
@@ -48,6 +48,7 @@ internal static class Handler
             if (!valid)
             {
                 Utils.BuffCookies[bot.BotName] = null;
+                await Utils.SaveCookiesFile().ConfigureAwait(false);
             }
             CheckCount = 0;
         }
@@ -56,7 +57,7 @@ internal static class Handler
         var notifResponse = await WebRequest.FetchBuffNotification(bot).ConfigureAwait(false);
         if (notifResponse?.Code != "OK" || notifResponse?.Data?.ToDeliverOrder == null)
         {
-            Utils.Logger.LogGenericWarning(string.Format("BuffNotification网络请求失败, Code: {0}", notifResponse?.Code));
+            Utils.Logger.LogGenericWarning(string.Format(Langs.BotNotificationRequestFailedSkip, notifResponse?.Code));
             return;
         }
 
@@ -65,25 +66,25 @@ internal static class Handler
 
         if (csgo + dota2 == 0)
         {
-            Utils.Logger.LogGenericDebug("无等待自动发货的物品");
+            Utils.Logger.LogGenericDebug(Langs.NoItemToDeliver);
             return;
         }
         else
         {
-            Utils.Logger.LogGenericInfo(string.Format("检测到共有 {0} 个Csgo订单, {1} 个Dota2订单等待发货", csgo, dota2));
+            Utils.Logger.LogGenericInfo(string.Format(Langs.BuffDeliverCount, csgo, dota2));
         }
 
         //检查待发货订单
         var tradeResponse = await WebRequest.FetchBuffSteamTrade(bot).ConfigureAwait(false);
         if (tradeResponse?.Code != "OK" || tradeResponse?.Data == null)
         {
-            Utils.Logger.LogGenericWarning(string.Format("BuffSteamTrade网络请求失败, Code: {0}", tradeResponse?.Code));
+            Utils.Logger.LogGenericWarning(string.Format(Langs.BuffSteamTradeRequestFailed, tradeResponse?.Code));
             return;
         }
         else
         {
             int totalItems = tradeResponse.Data.Select(x => x.ItemsToTrade.Count).Sum();
-            Utils.Logger.LogGenericInfo(string.Format("检测到共有 {0} 个物品等待发货", totalItems));
+            Utils.Logger.LogGenericInfo(string.Format(Langs.BuffDeliverItemCount, totalItems));
         }
 
 
@@ -116,11 +117,11 @@ internal static class Handler
                 bool accept = matchCount == steamTrade.ItemsToGiveReadOnly.Count;
                 if (accept)
                 {
-                    Utils.Logger.LogGenericInfo(string.Format("交易物品匹配, 自动发货, Id: {0}", tradeId));
+                    Utils.Logger.LogGenericInfo(string.Format(Langs.TradeMatchAtuoAccept, tradeId));
                 }
                 else
                 {
-                    Utils.Logger.LogGenericWarning(string.Format("交易物品不匹配, 自动拒绝报价, Id: {0}", tradeId));
+                    Utils.Logger.LogGenericWarning(string.Format(Langs.TradeDismatchAutoReject, tradeId));
                 }
 
                 if (accept)
@@ -128,19 +129,19 @@ internal static class Handler
                     var response = await WebRequest.AcceptTradeOffer(bot, tradeId).ConfigureAwait(false);
                     if (response == null)
                     {
-                        Utils.Logger.LogGenericError(string.Format("同意报价失败, ID: {0}", tradeId));
+                        Utils.Logger.LogGenericError(string.Format(Langs.ConfitmTradeFailed, tradeId));
                         continue;
                     }
                     else
                     {
                         if (response.RequiresMobileConfirmation)
                         {
-                            Utils.Logger.LogGenericInfo(string.Format("同意报价成功, 需要两步验证, ID: {0}", tradeId));
+                            Utils.Logger.LogGenericInfo(string.Format(Langs.AcceptTradeSuccess2FaRequired, tradeId));
 
                             var offerIDs = new List<ulong> { steamTrade.TradeOfferID };
                             (bool success, _, string message) = await bot.Actions.HandleTwoFactorAuthenticationConfirmations(accept, Confirmation.EType.Trade, offerIDs, true).ConfigureAwait(false);
 
-                            Utils.Logger.LogGenericWarning(string.Format("{0}交易报价{1}, Msg: {2}, Id: {2}", accept ? "接受" : "拒绝", success ? Langs.Success : Langs.Failure, message, tradeId));
+                            Utils.Logger.LogGenericWarning(string.Format(Langs.SteamTradeDetail, accept ? Langs.Approve : Langs.Reject, success ? Langs.Success : Langs.Failure, message, tradeId));
 
                             if (success)
                             {
@@ -150,7 +151,7 @@ internal static class Handler
                         }
                         else
                         {
-                            Utils.Logger.LogGenericInfo(string.Format("同意报价成功, 无需两步验证, Id: {0}", tradeId));
+                            Utils.Logger.LogGenericInfo(string.Format(Langs.AcceptTradeSuccess, tradeId));
                             BotTradeCache.TryRemove(tradeId, out _);
                             continue;
                         }
@@ -162,14 +163,14 @@ internal static class Handler
                 else
                 {
                     var result = await WebRequest.DeclineTradeOffer(bot, tradeId).ConfigureAwait(false);
-                    Utils.Logger.LogGenericWarning(string.Format("拒绝交易{0}, Id: {1}", result ? Langs.Success : Langs.Failure, tradeId));
+                    Utils.Logger.LogGenericWarning(string.Format(Langs.RejectTrade, result ? Langs.Success : Langs.Failure, tradeId));
                     BotTradeCache.TryRemove(tradeId, out _);
                     continue;
                 }
             }
             else
             {
-                Utils.Logger.LogGenericInfo(string.Format("为找到匹配的交易报价, 可能交易报价已取消, Id: {0}", tradeId));
+                Utils.Logger.LogGenericInfo(string.Format(Langs.NoMatchTradeFound, tradeId));
                 continue;
             }
         }
@@ -187,11 +188,11 @@ internal static class Handler
         if (!tradeCache.TryAdd(tradeId, tradeOffer))
         {
             tradeCache[tradeId] = tradeOffer;
-            Utils.Logger.LogGenericDebug(string.Format("更新交易, ID: {0}", tradeId));
+            Utils.Logger.LogGenericDebug(string.Format(Langs.UpdateTradeCache, tradeId));
         }
         else
         {
-            Utils.Logger.LogGenericDebug(string.Format("收到新交易, ID:{0}", tradeId));
+            Utils.Logger.LogGenericDebug(string.Format(Langs.ReceivedNewTradeCache, tradeId));
         }
     }
 
@@ -207,7 +208,7 @@ internal static class Handler
         {
             var tradeId = trade.TradeOfferID.ToString();
             tradeCache.TryRemove(tradeId, out _);
-            Utils.Logger.LogGenericDebug(string.Format("交易已完成, ID: {0} => {1}", tradeId, trade.Result.ToString()));
+            Utils.Logger.LogGenericDebug(string.Format(Langs.TradeComplete, tradeId, trade.Result.ToString()));
         }
     }
 }

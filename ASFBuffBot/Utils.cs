@@ -118,7 +118,7 @@ internal static class Utils
         }
         catch (Exception ex)
         {
-            Logger.LogGenericException(ex, "读取Cookies文件出错");
+            Logger.LogGenericException(ex, Langs.ReadCookiesFailed);
             return false;
         }
     }
@@ -140,7 +140,7 @@ internal static class Utils
         }
         catch (Exception ex)
         {
-            Logger.LogGenericException(ex, "写入Cookies文件出错");
+            Logger.LogGenericException(ex, Langs.WriteCookiesFailed);
             return false;
         }
     }

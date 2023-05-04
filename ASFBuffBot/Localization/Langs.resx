@@ -246,4 +246,103 @@
   <data name="NoAvilableItemToShow" xml:space="preserve">
     <value>当前设置下无可显示的内容</value>
   </data>
+  <data name="ConfitmTradeFailed" xml:space="preserve">
+    <value>同意报价失败, ID: {0}</value>
+  </data>
+  <data name="TradeMatchAtuoAccept" xml:space="preserve">
+    <value>交易物品匹配, 自动发货, Id: {0}</value>
+  </data>
+  <data name="TradeDismatchAutoReject" xml:space="preserve">
+    <value>交易物品不匹配, 自动拒绝报价, Id: {0}</value>
+  </data>
+  <data name="NoTradeCacheSkip" xml:space="preserve">
+    <value>无Trade缓存信息, 跳过执行</value>
+  </data>
+  <data name="NoBuffCookiesSkip" xml:space="preserve">
+    <value>未设置有效的 BuffCookies, 跳过执行</value>
+  </data>
+  <data name="No2FaSetSkip" xml:space="preserve">
+    <value>当前Bot未设置两步验证令牌, 跳过执行</value>
+  </data>
+  <data name="BotNotificationRequestFailedSkip" xml:space="preserve">
+    <value>BuffNotification网络请求失败, Code: {0}</value>
+  </data>
+  <data name="NoItemToDeliver" xml:space="preserve">
+    <value>无等待自动发货的物品</value>
+  </data>
+  <data name="UpdateTradeCache" xml:space="preserve">
+    <value>更新交易, ID: {0}</value>
+  </data>
+  <data name="ReceivedNewTradeCache" xml:space="preserve">
+    <value>收到新交易, ID:{0}</value>
+  </data>
+  <data name="TradeComplete" xml:space="preserve">
+    <value>交易已完成, ID: {0} =&gt; {1}</value>
+  </data>
+  <data name="AcceptTradeSuccess2FaRequired" xml:space="preserve">
+    <value>同意报价成功, 需要两步验证, ID: {0}</value>
+  </data>
+  <data name="BuffDeliverCount" xml:space="preserve">
+    <value>检测到共有 {0} 个Csgo订单, {1} 个Dota2订单等待发货</value>
+  </data>
+  <data name="BuffSteamTradeRequestFailed" xml:space="preserve">
+    <value>BuffSteamTrade网络请求失败, Code: {0}</value>
+  </data>
+  <data name="BuffDeliverItemCount" xml:space="preserve">
+    <value>检测到共有 {0} 个物品等待发货</value>
+  </data>
+  <data name="SteamTradeDetail" xml:space="preserve">
+    <value>{0}交易报价{1}, Msg: {2}, Id: {3}</value>
+  </data>
+  <data name="Approve" xml:space="preserve">
+    <value>接受</value>
+  </data>
+  <data name="Reject" xml:space="preserve">
+    <value>拒绝</value>
+  </data>
+  <data name="AcceptTradeSuccess" xml:space="preserve">
+    <value>同意报价成功, 无需两步验证, Id: {0}</value>
+  </data>
+  <data name="RejectTrade" xml:space="preserve">
+    <value>拒绝交易{0}, Id: {1}</value>
+  </data>
+  <data name="NoMatchTradeFound" xml:space="preserve">
+    <value>未找到匹配的交易报价, 可能交易报价已取消, Id: {0}</value>
+  </data>
+  <data name="BuffCookiesValid" xml:space="preserve">
+    <value>Cookies有效, Cookies信息保存{0}</value>
+  </data>
+  <data name="BuffCookiesInvalid" xml:space="preserve">
+    <value>Cookies无效, 请检查Buff是否登录以及Cookies是否完整</value>
+  </data>
+  <data name="CurrentCookiesValid" xml:space="preserve">
+    <value>当前Cookies有效</value>
+  </data>
+  <data name="CurrentCookiesInvalid" xml:space="preserve">
+    <value>当前Cookies无效, 请重新设置</value>
+  </data>
+  <data name="CurrentCookiesNotSet" xml:space="preserve">
+    <value>未设置Cookies</value>
+  </data>
+  <data name="BuffCheckIntervalWarn" xml:space="preserve">
+    <value>BuffCheckInterval值过小, 容易被Buff封禁, 推荐设定为180或者更大的值</value>
+  </data>
+  <data name="BotIntervalWarn" xml:space="preserve">
+    <value>BotInterval值过小, 容易被Buff封禁, 推荐设定为30或者更大的值</value>
+  </data>
+  <data name="BuffCookiesWarn" xml:space="preserve">
+    <value>BuffCookies未设置, 正确设置前插件将不会工作</value>
+  </data>
+  <data name="BuffCookiesWarn3" xml:space="preserve">
+    <value>未设置Cookies的机器人将不会监听交易事件</value>
+  </data>
+  <data name="BuffCookiesWarn2" xml:space="preserve">
+    <value>可以使用命令 SETBUFF [Bot] Cookies 为指定机器人设置Buff Cookies</value>
+  </data>
+  <data name="WriteCookiesFailed" xml:space="preserve">
+    <value>写入Cookies文件出错</value>
+  </data>
+  <data name="ReadCookiesFailed" xml:space="preserve">
+    <value>读取Cookies文件出错</value>
+  </data>
 </root>

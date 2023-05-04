@@ -1,4 +1,3 @@
-using AngleSharp.Common;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam;
@@ -26,11 +25,11 @@ internal static partial class Command
             }
             Utils.BuffCookies[bot.BotName] = cookies;
             succ = await Utils.SaveCookiesFile().ConfigureAwait(false);
-            return bot.FormatBotResponse(string.Format("Cookies有效, Cookies信息保存{0}", succ ? Langs.Success : Langs.Failure));
+            return bot.FormatBotResponse(string.Format(Langs.BuffCookiesValid, succ ? Langs.Success : Langs.Failure));
         }
         else
         {
-            return bot.FormatBotResponse("Cookies无效, 请检查Buff是否登录以及Cookies是否完整");
+            return bot.FormatBotResponse(Langs.BuffCookiesInvalid);
         }
     }
 
@@ -63,17 +62,16 @@ internal static partial class Command
             var valid = await WebRequest.CheckCookiesValid(bot).ConfigureAwait(false);
             if (valid)
             {
-                return bot.FormatBotResponse(string.Format("当前Cookies有效"));
+                return bot.FormatBotResponse(string.Format(Langs.CurrentCookiesValid));
             }
             else
             {
-                Utils.BuffCookies[bot.BotName] = null;
-                return bot.FormatBotResponse("当前Cookies无效, 请重新设置");
+                return bot.FormatBotResponse(Langs.CurrentCookiesInvalid);
             }
         }
         else
         {
-            return bot.FormatBotResponse("未设置Cookies");
+            return bot.FormatBotResponse(Langs.CurrentCookiesNotSet);
         }
     }
 

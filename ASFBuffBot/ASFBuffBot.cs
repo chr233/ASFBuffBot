@@ -92,7 +92,15 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotTradeOffer, IBotTrade
         {
             Config.BuffCheckInterval = 30;
             warning.AppendLine(Static.Line);
-            warning.AppendLine("BuffCheckInterval值过小, 容易被Buff封禁, 推荐设定为120或者更大的值");
+            warning.AppendLine(Langs.BuffCheckIntervalWarn);
+            warning.AppendLine(Static.Line);
+        }
+
+        if (Config.BotInterval < 5)
+        {
+            Config.BotInterval = 5;
+            warning.AppendLine(Static.Line);
+            warning.AppendLine(Langs.BotIntervalWarn);
             warning.AppendLine(Static.Line);
         }
 
@@ -100,9 +108,9 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotTradeOffer, IBotTrade
         if (!succ || Utils.BuffCookies.Count == 0)
         {
             warning.AppendLine(Static.Line);
-            warning.AppendLine("BuffCookies未设置, 正确设置前插件将不会工作");
-            warning.AppendLine("可以使用命令 SETBUFF [Bot] xxx 为指定机器人设置Buff Cookies");
-            warning.AppendLine("未设置Cookies的机器人将不会监听交易事件");
+            warning.AppendLine(Langs.BuffCookiesWarn);
+            warning.AppendLine(Langs.BuffCookiesWarn2);
+            warning.AppendLine(Langs.BuffCookiesWarn3);
             warning.AppendLine(Static.Line);
         }
 
@@ -192,7 +200,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotTradeOffer, IBotTrade
     /// <param name="steamId"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
-    private static async Task<string?> ResponseCommand(Bot bot, EAccess access, string message, string[] args)
+    private static async Task<string?> ResponseCommand(Bot bot, EAccess access, string[] args)
     {
         string cmd = args[0].ToUpperInvariant();
 
@@ -281,7 +289,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotTradeOffer, IBotTrade
 
         try
         {
-            return await ResponseCommand(bot, access, message, args).ConfigureAwait(false);
+            return await ResponseCommand(bot, access, args).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
