@@ -201,9 +201,6 @@
   <data name="PluginVer" xml:space="preserve">
     <value>{0} Версия {1}</value>
   </data>
-  <data name="EulaWarning" xml:space="preserve">
-    <value>"ASFEnhance.EULA" не принят, некоторые функции отключены</value>
-  </data>
   <data name="Detail" xml:space="preserve">
     <value> - Описание: {0}</value>
   </data>

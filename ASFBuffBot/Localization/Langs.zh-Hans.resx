@@ -201,9 +201,6 @@
   <data name="PluginVer" xml:space="preserve">
     <value>{0} 版本 {1}</value>
   </data>
-  <data name="EulaWarning" xml:space="preserve">
-    <value>尚未同意 EULA , 部分命令已禁用</value>
-  </data>
   <data name="Detail" xml:space="preserve">
     <value> - 描述: {0}</value>
   </data>
@@ -225,27 +222,6 @@
   <data name="UpdateSuccess" xml:space="preserve">
     <value>插件更新完成, 重启ASF即可应用, 如果不兼容请更新ASF版本</value>
   </data>
-  <data name="AppIdInvalid" xml:space="preserve">
-    <value>无效 AppId</value>
-  </data>
-  <data name="ArgumentInvalidAppIds" xml:space="preserve">
-    <value>输入参数 AppIds 无效</value>
-  </data>
-  <data name="ArgumentInvalidFSL" xml:space="preserve">
-    <value>参数有误, 示例: -p 2 -l 20 (第二页, 每页20条)</value>
-  </data>
-  <data name="ArgumentInvalidSCS" xml:space="preserve">
-    <value>参数无效, 示例 730 2 交易链接</value>
-  </data>
-  <data name="ArgumentInvalidSCS2" xml:space="preserve">
-    <value>AppId 和 SetCount 必须大于0</value>
-  </data>
-  <data name="CardInventoryIsEmpty" xml:space="preserve">
-    <value>卡牌库存为空</value>
-  </data>
-  <data name="CurrentCardInventoryShow" xml:space="preserve">
-    <value>{0}: 总计 {1}张, 每套 {2}张, 总计 {3}套 +{4}张, 可交易 {5}套 +{6}张</value>
-  </data>
   <data name="Failure" xml:space="preserve">
     <value>失败</value>
   </data>
@@ -261,25 +237,13 @@
   <data name="SteamIdInvalid" xml:space="preserve">
     <value>SteamId 无效</value>
   </data>
-  <data name="SendTradeFailedAppIdInvalid" xml:space="preserve">
-    <value>发送交易失败, AppId 可能无效</value>
-  </data>
-  <data name="SendTradeFailedNoEnoughCards" xml:space="preserve">
-    <value>交易报价发送成功失败, 可交易卡牌数量不足</value>
-  </data>
   <data name="TwoItem" xml:space="preserve">
     <value>{0}: {1}</value>
   </data>
   <data name="NoAvilableItemToShow" xml:space="preserve">
     <value>当前设置下无可显示的内容</value>
   </data>
-  <data name="NoAvilableCards" xml:space="preserve">
-    <value>无卡牌</value>
-  </data>
   <data name="NoInformation" xml:space="preserve">
     <value>无信息</value>
-  </data>
-  <data name="ExpectToSendCardInfo" xml:space="preserve">
-    <value>预计发送 {0} 套, 共 {1} 张 卡牌</value>
   </data>
 </root>

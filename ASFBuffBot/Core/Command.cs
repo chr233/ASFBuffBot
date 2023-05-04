@@ -26,11 +26,11 @@ internal static partial class Command
             }
             Utils.BuffCookies[bot.BotName] = cookies;
             succ = await Utils.SaveCookiesFile().ConfigureAwait(false);
-            return Utils.FormatStaticResponse(string.Format("Cookies有效, Cookies信息保存{0}", succ ? Langs.Success : Langs.Failure));
+            return bot.FormatBotResponse(string.Format("Cookies有效, Cookies信息保存{0}", succ ? Langs.Success : Langs.Failure));
         }
         else
         {
-            return Utils.FormatStaticResponse("Cookies无效, 请检查Buff是否登录以及Cookies是否完整");
+            return bot.FormatBotResponse("Cookies无效, 请检查Buff是否登录以及Cookies是否完整");
         }
     }
 
@@ -44,7 +44,7 @@ internal static partial class Command
         var bot = Bot.GetBot(botName);
         if (bot == null)
         {
-            return Utils.FormatStaticResponse(Langs.BotNameInvalidCmdTips);
+            return Utils.FormatStaticResponse(string.Format(Strings.BotNotFound, botName));
         }
 
         return await ResponseUpdateCoolies(bot, cookies).ConfigureAwait(false);

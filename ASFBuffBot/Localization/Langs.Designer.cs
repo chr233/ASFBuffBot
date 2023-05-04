@@ -70,51 +70,6 @@ namespace ASFBuffBot.Localization {
         }
         
         /// <summary>
-        ///   查找类似 无效 AppId 的本地化字符串。
-        /// </summary>
-        internal static string AppIdInvalid {
-            get {
-                return ResourceManager.GetString("AppIdInvalid", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 输入参数 AppIds 无效 的本地化字符串。
-        /// </summary>
-        internal static string ArgumentInvalidAppIds {
-            get {
-                return ResourceManager.GetString("ArgumentInvalidAppIds", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 参数有误, 示例: -p 2 -l 20 (第二页, 每页20条) 的本地化字符串。
-        /// </summary>
-        internal static string ArgumentInvalidFSL {
-            get {
-                return ResourceManager.GetString("ArgumentInvalidFSL", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 参数无效, 示例 730 2 交易链接 的本地化字符串。
-        /// </summary>
-        internal static string ArgumentInvalidSCS {
-            get {
-                return ResourceManager.GetString("ArgumentInvalidSCS", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 AppId 和 SetCount 必须大于0 的本地化字符串。
-        /// </summary>
-        internal static string ArgumentInvalidSCS2 {
-            get {
-                return ResourceManager.GetString("ArgumentInvalidSCS2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   查找类似 当前版本: {0} 的本地化字符串。
         /// </summary>
         internal static string ASFECurrentVersion {
@@ -142,7 +97,7 @@ namespace ASFBuffBot.Localization {
         }
         
         /// <summary>
-        ///   查找类似 使用命令 CTEUPDATE / CTEU 自动更新插件 的本地化字符串。
+        ///   查找类似 使用命令 ASFEUPDATE / AU 自动更新插件 的本地化字符串。
         /// </summary>
         internal static string ASFEUpdateTips {
             get {
@@ -151,7 +106,7 @@ namespace ASFBuffBot.Localization {
         }
         
         /// <summary>
-        ///   查找类似 使用命令 CTEVERSION / CTEV 检查插件更新 的本地化字符串。
+        ///   查找类似 使用命令 ASFEVERSION / AV 检查插件更新 的本地化字符串。
         /// </summary>
         internal static string ASFEVersionTips {
             get {
@@ -165,24 +120,6 @@ namespace ASFBuffBot.Localization {
         internal static string Assert {
             get {
                 return ResourceManager.GetString("Assert", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 未设置BotName或当前ASF内无此机器人, 无法使用此命令 的本地化字符串。
-        /// </summary>
-        internal static string BotNameInvalidCmdTips {
-            get {
-                return ResourceManager.GetString("BotNameInvalidCmdTips", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 卡牌库存为空 的本地化字符串。
-        /// </summary>
-        internal static string CardInventoryIsEmpty {
-            get {
-                return ResourceManager.GetString("CardInventoryIsEmpty", resourceCulture);
             }
         }
         
@@ -210,15 +147,6 @@ namespace ASFBuffBot.Localization {
         internal static string CleanUpOldBackupFailed {
             get {
                 return ResourceManager.GetString("CleanUpOldBackupFailed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 {0}: 总计 {1}张, 每套 {2}张, 总计 {3}套 +{4}张, 可交易 {5}套 +{6}张 的本地化字符串。
-        /// </summary>
-        internal static string CurrentCardInventoryShow {
-            get {
-                return ResourceManager.GetString("CurrentCardInventoryShow", resourceCulture);
             }
         }
         
@@ -331,24 +259,6 @@ namespace ASFBuffBot.Localization {
         }
         
         /// <summary>
-        ///   查找类似 尚未同意 EULA , 部分命令已禁用 的本地化字符串。
-        /// </summary>
-        internal static string EulaWarning {
-            get {
-                return ResourceManager.GetString("EulaWarning", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 预计发送 {0} 套, 共 {1} 张 卡牌 的本地化字符串。
-        /// </summary>
-        internal static string ExpectToSendCardInfo {
-            get {
-                return ResourceManager.GetString("ExpectToSendCardInfo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   查找类似 失败 的本地化字符串。
         /// </summary>
         internal static string Failure {
@@ -403,15 +313,6 @@ namespace ASFBuffBot.Localization {
         }
         
         /// <summary>
-        ///   查找类似 无卡牌 的本地化字符串。
-        /// </summary>
-        internal static string NoAvilableCards {
-            get {
-                return ResourceManager.GetString("NoAvilableCards", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   查找类似 当前设置下无可显示的内容 的本地化字符串。
         /// </summary>
         internal static string NoAvilableItemToShow {
@@ -453,24 +354,6 @@ namespace ASFBuffBot.Localization {
         internal static string PluginVer {
             get {
                 return ResourceManager.GetString("PluginVer", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 发送交易失败, AppId 可能无效 的本地化字符串。
-        /// </summary>
-        internal static string SendTradeFailedAppIdInvalid {
-            get {
-                return ResourceManager.GetString("SendTradeFailedAppIdInvalid", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 交易报价发送成功失败, 可交易卡牌数量不足 的本地化字符串。
-        /// </summary>
-        internal static string SendTradeFailedNoEnoughCards {
-            get {
-                return ResourceManager.GetString("SendTradeFailedNoEnoughCards", resourceCulture);
             }
         }
         
@@ -525,15 +408,6 @@ namespace ASFBuffBot.Localization {
         internal static string Success {
             get {
                 return ResourceManager.GetString("Success", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 2FA自动确认{0} 的本地化字符串。
-        /// </summary>
-        internal static string TFAConfirmResult {
-            get {
-                return ResourceManager.GetString("TFAConfirmResult", resourceCulture);
             }
         }
         
