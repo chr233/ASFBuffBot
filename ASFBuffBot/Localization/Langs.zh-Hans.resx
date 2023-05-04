@@ -246,4 +246,13 @@
   <data name="NoInformation" xml:space="preserve">
     <value>无信息</value>
   </data>
+  <data name="AcceptTradeSuccess" xml:space="preserve">
+    <value>同意报价成功, 无需两步验证, ID: {0}</value>
+  </data>
+  <data name="AcceptTradeSuccess2FaRequired" xml:space="preserve">
+    <value>同意报价成功, 需要两步验证, ID: {0}</value>
+  </data>
+  <data name="Approve" xml:space="preserve">
+    <value>接受</value>
+  </data>
 </root>

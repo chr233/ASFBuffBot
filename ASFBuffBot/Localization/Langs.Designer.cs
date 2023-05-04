@@ -61,7 +61,7 @@ namespace ASFBuffBot.Localization {
         }
         
         /// <summary>
-        ///   查找类似 同意报价成功, 无需两步验证, Id: {0} 的本地化字符串。
+        ///   查找类似 同意报价成功, 无需两步验证, ID: {0} 的本地化字符串。
         /// </summary>
         internal static string AcceptTradeSuccess {
             get {
