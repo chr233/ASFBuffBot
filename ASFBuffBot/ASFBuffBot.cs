@@ -200,7 +200,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotTradeOffer, IBotTrade
     /// <param name="steamId"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
-    private static async Task<string?> ResponseCommand(Bot bot, EAccess access, string[] args)
+    private static async Task<string?> ResponseCommand(Bot bot, EAccess access, string message, string[] args)
     {
         string cmd = args[0].ToUpperInvariant();
 
@@ -257,7 +257,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotTradeOffer, IBotTrade
 
                     case "UPDATECOOKIES" when argLength >= 3 && access >= EAccess.Master:
                     case "UC" when argLength >= 3 && access >= EAccess.Master:
-                        return await Core.Command.ResponseUpdateCoolies(args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
+                        return await Core.Command.ResponseUpdateCoolies(args[1], Utilities.GetArgsAsText(message, 2)).ConfigureAwait(false);
 
                     default:
                         return null;
@@ -285,7 +285,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotTradeOffer, IBotTrade
 
         try
         {
-            return await ResponseCommand(bot, access, args).ConfigureAwait(false);
+            return await ResponseCommand(bot, access, message, args).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
