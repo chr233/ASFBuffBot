@@ -66,6 +66,10 @@ internal static class Utils
         return $"<{bot.BotName}{flag}> {message}";
     }
 
+    /// <summary>
+    /// 获取Cookies文件路径
+    /// </summary>
+    /// <returns></returns>
     internal static string GetCookiesFilePath()
     {
         string pluginFolder = Path.GetDirectoryName(MyLocation) ?? ".";
