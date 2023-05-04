@@ -73,8 +73,8 @@ ASF.json
 | ------------------- | ------ | ------ | --------------------------------------------------------------------------------- |
 | `Statistic`         | bool   | `true` | 是否允许发送统计数据, 仅用于统计插件用户数量, 不会发送任何其他信息                |
 | `DisabledCmds`      | list   | `null` | 在此列表中的命令将会被禁用\*\* , **不区分大小写**, 仅对 `ASFBuffBot` 中的命令生效 |
-| `BotName`           | string | `null` | 需要监听交易信息的 `机器人名`, 不是账号昵称也不是 SteamID                         |
 | `BuffCheckInterval` | int    | `180`  | 检查 Buff 是否需要发货的周期, 单位秒, 访问频率过快容易被 ban                      |
+| `BotInterval`       | int    | `30`   | 检查每个机器人是否需要发货的间隔, 单位秒                                          |
 | `CustomUserAgent`   | string | `null` | 自定义 `User-Agent` 用于向 Buff 发送请求                                          |
 
 > \*\* `DisabledCmds` 配置说明: 该项配置**不区分大小写**, 仅对 `ASFBuffBot` 中的命令有效
@@ -94,7 +94,7 @@ ASF.json
 
 ### 功能指令
 
-| 命令                 | 缩写 | 权限     | 说明                                |
-| -------------------- | ---- | -------- | ----------------------------------- |
-| `VALIDCOOKIES`       | `VC` | `Master` | 手动测试当前设置的 Cookies 是否有效 |
-| `UPDATECOOKIES text` | `UC` | `Master` | 手动更新 Cookies                    |
+| 命令                       | 缩写 | 权限     | 说明                                |
+| -------------------------- | ---- | -------- | ----------------------------------- |
+| `VALIDCOOKIES [Bots]`      | `VC` | `Master` | 手动测试当前设置的 Cookies 是否有效 |
+| `UPDATECOOKIES [Bot] text` | `UC` | `Master` | 手动更新 Cookies                    |
