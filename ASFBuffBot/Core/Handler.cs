@@ -185,14 +185,20 @@ internal static class Handler
         }
 
         var tradeId = tradeOffer.TradeOfferID.ToString();
-        if (!tradeCache.TryAdd(tradeId, tradeOffer))
+
+        bool hasTargetItem = tradeOffer.ItemsToGiveReadOnly.Any(x => x.AppID == 730 || x.AppID == 530);
+
+        if (hasTargetItem)
         {
-            tradeCache[tradeId] = tradeOffer;
-            Utils.Logger.LogGenericDebug(string.Format(Langs.UpdateTradeCache, tradeId));
-        }
-        else
-        {
-            Utils.Logger.LogGenericDebug(string.Format(Langs.ReceivedNewTradeCache, tradeId));
+            if (!tradeCache.TryAdd(tradeId, tradeOffer))
+            {
+                tradeCache[tradeId] = tradeOffer;
+                Utils.Logger.LogGenericDebug(string.Format(Langs.UpdateTradeCache, tradeId));
+            }
+            else
+            {
+                Utils.Logger.LogGenericDebug(string.Format(Langs.ReceivedNewTradeCache, tradeId));
+            }
         }
     }
 

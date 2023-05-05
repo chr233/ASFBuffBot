@@ -286,6 +286,15 @@ namespace ASFBuffBot.Localization {
         }
         
         /// <summary>
+        ///   查找类似 Cookies有效, 但是找不到匹配的机器人, 添加失败 的本地化字符串。
+        /// </summary>
+        internal static string CookiesValidButNoBotFound {
+            get {
+                return ResourceManager.GetString("CookiesValidButNoBotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 当前Cookies无效, 请重新设置 的本地化字符串。
         /// </summary>
         internal static string CurrentCookiesInvalid {
@@ -489,6 +498,15 @@ namespace ASFBuffBot.Localization {
         internal static string NoAvilableItemToShow {
             get {
                 return ResourceManager.GetString("NoAvilableItemToShow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 找不到可用的机器人, 添加失败 的本地化字符串。
+        /// </summary>
+        internal static string NoBotAvilable {
+            get {
+                return ResourceManager.GetString("NoBotAvilable", resourceCulture);
             }
         }
         

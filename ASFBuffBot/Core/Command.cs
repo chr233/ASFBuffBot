@@ -11,33 +11,6 @@ internal static partial class Command
     /// </summary>
     /// <param name="cookies"></param>
     /// <returns></returns>
-    internal static async Task<string?> ResponseUpdateCoolies(Bot bot, string cookies)
-    {
-        var valid = await WebRequest.CheckCookiesValid(bot, cookies).ConfigureAwait(false);
-        if (valid)
-        {
-            bool succ;
-            if (bot.IsConnectedAndLoggedOn && !Utils.BuffCookies.ContainsKey(bot.BotName))
-            {
-                //重启Bot
-                bot.Actions.Stop();
-                bot.Actions.Start();
-            }
-            Utils.BuffCookies[bot.BotName] = cookies;
-            succ = await Utils.SaveCookiesFile().ConfigureAwait(false);
-            return bot.FormatBotResponse(string.Format(Langs.BuffCookiesValid, succ ? Langs.Success : Langs.Failure));
-        }
-        else
-        {
-            return bot.FormatBotResponse(Langs.BuffCookiesInvalid);
-        }
-    }
-
-    /// <summary>
-    /// 命令更新Cookies
-    /// </summary>
-    /// <param name="cookies"></param>
-    /// <returns></returns>
     internal static async Task<string?> ResponseUpdateCoolies(string botName, string cookies)
     {
         var bot = Bot.GetBot(botName);
@@ -46,9 +19,75 @@ internal static partial class Command
             return Utils.FormatStaticResponse(string.Format(Strings.BotNotFound, botName));
         }
 
-        return await ResponseUpdateCoolies(bot, cookies).ConfigureAwait(false);
+        var valid = await WebRequest.CheckCookiesValid(bot, cookies).ConfigureAwait(false);
+        if (valid)
+        {
+            bool isAdded = Utils.BuffCookies.ContainsKey(bot.BotName);
+
+            Utils.BuffCookies[bot.BotName] = cookies;
+
+            if (bot.IsConnectedAndLoggedOn && !isAdded)
+            {
+                //重启Bot
+                bot.Actions.Stop();
+                bot.Actions.Start();
+            }
+            bool succ = await Utils.SaveCookiesFile().ConfigureAwait(false);
+            return bot.FormatBotResponse(string.Format(Langs.BuffCookiesValid, succ ? Langs.Success : Langs.Failure));
+        }
+        else
+        {
+            return bot.FormatBotResponse(Langs.BuffCookiesInvalid);
+        }
     }
 
+    internal static async Task<string?> ResponseUpdateCoolies(string cookies)
+    {
+        try
+        {
+            var bot = Bot.BotsReadOnly?.FirstOrDefault(x => x.Value.IsConnectedAndLoggedOn).Value;
+
+            if (bot == null)
+            {
+                return Utils.FormatStaticResponse(Langs.NoBotAvilable);
+            }
+
+            var response = await WebRequest.FetcbBuffUserInfo(bot, cookies).ConfigureAwait(false);
+            if (response == null)
+            {
+                return Utils.FormatStaticResponse(Langs.BuffCookiesInvalid);
+            }
+            var steamId = response.Data?.SteamId;
+            var targetBots = Bot.BotsReadOnly?.Where(x => x.Value.SteamID == steamId);
+            if (targetBots?.Any() ?? false)
+            {
+                bot = targetBots.First().Value;
+
+                bool isAdded = Utils.BuffCookies.ContainsKey(bot.BotName);
+                Utils.BuffCookies[bot.BotName] = cookies;
+
+                if (bot.IsConnectedAndLoggedOn && !isAdded)
+                {
+                    //重启Bot
+                    bot.Actions.Stop();
+                    bot.Actions.Start();
+                }
+
+                bool succ = await Utils.SaveCookiesFile().ConfigureAwait(false);
+                return bot.FormatBotResponse(string.Format(Langs.BuffCookiesValid, succ ? Langs.Success : Langs.Failure));
+            }
+            else
+            {
+                return Utils.FormatStaticResponse(Langs.CookiesValidButNoBotFound);
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Utils.Logger.LogGenericException(ex);
+            return Utils.FormatStaticResponse(string.Format(Strings.BotNotFound, "NULL"));
+        }
+    }
 
     /// <summary>
     /// 手动校验Cookies

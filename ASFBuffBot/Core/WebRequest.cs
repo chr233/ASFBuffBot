@@ -47,7 +47,6 @@ internal static class WebRequest
         return response?.StatusCode == HttpStatusCode.OK;
     }
 
-
     /// <summary>
     /// 读取Buff出售通知
     /// </summary>
@@ -83,6 +82,26 @@ internal static class WebRequest
         }
 
         var response = await bot.ArchiWebHandler.UrlGetToJsonObjectWithSession<BuffSteamTradeResponse>(request, headers, requestOptions: ArchiSteamFarm.Web.WebBrowser.ERequestOptions.ReturnRedirections, checkSessionPreemptively: false, allowSessionRefresh: false).ConfigureAwait(false);
+        return response?.Content;
+    }
+
+    /// <summary>
+    /// 读取Buff用户信息
+    /// </summary>
+    /// <param name="bot"></param>
+    /// <param name="cookies"></param>
+    /// <returns></returns>
+    internal static async Task<BuffUserInfoResponse?> FetcbBuffUserInfo(Bot bot, string cookies)
+    {
+        var request = new Uri("https://buff.163.com/account/api/user/info");
+
+        var headers = GenerateBuffHeader(bot, cookies);
+        if (headers == null)
+        {
+            return null;
+        }
+
+        var response = await bot.ArchiWebHandler.UrlGetToJsonObjectWithSession<BuffUserInfoResponse>(request, headers, requestOptions: ArchiSteamFarm.Web.WebBrowser.ERequestOptions.ReturnRedirections, checkSessionPreemptively: false, allowSessionRefresh: false).ConfigureAwait(false);
         return response?.Content;
     }
 

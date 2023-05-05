@@ -345,4 +345,10 @@
   <data name="ReadCookiesFailed" xml:space="preserve">
     <value>读取Cookies文件出错</value>
   </data>
+  <data name="CookiesValidButNoBotFound" xml:space="preserve">
+    <value>Cookies有效, 但是找不到匹配的机器人, 添加失败</value>
+  </data>
+  <data name="NoBotAvilable" xml:space="preserve">
+    <value>找不到可用的机器人, 添加失败</value>
+  </data>
 </root>
