@@ -205,7 +205,7 @@ namespace ASFBuffBot.Localization {
         }
         
         /// <summary>
-        ///   查找类似 可以使用命令 SETBUFF [Bot] Cookies 为指定机器人设置Buff Cookies 的本地化字符串。
+        ///   查找类似 可以使用命令 UPDATECOOKIES Cookies 自动为匹配机器人设置Buff Cookies 的本地化字符串。
         /// </summary>
         internal static string BuffCookiesWarn2 {
             get {
@@ -214,11 +214,20 @@ namespace ASFBuffBot.Localization {
         }
         
         /// <summary>
-        ///   查找类似 未设置Cookies的机器人将不会监听交易事件 的本地化字符串。
+        ///   查找类似 或者用命令 UPDATECOOKIESBOT Bot Cookies 为指定机器人设定Buff Cookies 的本地化字符串。
         /// </summary>
         internal static string BuffCookiesWarn3 {
             get {
                 return ResourceManager.GetString("BuffCookiesWarn3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 未设置Cookies的机器人将不会监听交易事件 的本地化字符串。
+        /// </summary>
+        internal static string BuffCookiesWarn4 {
+            get {
+                return ResourceManager.GetString("BuffCookiesWarn4", resourceCulture);
             }
         }
         

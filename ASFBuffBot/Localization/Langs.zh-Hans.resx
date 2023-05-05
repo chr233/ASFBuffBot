@@ -274,13 +274,13 @@
     <value>BuffCookies未设置, 正确设置前插件将不会工作</value>
   </data>
   <data name="BuffCookiesWarn2" xml:space="preserve">
-    <value>可以使用命令 SETBUFF [Bot] Cookies 为指定机器人设置Buff Cookies</value>
+    <value>可以使用命令 UPDATECOOKIES Cookies 自动为匹配机器人设置Buff Cookies</value>
   </data>
   <data name="BuffDeliverCount" xml:space="preserve">
     <value>检测到共有 {0} 个Csgo订单, {1} 个Dota2订单等待发货</value>
   </data>
   <data name="BuffCookiesWarn3" xml:space="preserve">
-    <value>未设置Cookies的机器人将不会监听交易事件</value>
+    <value>或者用命令 UPDATECOOKIESBOT Bot Cookies 为指定机器人设定Buff Cookies</value>
   </data>
   <data name="BuffDeliverItemCount" xml:space="preserve">
     <value>检测到共有 {0} 个物品等待发货</value>
@@ -344,5 +344,14 @@
   </data>
   <data name="No2FaSetSkip" xml:space="preserve">
     <value>当前Bot未设置两步验证令牌, 跳过执行</value>
+  </data>
+  <data name="CookiesValidButNoBotFound" xml:space="preserve">
+    <value>Cookies有效, 但是找不到匹配的机器人, 添加失败</value>
+  </data>
+  <data name="BuffCookiesWarn4" xml:space="preserve">
+    <value>未设置Cookies的机器人将不会监听交易事件</value>
+  </data>
+  <data name="NoBotAvilable" xml:space="preserve">
+    <value>找不到可用的机器人, 添加失败</value>
   </data>
 </root>

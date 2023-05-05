@@ -111,6 +111,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotTradeOffer, IBotTrade
             warning.AppendLine(Langs.BuffCookiesWarn);
             warning.AppendLine(Langs.BuffCookiesWarn2);
             warning.AppendLine(Langs.BuffCookiesWarn3);
+            warning.AppendLine(Langs.BuffCookiesWarn4);
             warning.AppendLine(Static.Line);
         }
 

@@ -334,10 +334,10 @@
     <value>BuffCookies未设置, 正确设置前插件将不会工作</value>
   </data>
   <data name="BuffCookiesWarn3" xml:space="preserve">
-    <value>未设置Cookies的机器人将不会监听交易事件</value>
+    <value>或者用命令 UPDATECOOKIESBOT Bot Cookies 为指定机器人设定Buff Cookies</value>
   </data>
   <data name="BuffCookiesWarn2" xml:space="preserve">
-    <value>可以使用命令 SETBUFF [Bot] Cookies 为指定机器人设置Buff Cookies</value>
+    <value>可以使用命令 UPDATECOOKIES Cookies 自动为匹配机器人设置Buff Cookies</value>
   </data>
   <data name="WriteCookiesFailed" xml:space="preserve">
     <value>写入Cookies文件出错</value>
@@ -350,5 +350,8 @@
   </data>
   <data name="NoBotAvilable" xml:space="preserve">
     <value>找不到可用的机器人, 添加失败</value>
+  </data>
+  <data name="BuffCookiesWarn4" xml:space="preserve">
+    <value>未设置Cookies的机器人将不会监听交易事件</value>
   </data>
 </root>
