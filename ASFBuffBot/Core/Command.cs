@@ -58,10 +58,10 @@ internal static partial class Command
                 return Utils.FormatStaticResponse(Langs.BuffCookiesInvalid);
             }
             var steamId = response.Data?.SteamId;
-            var targetBots = Bot.BotsReadOnly?.Where(x => x.Value.SteamID == steamId);
-            if (targetBots?.Any() ?? false)
+            var targetBot = Bot.BotsReadOnly?.First(x => x.Value.SteamID == steamId);
+            if (targetBot?.Value != null)
             {
-                bot = targetBots.First().Value;
+                bot = targetBot?.Value;
 
                 bool isAdded = Utils.BuffCookies.ContainsKey(bot.BotName);
                 Utils.BuffCookies[bot.BotName] = cookies;
@@ -135,6 +135,97 @@ internal static partial class Command
         }
 
         IList<string?> results = await Utilities.InParallel(bots.Select(bot => ResponseValidCoolies(bot))).ConfigureAwait(false);
+
+        List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+
+        return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
+    }
+
+    /// <summary>
+    /// 删除机器人Cookies
+    /// </summary>
+    /// <param name="bot"></param>
+    /// <returns></returns>
+    internal static async Task<string> ResponseDeleteCoolies(Bot bot)
+    {
+        if (Utils.BuffCookies.Remove(bot.BotName))
+        {
+            Handler.ClearTradeCache(bot);
+            await Utils.SaveCookiesFile().ConfigureAwait(false);
+            return bot.FormatBotResponse("删除Buff Cookies成功");
+        }
+        else
+        {
+            return bot.FormatBotResponse("删除Buff Cookies失败, 尚未设置此机器人的Cookies");
+        }
+    }
+
+    /// <summary>
+    /// 删除机器人Cookies (多个Bot)
+    /// </summary>
+    /// <param name="botNames"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    internal static async Task<string?> ResponseDeleteCoolies(string botNames)
+    {
+        if (string.IsNullOrEmpty(botNames))
+        {
+            throw new ArgumentNullException(nameof(botNames));
+        }
+
+        HashSet<Bot>? bots = Bot.GetBots(botNames);
+
+        if ((bots == null) || (bots.Count == 0))
+        {
+            return Utils.FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
+        }
+
+        IList<string> results = await Utilities.InParallel(bots.Select(bot => ResponseDeleteCoolies(bot))).ConfigureAwait(false);
+
+        List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+
+        return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
+    }
+
+    /// <summary>
+    /// 获取机器人状态
+    /// </summary>
+    /// <param name="bot"></param>
+    /// <returns></returns>
+    internal static Task<string> ResponseBotStatus(Bot bot)
+    {
+        if (Utils.BuffCookies.TryGetValue(bot.BotName, out var cookies))
+        {
+            var tradeCount = Handler.TradeCacheCount(bot);
+            return Task.FromResult(bot.FormatBotResponse(string.Format("Cookies {0}, 交易缓存数: {1}", !string.IsNullOrEmpty(cookies) ? "有效" : "无效", tradeCount)));
+        }
+        else
+        {
+            return Task.FromResult(bot.FormatBotResponse("Cookies未设置"));
+        }
+    }
+
+    /// <summary>
+    /// 获取机器人状态 (多个Bot)
+    /// </summary>
+    /// <param name="botNames"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    internal static async Task<string?> ResponseBotStatus(string botNames)
+    {
+        if (string.IsNullOrEmpty(botNames))
+        {
+            throw new ArgumentNullException(nameof(botNames));
+        }
+
+        HashSet<Bot>? bots = Bot.GetBots(botNames);
+
+        if ((bots == null) || (bots.Count == 0))
+        {
+            return Utils.FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
+        }
+
+        IList<string> results = await Utilities.InParallel(bots.Select(bot => ResponseBotStatus(bot))).ConfigureAwait(false);
 
         List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
 

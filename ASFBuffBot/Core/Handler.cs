@@ -180,8 +180,8 @@ internal static class Handler
     {
         if (!BotTradeCache.TryGetValue(bot.BotName, out var tradeCache))
         {
-            tradeCache = new ConcurrentDictionary<string, TradeOffer>();
-            BotTradeCache[bot.BotName] = tradeCache;
+            Utils.Logger.LogGenericWarning(string.Format("{0} 未初始化缓存, 无法记录交易缓存", bot.BotName));
+            return;
         }
 
         var tradeId = tradeOffer.TradeOfferID.ToString();
@@ -202,19 +202,35 @@ internal static class Handler
         }
     }
 
-    internal static void RemoveTradeCache(Bot bot, IReadOnlyCollection<ParseTradeResult> tradeResult)
+    internal static void InitTradeCache(Bot bot)
     {
-        if (!BotTradeCache.TryGetValue(bot.BotName, out var tradeCache))
+        if (!BotTradeCache.ContainsKey(bot.BotName))
         {
-            tradeCache = new ConcurrentDictionary<string, TradeOffer>();
-            BotTradeCache[bot.BotName] = tradeCache;
+            BotTradeCache[bot.BotName] = new ConcurrentDictionary<string, TradeOffer>();
         }
-
-        foreach (var trade in tradeResult)
+        else
         {
-            var tradeId = trade.TradeOfferID.ToString();
-            tradeCache.TryRemove(tradeId, out _);
-            Utils.Logger.LogGenericDebug(string.Format(Langs.TradeComplete, tradeId, trade.Result.ToString()));
+            Utils.Logger.LogGenericWarning(string.Format("{0} 已初始化缓存, 无法初始化交易缓存", bot.BotName));
+        }
+    }
+
+    internal static void ClearTradeCache(Bot bot)
+    {
+        if (!BotTradeCache.TryRemove(bot.BotName, out _))
+        {
+            Utils.Logger.LogGenericWarning(string.Format("{0} 未初始化缓存, 无法清空交易缓存", bot.BotName));
+        }
+    }
+
+    internal static int TradeCacheCount(Bot bot)
+    {
+        if (BotTradeCache.TryGetValue(bot.BotName, out var tradeCache))
+        {
+            return tradeCache.Count;
+        }
+        else
+        {
+            return -1;
         }
     }
 }

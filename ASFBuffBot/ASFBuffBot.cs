@@ -13,7 +13,7 @@ using System.Text;
 namespace ASFBuffBot;
 
 [Export(typeof(IPlugin))]
-internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotTradeOffer, IBotTradeOfferResults
+internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTradeOffer, IBotTradeOfferResults
 {
     public string Name => nameof(ASFBuffBot);
     public Version Version => Utils.MyVersion;
@@ -129,10 +129,10 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotTradeOffer, IBotTrade
         BuffTimer = new Timer(
            async (_) =>
            {
-               var bots = Bot.GetBots("ASD");
+               var bots = Bot.BotsReadOnly;
                if (bots != null)
                {
-                   foreach (var bot in bots)
+                   foreach (var (_, bot) in bots)
                    {
                        if (Utils.BuffCookies.ContainsKey(bot.BotName))
                        {
@@ -232,6 +232,14 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotTradeOffer, IBotTrade
                     case "VC" when access >= EAccess.Master:
                         return await Core.Command.ResponseValidCoolies(bot).ConfigureAwait(false);
 
+                    case "DELETECOOKIES" when access >= EAccess.Master:
+                    case "DC" when access >= EAccess.Master:
+                        return await Core.Command.ResponseDeleteCoolies(bot).ConfigureAwait(false);
+
+                    case "COOKIESSTATUS" when access >= EAccess.Master:
+                    case "CS" when access >= EAccess.Master:
+                        return await Core.Command.ResponseBotStatus(bot).ConfigureAwait(false);
+
                     //Update
                     case "ASFBUFFBOT" when access >= EAccess.FamilySharing:
                     case "ABB" when access >= EAccess.FamilySharing:
@@ -255,6 +263,14 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotTradeOffer, IBotTrade
                     case "VALIDCOOKIES" when access >= EAccess.Master:
                     case "VC" when access >= EAccess.Master:
                         return await Core.Command.ResponseValidCoolies(Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
+
+                    case "DELETECOOKIES" when access >= EAccess.Master:
+                    case "DC" when access >= EAccess.Master:
+                        return await Core.Command.ResponseDeleteCoolies(Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
+
+                    case "COOKIESSTATUS" when access >= EAccess.Master:
+                    case "CS" when access >= EAccess.Master:
+                        return await Core.Command.ResponseBotStatus(Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 
                     case "UPDATECOOKIES" when access >= EAccess.Master:
                     case "UC" when access >= EAccess.Master:
@@ -350,6 +366,24 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotTradeOffer, IBotTrade
     /// <returns></returns>
     public Task OnBotTradeOfferResults(Bot bot, IReadOnlyCollection<ParseTradeResult> tradeResults)
     {
+        return Task.CompletedTask;
+    }
+
+    public Task OnBotDisconnected(Bot bot, SteamKit2.EResult reason)
+    {
+        if (Utils.BuffCookies.ContainsKey(bot.BotName))
+        {
+            Core.Handler.ClearTradeCache(bot);
+        }
+        return Task.CompletedTask;
+    }
+
+    public Task OnBotLoggedOn(Bot bot)
+    {
+        if (Utils.BuffCookies.ContainsKey(bot.BotName))
+        {
+            Core.Handler.InitTradeCache(bot);
+        }
         return Task.CompletedTask;
     }
 }
