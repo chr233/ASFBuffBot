@@ -44,7 +44,7 @@
 
 | ASFBuffBot 版本                                                      | 适配 ASF 版本 | 更新说明               |
 | -------------------------------------------------------------------- | :-----------: | ---------------------- |
-| [1.0.4.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.4.0) |    5.4.5.2    | 支持多账号, bug 修复   |
+| [1.0.4.1](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.4.1) |    5.4.5.2    | 支持多账号, bug 修复   |
 | [1.0.0.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.0.0) |    5.4.4.5    | 第一个版本, 单账号模式 |
 
 ## 插件配置说明
@@ -81,7 +81,7 @@ ASF.json
 > \*\* `DisabledCmds` 配置说明: 该项配置**不区分大小写**, 仅对 `ASFBuffBot` 中的命令有效
 > 例如配置为 `["foo","BAR"]` , 则代表 `FOO` 和 `BAR` 命令将会被禁用
 > 如果无需禁用任何命令, 请将此项配置为 `null` 或者 `[]`
-> 当某条命令被禁用时, 仍然可以使用 `CTE.xxx` 的形式调用被禁用的命令, 例如 `CTE.FULLSETLIST`
+> 当某条命令被禁用时, 仍然可以使用 `ABB.xxx` 的形式调用被禁用的命令, 例如 `ABB.UPDATECOOKIES`
 
 ## 插件指令说明
 
@@ -89,13 +89,15 @@ ASF.json
 
 | 命令         | 缩写   | 权限            | 说明                                              |
 | ------------ | ------ | --------------- | ------------------------------------------------- |
-| `ASFBuffBot` | `ABB`  | `FamilySharing` | 查看 ASFBuffBot 的版本                            |
+| `ASFBUFFBOT` | `ABB`  | `FamilySharing` | 查看 ASFBuffBot 的版本                            |
 | `ABBVERSION` | `ABBV` | `Operator`      | 检查 ASFBuffBot 是否为最新版本                    |
 | `ABBUPDATE`  | `ABBU` | `Owner`         | 自动更新 ASFBuffBot 到最新版本 (需要手动重启 ASF) |
 
 ### 功能指令
 
-| 命令                     | 缩写 | 权限     | 说明                                |
-| ------------------------ | ---- | -------- | ----------------------------------- |
-| `VALIDCOOKIES [Bots]`    | `VC` | `Master` | 手动测试当前设置的 Cookies 是否有效 |
-| `UPDATECOOKIES Bot text` | `UC` | `Master` | 手动更新 Cookies                    |
+| 命令                           | 缩写  | 权限     | 说明                                                     |
+| ------------------------------ | ----- | -------- | -------------------------------------------------------- |
+| `VALIDCOOKIES [Bots]`          | `VC`  | `Master` | 手动测试当前设置的 Cookies 是否有效                      |
+| `UPDATECOOKIES cookies`        | `UC`  | `Master` | 手动更新 Cookies, 自动根据 Buff 账号信息绑定到对应机器人 |
+| `UPDATECOOKIESBOT Bot cookies` | `UCB` | `Master` | 手动更新 Cookies, 需要指定要绑定的机器人                 |
+| `COOKIESSTATUS [Bots]`         | `CS`  | `Master` | 查看机器人 Cookies 状态                                  |
