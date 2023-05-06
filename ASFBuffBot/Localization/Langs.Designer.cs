@@ -295,6 +295,24 @@ namespace ASFBuffBot.Localization {
         }
         
         /// <summary>
+        ///   查找类似 Cookies {0}, 交易缓存数: {1} 的本地化字符串。
+        /// </summary>
+        internal static string CookiesAndTradeCacheCount {
+            get {
+                return ResourceManager.GetString("CookiesAndTradeCacheCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Cookies未设置 的本地化字符串。
+        /// </summary>
+        internal static string CookiesNotSet {
+            get {
+                return ResourceManager.GetString("CookiesNotSet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Cookies有效, 但是找不到匹配的机器人, 添加失败 的本地化字符串。
         /// </summary>
         internal static string CookiesValidButNoBotFound {
@@ -336,6 +354,24 @@ namespace ASFBuffBot.Localization {
         internal static string CurrentLanguage {
             get {
                 return ResourceManager.GetString("CurrentLanguage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 删除Buff Cookies失败, 尚未设置此机器人的Cookies 的本地化字符串。
+        /// </summary>
+        internal static string DeleteCookiesFailedNotSetYet {
+            get {
+                return ResourceManager.GetString("DeleteCookiesFailedNotSetYet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 删除Buff Cookies成功 的本地化字符串。
+        /// </summary>
+        internal static string DeleteCookiesSuccess {
+            get {
+                return ResourceManager.GetString("DeleteCookiesSuccess", resourceCulture);
             }
         }
         
@@ -453,6 +489,15 @@ namespace ASFBuffBot.Localization {
         internal static string GetReleaseInfoFailed {
             get {
                 return ResourceManager.GetString("GetReleaseInfoFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 无效 的本地化字符串。
+        /// </summary>
+        internal static string Invalid {
+            get {
+                return ResourceManager.GetString("Invalid", resourceCulture);
             }
         }
         
@@ -691,6 +736,33 @@ namespace ASFBuffBot.Localization {
         }
         
         /// <summary>
+        ///   查找类似 {0} 已初始化缓存, 无法初始化交易缓存 的本地化字符串。
+        /// </summary>
+        internal static string TradeCacheAlreadyInit {
+            get {
+                return ResourceManager.GetString("TradeCacheAlreadyInit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 {0} 未初始化缓存, 无法记录交易 的本地化字符串。
+        /// </summary>
+        internal static string TradeCacheNotInit {
+            get {
+                return ResourceManager.GetString("TradeCacheNotInit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 {0} 未初始化缓存, 无法清空交易缓存 的本地化字符串。
+        /// </summary>
+        internal static string TradeCacheNotInitCantClear {
+            get {
+                return ResourceManager.GetString("TradeCacheNotInitCantClear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 交易已完成, ID: {0} =&gt; {1} 的本地化字符串。
         /// </summary>
         internal static string TradeComplete {
@@ -759,6 +831,15 @@ namespace ASFBuffBot.Localization {
         internal static string UpdateTradeCache {
             get {
                 return ResourceManager.GetString("UpdateTradeCache", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 有效 的本地化字符串。
+        /// </summary>
+        internal static string Valid {
+            get {
+                return ResourceManager.GetString("Valid", resourceCulture);
             }
         }
         

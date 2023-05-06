@@ -152,11 +152,11 @@ internal static partial class Command
         {
             Handler.ClearTradeCache(bot);
             await Utils.SaveCookiesFile().ConfigureAwait(false);
-            return bot.FormatBotResponse("删除Buff Cookies成功");
+            return bot.FormatBotResponse(Langs.DeleteCookiesSuccess);
         }
         else
         {
-            return bot.FormatBotResponse("删除Buff Cookies失败, 尚未设置此机器人的Cookies");
+            return bot.FormatBotResponse(Langs.DeleteCookiesFailedNotSetYet);
         }
     }
 
@@ -197,11 +197,11 @@ internal static partial class Command
         if (Utils.BuffCookies.TryGetValue(bot.BotName, out var cookies))
         {
             var tradeCount = Handler.TradeCacheCount(bot);
-            return Task.FromResult(bot.FormatBotResponse(string.Format("Cookies {0}, 交易缓存数: {1}", !string.IsNullOrEmpty(cookies) ? "有效" : "无效", tradeCount)));
+            return Task.FromResult(bot.FormatBotResponse(string.Format(Langs.CookiesAndTradeCacheCount, !string.IsNullOrEmpty(cookies) ? Langs.Valid : Langs.Invalid, tradeCount)));
         }
         else
         {
-            return Task.FromResult(bot.FormatBotResponse("Cookies未设置"));
+            return Task.FromResult(bot.FormatBotResponse(Langs.CookiesNotSet));
         }
     }
 

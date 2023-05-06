@@ -42,10 +42,10 @@
 
 ### 更新日志
 
-| ASFBuffBot 版本                                                      | 适配 ASF 版本 | 更新说明   |
-| -------------------------------------------------------------------- | :-----------: | ---------- |
-| [1.0.2.2](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.2.2) |    5.4.5.2    | 支持多账号, bug修复 |
-| [1.0.0.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.0.0) |    5.4.4.5    | 第一个版本 |
+| ASFBuffBot 版本                                                      | 适配 ASF 版本 | 更新说明               |
+| -------------------------------------------------------------------- | :-----------: | ---------------------- |
+| [1.0.4.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.4.0) |    5.4.5.2    | 支持多账号, bug 修复   |
+| [1.0.0.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.0.0) |    5.4.4.5    | 第一个版本, 单账号模式 |
 
 ## 插件配置说明
 
@@ -63,8 +63,8 @@ ASF.json
   "ASFBuffBot": {
     "Statistic": true,
     "DisabledCmds": ["foo", "bar"],
-    "BotName": "Buff关联的机器人名称",
-    "BuffCheckInterval": 60,
+    "BuffCheckInterval": 180,
+    "BotInterval": 30,
     "CustomUserAgent": null
   }
 }
@@ -74,8 +74,8 @@ ASF.json
 | ------------------- | ------ | ------ | --------------------------------------------------------------------------------- |
 | `Statistic`         | bool   | `true` | 是否允许发送统计数据, 仅用于统计插件用户数量, 不会发送任何其他信息                |
 | `DisabledCmds`      | list   | `null` | 在此列表中的命令将会被禁用\*\* , **不区分大小写**, 仅对 `ASFBuffBot` 中的命令生效 |
-| `BuffCheckInterval` | int    | `180`  | 检查 Buff 是否需要发货的周期, 单位秒, 访问频率过快容易被 ban                      |
-| `BotInterval`       | int    | `30`   | 检查每个机器人是否需要发货的间隔, 单位秒                                          |
+| `BuffCheckInterval` | int    | `180`  | 每一轮 Buff 发货检查的周期, 单位秒, 访问频率过快容易被 ban                        |
+| `BotInterval`       | int    | `30`   | 在一轮发货检查中每个机器人的检查间隔, 单位秒                                      |
 | `CustomUserAgent`   | string | `null` | 自定义 `User-Agent` 用于向 Buff 发送请求                                          |
 
 > \*\* `DisabledCmds` 配置说明: 该项配置**不区分大小写**, 仅对 `ASFBuffBot` 中的命令有效
@@ -95,7 +95,7 @@ ASF.json
 
 ### 功能指令
 
-| 命令                       | 缩写 | 权限     | 说明                                |
-| -------------------------- | ---- | -------- | ----------------------------------- |
-| `VALIDCOOKIES [Bots]`      | `VC` | `Master` | 手动测试当前设置的 Cookies 是否有效 |
+| 命令                     | 缩写 | 权限     | 说明                                |
+| ------------------------ | ---- | -------- | ----------------------------------- |
+| `VALIDCOOKIES [Bots]`    | `VC` | `Master` | 手动测试当前设置的 Cookies 是否有效 |
 | `UPDATECOOKIES Bot text` | `UC` | `Master` | 手动更新 Cookies                    |

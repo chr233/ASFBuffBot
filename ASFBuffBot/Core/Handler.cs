@@ -1,6 +1,5 @@
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
-using ArchiSteamFarm.Steam.Exchange;
 using ArchiSteamFarm.Steam.Security;
 using System.Collections.Concurrent;
 
@@ -180,8 +179,12 @@ internal static class Handler
     {
         if (!BotTradeCache.TryGetValue(bot.BotName, out var tradeCache))
         {
-            Utils.Logger.LogGenericWarning(string.Format("{0} 未初始化缓存, 无法记录交易缓存", bot.BotName));
-            return;
+            InitTradeCache(bot);
+            if (!BotTradeCache.TryGetValue(bot.BotName, out tradeCache))
+            {
+                Utils.Logger.LogGenericWarning(string.Format(Langs.TradeCacheNotInit, bot.BotName));
+                return;
+            }
         }
 
         var tradeId = tradeOffer.TradeOfferID.ToString();
@@ -210,7 +213,7 @@ internal static class Handler
         }
         else
         {
-            Utils.Logger.LogGenericWarning(string.Format("{0} 已初始化缓存, 无法初始化交易缓存", bot.BotName));
+            Utils.Logger.LogGenericWarning(string.Format(Langs.TradeCacheAlreadyInit, bot.BotName));
         }
     }
 
@@ -218,7 +221,7 @@ internal static class Handler
     {
         if (!BotTradeCache.TryRemove(bot.BotName, out _))
         {
-            Utils.Logger.LogGenericWarning(string.Format("{0} 未初始化缓存, 无法清空交易缓存", bot.BotName));
+            Utils.Logger.LogGenericWarning(string.Format(Langs.TradeCacheNotInitCantClear, bot.BotName));
         }
     }
 

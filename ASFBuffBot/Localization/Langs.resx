@@ -354,4 +354,31 @@
   <data name="BuffCookiesWarn4" xml:space="preserve">
     <value>未设置Cookies的机器人将不会监听交易事件</value>
   </data>
+  <data name="DeleteCookiesSuccess" xml:space="preserve">
+    <value>删除Buff Cookies成功</value>
+  </data>
+  <data name="DeleteCookiesFailedNotSetYet" xml:space="preserve">
+    <value>删除Buff Cookies失败, 尚未设置此机器人的Cookies</value>
+  </data>
+  <data name="Valid" xml:space="preserve">
+    <value>有效</value>
+  </data>
+  <data name="Invalid" xml:space="preserve">
+    <value>无效</value>
+  </data>
+  <data name="CookiesAndTradeCacheCount" xml:space="preserve">
+    <value>Cookies {0}, 交易缓存数: {1}</value>
+  </data>
+  <data name="CookiesNotSet" xml:space="preserve">
+    <value>Cookies未设置</value>
+  </data>
+  <data name="TradeCacheNotInit" xml:space="preserve">
+    <value>{0} 未初始化缓存, 无法记录交易</value>
+  </data>
+  <data name="TradeCacheAlreadyInit" xml:space="preserve">
+    <value>{0} 已初始化缓存, 无法初始化交易缓存</value>
+  </data>
+  <data name="TradeCacheNotInitCantClear" xml:space="preserve">
+    <value>{0} 未初始化缓存, 无法清空交易缓存</value>
+  </data>
 </root>
