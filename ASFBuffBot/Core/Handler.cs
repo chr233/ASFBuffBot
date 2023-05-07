@@ -82,7 +82,11 @@ internal static class Handler
         }
         else
         {
-            int totalItems = tradeResponse.Data.Select(x => x.ItemsToTrade.Count).Sum();
+            int totalItems = 0;
+            foreach (var item in tradeResponse.Data)
+            {
+                totalItems += item.ItemsToTrade.Count;
+            }
             Utils.Logger.LogGenericInfo(string.Format(Langs.BuffDeliverItemCount, totalItems));
         }
 
