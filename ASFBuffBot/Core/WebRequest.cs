@@ -1,5 +1,7 @@
 using ArchiSteamFarm.Steam;
+using ArchiSteamFarm.Web.Responses;
 using ASFBuffBot.Data;
+using SteamKit2.GC.Dota.Internal;
 using System.Net;
 
 namespace ASFBuffBot.Core;
@@ -13,19 +15,11 @@ internal static class WebRequest
     /// <returns></returns>
     private static Dictionary<string, string>? GenerateBuffHeader(Bot bot, string? cookies = null)
     {
-        if (!Utils.BuffCookies.TryGetValue(bot.BotName, out var storeCookies) && string.IsNullOrEmpty(cookies))
+        var header = new Dictionary<string, string>
         {
-            return null;
-        }
-        else
-        {
-            var header = new Dictionary<string, string>
-            {
-                { "user-agent", Utils.Config.CustomUserAgent?? Static.DefaultUserAgent },
-                { "cookie", cookies ?? storeCookies ?? "" },
-            };
-            return header;
-        }
+            { "user-agent", Utils.Config.CustomUserAgent?? Static.DefaultUserAgent },
+        };
+        return header;
     }
 
     /// <summary>
@@ -114,10 +108,10 @@ internal static class WebRequest
     /// <exception cref="ArgumentOutOfRangeException"></exception>
     internal static async Task<TradeOfferAcceptResponse?> AcceptTradeOffer(Bot bot, string tradeID)
     {
-        Uri request = new(Utils.SteamCommunityURL, $"/tradeoffer/{tradeID}/accept");
-        Uri referer = new(Utils.SteamCommunityURL, $"/tradeoffer/{tradeID}");
+        var request = new Uri(Utils.SteamCommunityURL, $"/tradeoffer/{tradeID}/accept");
+        var referer = new Uri(Utils.SteamCommunityURL, $"/tradeoffer/{tradeID}");
 
-        Dictionary<string, string> data = new(3, StringComparer.Ordinal) {
+        var data = new Dictionary<string, string>(3, StringComparer.Ordinal) {
             { "serverid", "1" },
             { "tradeofferid", tradeID }
         };
@@ -135,8 +129,60 @@ internal static class WebRequest
     /// <exception cref="ArgumentOutOfRangeException"></exception>
     internal static async Task<bool> DeclineTradeOffer(Bot bot, string tradeID)
     {
-        Uri request = new(Utils.SteamCommunityURL, $"/tradeoffer/{tradeID}/decline");
+        var request = new Uri(Utils.SteamCommunityURL, $"/tradeoffer/{tradeID}/decline");
 
         return await bot.ArchiWebHandler.UrlPostWithSession(request).ConfigureAwait(false);
+    }
+
+    internal static async Task<HtmlDocumentResponse?> TEST(Bot bot)
+    {
+        var headers = new Dictionary<string, string>
+        {
+            { "user-agent", Utils.Config.CustomUserAgent?? Static.DefaultUserAgent },
+        };
+
+        var request = Utils.SteamCommunityURL;
+        var response = await bot.ArchiWebHandler.UrlGetToHtmlDocumentWithSession(request, headers).ConfigureAwait(false);
+        return response;
+    }
+
+    internal static async Task<HtmlDocumentResponse?> LoginToBuffViaSteam(Bot bot)
+    {
+        var queries = new List<string>
+        {
+            "openid.mode=checkid_setup&openid.ns=http://specs.openid.net/auth/2.0",
+            "&openid.realm=https://buff.163.com/&openid.sreg.required=nickname,email,fullname",
+            "openid.assoc_handle=None",
+            "openid.return_to=https://buff.163.com/account/login/steam/verification?back_url=/account/steam_bind/finish",
+            "openid.ns.sreg=http://openid.net/extensions/sreg/1.1",
+            "openid.identity=http://specs.openid.net/auth/2.0/identifier_select",
+            "openid.claimed_id=http://specs.openid.net/auth/2.0/identifier_select"
+        };
+
+        var request = new Uri(Utils.SteamCommunityURL, "/openid/login?" + string.Join('&', queries));
+        var response = await bot.ArchiWebHandler.UrlGetToHtmlDocumentWithSession(request).ConfigureAwait(false);
+
+        var eles = response?.Content?.QuerySelectorAll("#openidForm>input[name][value]");
+        if (eles == null)
+        {
+            return null;
+        }
+
+        var formData = new Dictionary<string, string>();
+        foreach (var ele in eles)
+        {
+            var name = ele.GetAttribute("name");
+            var value = ele.GetAttribute("value");
+            if (!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(value))
+            {
+                formData.Add(name, value);
+            }
+        }
+
+        request = new Uri(Utils.SteamCommunityURL, "/openid/login");
+
+        HtmlDocumentResponse? response2 = await bot.ArchiWebHandler.UrlPostToHtmlDocumentWithSession(request, data: formData).ConfigureAwait(false);
+
+        return response2;
     }
 }

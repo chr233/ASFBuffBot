@@ -6,6 +6,20 @@ namespace ASFBuffBot.Core;
 
 internal static partial class Command
 {
+    internal static async Task<string?> Test(Bot bot)
+    {
+        //var response = await WebRequest.LoginToBuffViaSteam(bot).ConfigureAwait(false);
+        var response = await WebRequest.TEST(bot).ConfigureAwait(false);
+        return null;
+    }
+
+    internal static async Task<string?> Test(string botName)
+    {
+        return null;
+
+    }
+
+
     /// <summary>
     /// 命令更新Cookies
     /// </summary>

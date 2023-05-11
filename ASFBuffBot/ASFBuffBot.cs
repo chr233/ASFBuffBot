@@ -228,6 +228,10 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
                 switch (cmd)
                 {
                     //Core
+                    case "TEST" when access >= EAccess.Master:
+                    case "T" when access >= EAccess.Master:
+                        return await Core.Command.Test(bot).ConfigureAwait(false);
+
                     case "VALIDCOOKIES" when access >= EAccess.Master:
                     case "VC" when access >= EAccess.Master:
                         return await Core.Command.ResponseValidCoolies(bot).ConfigureAwait(false);
