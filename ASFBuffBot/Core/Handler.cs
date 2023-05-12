@@ -26,7 +26,7 @@ internal static class Handler
             return;
         }
 
-        if (!Utils.BuffCookies.TryGetValue(bot.BotName, out string? cookies) || string.IsNullOrEmpty(cookies))
+        if (!Utils.BotNames.TryGetValue(bot.BotName, out string? cookies) || string.IsNullOrEmpty(cookies))
         {
             Utils.Logger.LogGenericWarning(Langs.NoBuffCookiesSkip);
             return;
@@ -46,7 +46,7 @@ internal static class Handler
             var valid = await WebRequest.CheckCookiesValid(bot).ConfigureAwait(false);
             if (!valid)
             {
-                Utils.BuffCookies[bot.BotName] = null;
+                //Utils.BotNames[bot.BotName] = null;
                 await Utils.SaveCookiesFile().ConfigureAwait(false);
             }
             CheckCount = 0;

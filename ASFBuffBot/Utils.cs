@@ -18,7 +18,7 @@ internal static class Utils
     /// <summary>
     /// BuffCookies
     /// </summary>
-    internal static CookiesStorage BuffCookies { get; private set; } = new();
+    internal static BotNamesStorage BotNames { get; private set; } = new();
 
     /// <summary>
     /// 更新已就绪
@@ -73,7 +73,7 @@ internal static class Utils
     internal static string GetCookiesFilePath()
     {
         string pluginFolder = Path.GetDirectoryName(MyLocation) ?? ".";
-        string cookieFilePath = Path.Combine(pluginFolder, "BuffCookies.json");
+        string cookieFilePath = Path.Combine(pluginFolder, "BuffBots.json");
         return cookieFilePath;
     }
 
@@ -91,10 +91,10 @@ internal static class Utils
             string? raw = await sr.ReadLineAsync().ConfigureAwait(false);
             if (!string.IsNullOrEmpty(raw))
             {
-                var json = JsonConvert.DeserializeObject<CookiesStorage>(raw);
+                var json = JsonConvert.DeserializeObject<BotNamesStorage>(raw);
                 if (json != null)
                 {
-                    BuffCookies = json;
+                    BotNames = json;
                     return true;
                 }
             }
@@ -118,7 +118,7 @@ internal static class Utils
             string cookieFilePath = GetCookiesFilePath();
             using var fs = File.Open(cookieFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
             using var sw = new StreamWriter(fs);
-            string json = JsonConvert.SerializeObject(BuffCookies);
+            string json = JsonConvert.SerializeObject(BotNames);
             await sw.WriteAsync(json).ConfigureAwait(false);
             return true;
         }
@@ -148,6 +148,12 @@ internal static class Utils
     /// Steam社区链接
     /// </summary>
     internal static Uri SteamCommunityURL => ArchiWebHandler.SteamCommunityURL;
+
+    /// <summary>
+    /// Buff链接
+    /// </summary>
+    internal static Uri BuffUrl => new("https://buff.163.com/");
+
 
     /// <summary>
     /// 日志

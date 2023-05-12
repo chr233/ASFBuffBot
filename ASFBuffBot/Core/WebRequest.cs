@@ -1,19 +1,19 @@
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Web.Responses;
 using ASFBuffBot.Data;
-using SteamKit2.GC.Dota.Internal;
 using System.Net;
 
 namespace ASFBuffBot.Core;
 
 internal static class WebRequest
 {
+
     /// <summary>
     /// 生成Header
     /// </summary>
     /// <param name="cookies"></param>
     /// <returns></returns>
-    private static Dictionary<string, string>? GenerateBuffHeader(Bot bot, string? cookies = null)
+    private static Dictionary<string, string> GenerateBuffHeader()
     {
         var header = new Dictionary<string, string>
         {
@@ -27,16 +27,10 @@ internal static class WebRequest
     /// </summary>
     /// <param name="bot"></param>
     /// <returns></returns>
-    internal static async Task<bool> CheckCookiesValid(Bot bot, string? cookies = null)
+    internal static async Task<bool> CheckCookiesValid(Bot bot)
     {
-        var request = new Uri("https://buff.163.com/account/api/user/info");
-
-        var headers = GenerateBuffHeader(bot, cookies);
-        if (headers == null)
-        {
-            return false;
-        }
-
+        var request = new Uri(Utils.BuffUrl, "/account/api/user/info");
+        var headers = GenerateBuffHeader();
         var response = await bot.ArchiWebHandler.UrlGetToHtmlDocumentWithSession(request, headers, requestOptions: ArchiSteamFarm.Web.WebBrowser.ERequestOptions.ReturnRedirections, checkSessionPreemptively: false, allowSessionRefresh: false).ConfigureAwait(false);
         return response?.StatusCode == HttpStatusCode.OK;
     }
@@ -48,14 +42,8 @@ internal static class WebRequest
     /// <returns></returns>
     internal static async Task<BuffNotificationResponse?> FetchBuffNotification(Bot bot)
     {
-        var request = new Uri("https://buff.163.com/api/message/notification");
-
-        var headers = GenerateBuffHeader(bot);
-        if (headers == null)
-        {
-            return null;
-        }
-
+        var request = new Uri(Utils.BuffUrl, "/api/message/notification");
+        var headers = GenerateBuffHeader();
         var response = await bot.ArchiWebHandler.UrlGetToJsonObjectWithSession<BuffNotificationResponse>(request, headers, requestOptions: ArchiSteamFarm.Web.WebBrowser.ERequestOptions.ReturnRedirections, checkSessionPreemptively: false, allowSessionRefresh: false).ConfigureAwait(false);
         return response?.Content;
     }
@@ -67,14 +55,8 @@ internal static class WebRequest
     /// <returns></returns>
     internal static async Task<BuffSteamTradeResponse?> FetchBuffSteamTrade(Bot bot)
     {
-        var request = new Uri("https://buff.163.com/api/market/steam_trade");
-
-        var headers = GenerateBuffHeader(bot);
-        if (headers == null)
-        {
-            return null;
-        }
-
+        var request = new Uri(Utils.BuffUrl, "/api/market/steam_trade");
+        var headers = GenerateBuffHeader();
         var response = await bot.ArchiWebHandler.UrlGetToJsonObjectWithSession<BuffSteamTradeResponse>(request, headers, requestOptions: ArchiSteamFarm.Web.WebBrowser.ERequestOptions.ReturnRedirections, checkSessionPreemptively: false, allowSessionRefresh: false).ConfigureAwait(false);
         return response?.Content;
     }
@@ -85,16 +67,10 @@ internal static class WebRequest
     /// <param name="bot"></param>
     /// <param name="cookies"></param>
     /// <returns></returns>
-    internal static async Task<BuffUserInfoResponse?> FetcbBuffUserInfo(Bot bot, string cookies)
+    internal static async Task<BuffUserInfoResponse?> FetcbBuffUserInfo(Bot bot)
     {
-        var request = new Uri("https://buff.163.com/account/api/user/info");
-
-        var headers = GenerateBuffHeader(bot, cookies);
-        if (headers == null)
-        {
-            return null;
-        }
-
+        var request = new Uri(Utils.BuffUrl, "/account/api/user/info");
+        var headers = GenerateBuffHeader();
         var response = await bot.ArchiWebHandler.UrlGetToJsonObjectWithSession<BuffUserInfoResponse>(request, headers, requestOptions: ArchiSteamFarm.Web.WebBrowser.ERequestOptions.ReturnRedirections, checkSessionPreemptively: false, allowSessionRefresh: false).ConfigureAwait(false);
         return response?.Content;
     }
@@ -130,22 +106,14 @@ internal static class WebRequest
     internal static async Task<bool> DeclineTradeOffer(Bot bot, string tradeID)
     {
         var request = new Uri(Utils.SteamCommunityURL, $"/tradeoffer/{tradeID}/decline");
-
         return await bot.ArchiWebHandler.UrlPostWithSession(request).ConfigureAwait(false);
     }
 
-    internal static async Task<HtmlDocumentResponse?> TEST(Bot bot)
-    {
-        var headers = new Dictionary<string, string>
-        {
-            { "user-agent", Utils.Config.CustomUserAgent?? Static.DefaultUserAgent },
-        };
-
-        var request = Utils.SteamCommunityURL;
-        var response = await bot.ArchiWebHandler.UrlGetToHtmlDocumentWithSession(request, headers).ConfigureAwait(false);
-        return response;
-    }
-
+    /// <summary>
+    /// Steam OAuth登录
+    /// </summary>
+    /// <param name="bot"></param>
+    /// <returns></returns>
     internal static async Task<HtmlDocumentResponse?> LoginToBuffViaSteam(Bot bot)
     {
         var queries = new List<string>
@@ -180,9 +148,7 @@ internal static class WebRequest
         }
 
         request = new Uri(Utils.SteamCommunityURL, "/openid/login");
-
-        HtmlDocumentResponse? response2 = await bot.ArchiWebHandler.UrlPostToHtmlDocumentWithSession(request, data: formData).ConfigureAwait(false);
-
+        var response2 = await bot.ArchiWebHandler.UrlPostToHtmlDocumentWithSession(request, data: formData).ConfigureAwait(false);
         return response2;
     }
 }

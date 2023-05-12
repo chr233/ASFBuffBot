@@ -6,6 +6,7 @@ using ArchiSteamFarm.Steam.Exchange;
 using ASFBuffBot.Data;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SteamKit2;
 using System.ComponentModel;
 using System.Composition;
 using System.Text;
@@ -105,7 +106,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
         }
 
         var succ = await Utils.LoadCookiesFile().ConfigureAwait(false);
-        if (!succ || Utils.BuffCookies.Count == 0)
+        if (!succ || Utils.BotNames.Count == 0)
         {
             warning.AppendLine(Static.Line);
             warning.AppendLine(Langs.BuffCookiesWarn);
@@ -134,7 +135,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
                {
                    foreach (var (_, bot) in bots)
                    {
-                       if (Utils.BuffCookies.ContainsKey(bot.BotName))
+                       if (Utils.BotNames.Contains(bot.BotName))
                        {
                            await Core.Handler.CheckDeliver(bot).ConfigureAwait(false);
                            await Task.Delay(TimeSpan.FromSeconds(Utils.Config.BotInterval)).ConfigureAwait(false);
@@ -145,7 +146,20 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
            null,
            TimeSpan.FromSeconds(30),
            TimeSpan.FromSeconds(Config.BuffCheckInterval)
-       );
+        );
+
+        _ = Task.Run(async () =>
+        {
+            await Task.Delay(2000).ConfigureAwait(false);
+            try
+            {
+                await Core.ReflectionHelper.SetBuffService().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Utils.Logger.LogGenericException(ex, "注册失败");
+            }
+        });
     }
 
     /// <summary>
@@ -264,6 +278,12 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
                 switch (cmd)
                 {
                     //Core
+
+                    case "TEST" when access >= EAccess.Master:
+                    case "T" when access >= EAccess.Master:
+                        return await Core.Command.Test(args[1]).ConfigureAwait(false);
+
+
                     case "VALIDCOOKIES" when access >= EAccess.Master:
                     case "VC" when access >= EAccess.Master:
                         return await Core.Command.ResponseValidCoolies(Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
@@ -355,7 +375,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
     /// <returns></returns>
     public Task<bool> OnBotTradeOffer(Bot bot, TradeOffer tradeOffer)
     {
-        if (Utils.BuffCookies.ContainsKey(bot.BotName))
+        if (Utils.BotNames.Contains(bot.BotName))
         {
             Core.Handler.AddTradeCache(bot, tradeOffer);
         }
@@ -373,18 +393,29 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
         return Task.CompletedTask;
     }
 
-    public Task OnBotDisconnected(Bot bot, SteamKit2.EResult reason)
+    /// <summary>
+    /// Steam离线
+    /// </summary>
+    /// <param name="bot"></param>
+    /// <param name="reason"></param>
+    /// <returns></returns>
+    public Task OnBotDisconnected(Bot bot, EResult reason)
     {
-        if (Utils.BuffCookies.ContainsKey(bot.BotName))
+        if (Utils.BotNames.Contains(bot.BotName))
         {
             Core.Handler.ClearTradeCache(bot);
         }
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Steam上线
+    /// </summary>
+    /// <param name="bot"></param>
+    /// <returns></returns>
     public Task OnBotLoggedOn(Bot bot)
     {
-        if (Utils.BuffCookies.ContainsKey(bot.BotName))
+        if (Utils.BotNames.Contains(bot.BotName))
         {
             Core.Handler.InitTradeCache(bot);
         }

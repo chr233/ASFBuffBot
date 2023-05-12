@@ -8,17 +8,21 @@ internal static partial class Command
 {
     internal static async Task<string?> Test(Bot bot)
     {
-        //var response = await WebRequest.LoginToBuffViaSteam(bot).ConfigureAwait(false);
-        var response = await WebRequest.TEST(bot).ConfigureAwait(false);
+        var response = await WebRequest.LoginToBuffViaSteam(bot).ConfigureAwait(false);
         return null;
     }
 
     internal static async Task<string?> Test(string botName)
     {
+        var bot = Bot.GetBot(botName);
+        if (bot == null)
+        {
+            return Utils.FormatStaticResponse(string.Format(Strings.BotNotFound, botName));
+        }
+        var response = await WebRequest.LoginToBuffViaSteam(bot).ConfigureAwait(false);
         return null;
 
     }
-
 
     /// <summary>
     /// 命令更新Cookies
@@ -33,12 +37,12 @@ internal static partial class Command
             return Utils.FormatStaticResponse(string.Format(Strings.BotNotFound, botName));
         }
 
-        var valid = await WebRequest.CheckCookiesValid(bot, cookies).ConfigureAwait(false);
+        var valid = await WebRequest.CheckCookiesValid(bot).ConfigureAwait(false);
         if (valid)
         {
-            bool isAdded = Utils.BuffCookies.ContainsKey(bot.BotName);
+            bool isAdded = Utils.BotNames.Contains(bot.BotName);
 
-            Utils.BuffCookies[bot.BotName] = cookies;
+            //Utils.BotNames[bot.BotName] = cookies;
 
             if (bot.IsConnectedAndLoggedOn && !isAdded)
             {
@@ -66,7 +70,7 @@ internal static partial class Command
                 return Utils.FormatStaticResponse(Langs.NoBotAvilable);
             }
 
-            var response = await WebRequest.FetcbBuffUserInfo(bot, cookies).ConfigureAwait(false);
+            var response = await WebRequest.FetcbBuffUserInfo(bot).ConfigureAwait(false);
             if (response == null)
             {
                 return Utils.FormatStaticResponse(Langs.BuffCookiesInvalid);
@@ -77,8 +81,8 @@ internal static partial class Command
             {
                 bot = targetBot?.Value;
 
-                bool isAdded = Utils.BuffCookies.ContainsKey(bot.BotName);
-                Utils.BuffCookies[bot.BotName] = cookies;
+                bool isAdded = Utils.BotNames.Contains(bot.BotName);
+                //Utils.BotNames[bot.BotName] = cookies;
 
                 if (bot.IsConnectedAndLoggedOn && !isAdded)
                 {
@@ -110,7 +114,7 @@ internal static partial class Command
     /// <returns></returns>
     internal static async Task<string?> ResponseValidCoolies(Bot bot)
     {
-        if (Utils.BuffCookies.TryGetValue(bot.BotName, out string? cookies) && !string.IsNullOrEmpty(cookies))
+        if (Utils.BotNames.TryGetValue(bot.BotName, out string? cookies) && !string.IsNullOrEmpty(cookies))
         {
             var valid = await WebRequest.CheckCookiesValid(bot).ConfigureAwait(false);
             if (valid)
@@ -162,7 +166,7 @@ internal static partial class Command
     /// <returns></returns>
     internal static async Task<string> ResponseDeleteCoolies(Bot bot)
     {
-        if (Utils.BuffCookies.Remove(bot.BotName))
+        if (Utils.BotNames.Remove(bot.BotName))
         {
             Handler.ClearTradeCache(bot);
             await Utils.SaveCookiesFile().ConfigureAwait(false);
@@ -208,7 +212,7 @@ internal static partial class Command
     /// <returns></returns>
     internal static Task<string> ResponseBotStatus(Bot bot)
     {
-        if (Utils.BuffCookies.TryGetValue(bot.BotName, out var cookies))
+        if (Utils.BotNames.TryGetValue(bot.BotName, out var cookies))
         {
             var tradeCount = Handler.TradeCacheCount(bot);
             return Task.FromResult(bot.FormatBotResponse(string.Format(Langs.CookiesAndTradeCacheCount, !string.IsNullOrEmpty(cookies) ? Langs.Valid : Langs.Invalid, tradeCount)));
