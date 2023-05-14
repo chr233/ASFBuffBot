@@ -1,6 +1,4 @@
 #pragma warning disable CS8600
-#pragma warning disable CS8602
-
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Plugins;
@@ -12,32 +10,31 @@ namespace ASFBuffBot.Core;
 
 internal static class ReflectionHelper
 {
-    internal static async Task SetBuffService()
+    internal static async Task AddBuffService()
     {
-        var type = Type.GetType("ArchiSteamFarm.Core.ASF,ArchiSteamFarm");
-        var filedInfo = type.GetField("WebLimitingSemaphores", BindingFlags.Static);
+        var type = typeof(ASF);
+        var filedInfo = type.GetProperty("WebLimitingSemaphores", BindingFlags.NonPublic | BindingFlags.Static);
 
         if (filedInfo != null)
         {
             var newValue = new Dictionary<Uri, (ICrossProcessSemaphore RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)>(5);
-
             var oldValue = (ImmutableDictionary<Uri, (ICrossProcessSemaphore RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)>)filedInfo.GetValue(null);
 
-
-            foreach (var (k, v) in oldValue)
+            if (oldValue != null)
             {
-                newValue.Add(k, v);
+                foreach (var (k, v) in oldValue)
+                {
+                    newValue.Add(k, v);
+                }
             }
 
             newValue.Add(Utils.BuffUrl, (await PluginsCore.GetCrossProcessSemaphore($"{nameof(ArchiWebHandler)}-{nameof(Utils.BuffUrl)}").ConfigureAwait(false), new SemaphoreSlim(5, 5)));
 
-            filedInfo.SetValue(null, newValue);
+            filedInfo.SetValue(null, newValue.ToImmutableDictionary());
         }
         else
         {
-            type = typeof(ASF);
-            filedInfo = type.GetField("WebLimitingSemaphores", BindingFlags.Static);
-            Utils.Logger.LogGenericWarning("fieldinfo is null");
+            Utils.Logger.LogGenericWarning("Fieldinfo is null");
         }
     }
 }

@@ -3,18 +3,18 @@ using Newtonsoft.Json;
 namespace ASFBuffBot.Data;
 public sealed record BuffNotificationResponse
 {
-    [JsonProperty(PropertyName = "msg", Required = Required.AllowNull)]
+    [JsonProperty(PropertyName = "msg", Required = Required.Default)]
     public string? Message { get; set; }
 
-    [JsonProperty(PropertyName = "code", Required = Required.AllowNull)]
+    [JsonProperty(PropertyName = "code", Required = Required.Default)]
     public string? Code { get; set; }
 
-    [JsonProperty(PropertyName = "data", Required = Required.AllowNull)]
+    [JsonProperty(PropertyName = "data", Required = Required.Default)]
     public NotificationData? Data { get; set; }
 
     public sealed record NotificationData
     {
-        [JsonProperty(PropertyName = "to_deliver_order", Required = Required.AllowNull)]
+        [JsonProperty(PropertyName = "to_deliver_order", Required = Required.Default)]
         public MessageData? ToDeliverOrder { get; set; }
     }
 

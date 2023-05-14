@@ -1,13 +1,11 @@
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Web.Responses;
 using ASFBuffBot.Data;
-using System.Net;
 
 namespace ASFBuffBot.Core;
 
 internal static class WebRequest
 {
-
     /// <summary>
     /// 生成Header
     /// </summary>
@@ -29,10 +27,8 @@ internal static class WebRequest
     /// <returns></returns>
     internal static async Task<bool> CheckCookiesValid(Bot bot)
     {
-        var request = new Uri(Utils.BuffUrl, "/account/api/user/info");
-        var headers = GenerateBuffHeader();
-        var response = await bot.ArchiWebHandler.UrlGetToHtmlDocumentWithSession(request, headers, requestOptions: ArchiSteamFarm.Web.WebBrowser.ERequestOptions.ReturnRedirections, checkSessionPreemptively: false, allowSessionRefresh: false).ConfigureAwait(false);
-        return response?.StatusCode == HttpStatusCode.OK;
+        var response = await FetcbBuffUserInfo(bot).ConfigureAwait(false);
+        return response?.Code == "OK";
     }
 
     /// <summary>
@@ -118,8 +114,10 @@ internal static class WebRequest
     {
         var queries = new List<string>
         {
-            "openid.mode=checkid_setup&openid.ns=http://specs.openid.net/auth/2.0",
-            "&openid.realm=https://buff.163.com/&openid.sreg.required=nickname,email,fullname",
+            "openid.mode=checkid_setup",
+            "openid.ns=http://specs.openid.net/auth/2.0",
+            "openid.realm=https://buff.163.com/",
+            "openid.sreg.required=nickname,email,fullname",
             "openid.assoc_handle=None",
             "openid.return_to=https://buff.163.com/account/login/steam/verification?back_url=/account/steam_bind/finish",
             "openid.ns.sreg=http://openid.net/extensions/sreg/1.1",

@@ -18,7 +18,7 @@ internal static class Utils
     /// <summary>
     /// BuffCookies
     /// </summary>
-    internal static BotNamesStorage BotNames { get; private set; } = new();
+    internal static BuffBotStorage BuffBots { get; private set; } = new();
 
     /// <summary>
     /// 更新已就绪
@@ -70,7 +70,7 @@ internal static class Utils
     /// 获取Cookies文件路径
     /// </summary>
     /// <returns></returns>
-    internal static string GetCookiesFilePath()
+    internal static string GetFilePath()
     {
         string pluginFolder = Path.GetDirectoryName(MyLocation) ?? ".";
         string cookieFilePath = Path.Combine(pluginFolder, "BuffBots.json");
@@ -81,20 +81,20 @@ internal static class Utils
     /// 读取Cookies
     /// </summary>
     /// <returns></returns>
-    internal static async Task<bool> LoadCookiesFile()
+    internal static async Task<bool> LoadFile()
     {
         try
         {
-            string cookieFilePath = GetCookiesFilePath();
+            string cookieFilePath = GetFilePath();
             using var fs = File.Open(cookieFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
             using var sr = new StreamReader(fs);
             string? raw = await sr.ReadLineAsync().ConfigureAwait(false);
             if (!string.IsNullOrEmpty(raw))
             {
-                var json = JsonConvert.DeserializeObject<BotNamesStorage>(raw);
+                var json = JsonConvert.DeserializeObject<BuffBotStorage>(raw);
                 if (json != null)
                 {
-                    BotNames = json;
+                    BuffBots = json;
                     return true;
                 }
             }
@@ -111,14 +111,14 @@ internal static class Utils
     /// 写入Cookies
     /// </summary>
     /// <returns></returns>
-    internal static async Task<bool> SaveCookiesFile()
+    internal static async Task<bool> SaveFile()
     {
         try
         {
-            string cookieFilePath = GetCookiesFilePath();
+            string cookieFilePath = GetFilePath();
             using var fs = File.Open(cookieFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
             using var sw = new StreamWriter(fs);
-            string json = JsonConvert.SerializeObject(BotNames);
+            string json = JsonConvert.SerializeObject(BuffBots);
             await sw.WriteAsync(json).ConfigureAwait(false);
             return true;
         }

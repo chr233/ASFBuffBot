@@ -175,10 +175,10 @@
     <value>Clear the old plugin's backup file failed</value>
   </data>
   <data name="ASFEUpdateTips" xml:space="preserve">
-    <value>Use Command "ASFEUPDATE" / "AU" to update the plugin</value>
+    <value>Use Command "ABBUPDATE" / "ABBU" to update the plugin</value>
   </data>
   <data name="ASFEVersionTips" xml:space="preserve">
-    <value>Use Command "ASFEVERSION" / "AV" to check the plugin's latest version</value>
+    <value>Use Command "ABBVERSION" / "ABBV" to check the plugin's latest version</value>
   </data>
   <data name="ErrorLogAccess" xml:space="preserve">
     <value> - Access: {0}</value>
@@ -205,7 +205,7 @@
     <value> - Detail: {0}</value>
   </data>
   <data name="UpdateTips" xml:space="preserve">
-    <value>Use Command "ASFEUPDATE" / "AU" to update this plugin</value>
+    <value>Use Command "ABBUPDATE" / "ABBU" to update this plugin</value>
   </data>
   <data name="SubLink" xml:space="preserve">
     <value>   - Link: {0}</value>
