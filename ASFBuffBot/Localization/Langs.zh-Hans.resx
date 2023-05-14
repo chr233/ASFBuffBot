@@ -175,10 +175,10 @@
     <value>旧的插件备份清理失败</value>
   </data>
   <data name="ASFEUpdateTips" xml:space="preserve">
-    <value>使用命令 ASFEUPDATE / AU 自动更新插件</value>
+    <value>使用命令 ABBUPDATE / ABBU 自动更新插件</value>
   </data>
   <data name="ASFEVersionTips" xml:space="preserve">
-    <value>使用命令 ASFEVERSION / AV 检查插件更新</value>
+    <value>使用命令 ABBVERSION / ABBV 检查插件更新</value>
   </data>
   <data name="ErrorLogAccess" xml:space="preserve">
     <value> - Access: {0}</value>
@@ -205,7 +205,7 @@
     <value> - 描述: {0}</value>
   </data>
   <data name="UpdateTips" xml:space="preserve">
-    <value>可以使用命令 ASFEUPDATE / AU 自动更新插件</value>
+    <value>可以使用命令 ABBUPDATE / ABBU 自动更新插件</value>
   </data>
   <data name="SubLink" xml:space="preserve">
     <value>   - 链接: {0}</value>
@@ -270,17 +270,8 @@
   <data name="BuffCookiesValid" xml:space="preserve">
     <value>Cookies有效, Cookies信息保存{0}</value>
   </data>
-  <data name="BuffCookiesWarn" xml:space="preserve">
-    <value>BuffCookies未设置, 正确设置前插件将不会工作</value>
-  </data>
-  <data name="BuffCookiesWarn2" xml:space="preserve">
-    <value>可以使用命令 UPDATECOOKIES Cookies 自动为匹配机器人设置Buff Cookies</value>
-  </data>
   <data name="BuffDeliverCount" xml:space="preserve">
     <value>检测到共有 {0} 个Csgo订单, {1} 个Dota2订单等待发货</value>
-  </data>
-  <data name="BuffCookiesWarn3" xml:space="preserve">
-    <value>或者用命令 UPDATECOOKIESBOT Bot Cookies 为指定机器人设定Buff Cookies</value>
   </data>
   <data name="BuffDeliverItemCount" xml:space="preserve">
     <value>检测到共有 {0} 个物品等待发货</value>
@@ -347,9 +338,6 @@
   </data>
   <data name="CookiesValidButNoBotFound" xml:space="preserve">
     <value>Cookies有效, 但是找不到匹配的机器人, 添加失败</value>
-  </data>
-  <data name="BuffCookiesWarn4" xml:space="preserve">
-    <value>未设置Cookies的机器人将不会监听交易事件</value>
   </data>
   <data name="NoBotAvilable" xml:space="preserve">
     <value>找不到可用的机器人, 添加失败</value>

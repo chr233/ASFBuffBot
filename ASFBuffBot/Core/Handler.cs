@@ -1,6 +1,7 @@
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Security;
+using ASFBuffBot.Data;
 using System.Collections.Concurrent;
 
 namespace ASFBuffBot.Core;
@@ -8,6 +9,8 @@ namespace ASFBuffBot.Core;
 internal static class Handler
 {
     private static ConcurrentDictionary<string, ConcurrentDictionary<string, TradeOffer>> BotTradeCache { get; } = new();
+
+    private static ConcurrentDictionary<string, BotDeliverStatus> BotDeliverStatus { get; } = new();
 
     private static int CheckCount { get; set; }
 
@@ -26,29 +29,43 @@ internal static class Handler
             return;
         }
 
-        if (!Utils.BuffCookies.TryGetValue(bot.BotName, out string? cookies) || string.IsNullOrEmpty(cookies))
+        string name = bot.BotName;
+        //读取交易缓存
+        if (!BotTradeCache.TryGetValue(name, out var tradeCache) || !BotDeliverStatus.TryGetValue(name, out var status))
         {
-            Utils.Logger.LogGenericWarning(Langs.NoBuffCookiesSkip);
-            return;
-        }
-
-        if (!BotTradeCache.TryGetValue(bot.BotName, out var tradeCache))
-        {
-            tradeCache = new();
-            BotTradeCache[bot.BotName] = tradeCache;
-            Utils.Logger.LogGenericWarning(Langs.NoTradeCacheSkip);
-            return;
-        }
-
-        //验证Cookies
-        if (CheckCount++ >= CheckCountMax)
-        {
-            var valid = await WebRequest.CheckCookiesValid(bot).ConfigureAwait(false);
-            if (!valid)
+            InitTradeCache(bot);
+            if (!BotTradeCache.TryGetValue(name, out tradeCache) || !BotDeliverStatus.TryGetValue(name, out status))
             {
-                Utils.BuffCookies[bot.BotName] = null;
-                await Utils.SaveCookiesFile().ConfigureAwait(false);
+                Utils.Logger.LogGenericWarning(string.Format(Langs.NoTradeCacheSkip, bot.BotName));
+                return;
             }
+        }
+
+        //无交易信息, 跳过
+        if (!tradeCache.Any())
+        {
+            Utils.Logger.LogGenericInfo(string.Format(Langs.NoTradeCacheSkip, bot.BotName));
+        }
+
+        //验证Buff登录状态
+        if (CheckCount++ == 0)
+        {
+            var login = await WebRequest.CheckCookiesValid(bot).ConfigureAwait(false);
+            if (!login)
+            {
+                await WebRequest.LoginToBuffViaSteam(bot).ConfigureAwait(false);
+                login = await WebRequest.CheckCookiesValid(bot).ConfigureAwait(false);
+
+                if (!login)
+                {
+                    status.Message = "自动登录Buff失败, 将在下一轮检测中重试, 本轮检测跳过";
+                    return;
+                }
+            }
+            status.Message = "自动登录Buff成功";
+        }
+        else if (CheckCount >= CheckCountMax)
+        {
             CheckCount = 0;
         }
 
@@ -57,6 +74,7 @@ internal static class Handler
         if (notifResponse?.Code != "OK" || notifResponse?.Data?.ToDeliverOrder == null)
         {
             Utils.Logger.LogGenericWarning(string.Format(Langs.BotNotificationRequestFailedSkip, notifResponse?.Code));
+            status.Message = "获取Buff交易通知失败";
             return;
         }
 
@@ -65,7 +83,7 @@ internal static class Handler
 
         if (csgo + dota2 == 0)
         {
-            Utils.Logger.LogGenericDebug(Langs.NoItemToDeliver);
+            Utils.Logger.LogGenericInfo(Langs.NoItemToDeliver);
             return;
         }
         else
@@ -78,6 +96,7 @@ internal static class Handler
         if (tradeResponse?.Code != "OK" || tradeResponse?.Data == null)
         {
             Utils.Logger.LogGenericWarning(string.Format(Langs.BuffSteamTradeRequestFailed, tradeResponse?.Code));
+            status.Message = "获取Buff待发货订单失败";
             return;
         }
         else
@@ -121,18 +140,11 @@ internal static class Handler
                 if (accept)
                 {
                     Utils.Logger.LogGenericInfo(string.Format(Langs.TradeMatchAtuoAccept, tradeId));
-                }
-                else
-                {
-                    Utils.Logger.LogGenericWarning(string.Format(Langs.TradeDismatchAutoReject, tradeId));
-                }
-
-                if (accept)
-                {
                     var response = await WebRequest.AcceptTradeOffer(bot, tradeId).ConfigureAwait(false);
                     if (response == null)
                     {
                         Utils.Logger.LogGenericError(string.Format(Langs.ConfitmTradeFailed, tradeId));
+                        status.Message = "同意交易报价失败 (一般不要紧)";
                         continue;
                     }
                     else
@@ -149,6 +161,7 @@ internal static class Handler
                             if (success)
                             {
                                 BotTradeCache.TryRemove(tradeId, out _);
+                                status.DeliverAcceptCount++;
                             }
                             continue;
                         }
@@ -156,18 +169,19 @@ internal static class Handler
                         {
                             Utils.Logger.LogGenericInfo(string.Format(Langs.AcceptTradeSuccess, tradeId));
                             BotTradeCache.TryRemove(tradeId, out _);
+                            status.DeliverAcceptCount++;
                             continue;
                         }
-
                     }
-
-
                 }
                 else
                 {
+                    Utils.Logger.LogGenericWarning(string.Format(Langs.TradeDismatchAutoReject, tradeId));
+
                     var result = await WebRequest.DeclineTradeOffer(bot, tradeId).ConfigureAwait(false);
                     Utils.Logger.LogGenericWarning(string.Format(Langs.RejectTrade, result ? Langs.Success : Langs.Failure, tradeId));
                     BotTradeCache.TryRemove(tradeId, out _);
+                    status.DeliverRejectCount++;
                     continue;
                 }
             }
@@ -179,6 +193,11 @@ internal static class Handler
         }
     }
 
+    /// <summary>
+    /// 添加交易缓存
+    /// </summary>
+    /// <param name="bot"></param>
+    /// <param name="tradeOffer"></param>
     internal static void AddTradeCache(Bot bot, TradeOffer tradeOffer)
     {
         if (!BotTradeCache.TryGetValue(bot.BotName, out var tradeCache))
@@ -192,7 +211,6 @@ internal static class Handler
         }
 
         var tradeId = tradeOffer.TradeOfferID.ToString();
-
         bool hasTargetItem = tradeOffer.ItemsToGiveReadOnly.Any(x => x.AppID == 730 || x.AppID == 530);
 
         if (hasTargetItem)
@@ -209,27 +227,80 @@ internal static class Handler
         }
     }
 
+    /// <summary>
+    /// 初始化交易缓存
+    /// </summary>
+    /// <param name="bot"></param>
     internal static void InitTradeCache(Bot bot)
     {
-        if (!BotTradeCache.ContainsKey(bot.BotName))
+        var name = bot.BotName;
+        if (!BotTradeCache.TryAdd(name, new ConcurrentDictionary<string, TradeOffer>()) || !BotDeliverStatus.TryAdd(name, new BotDeliverStatus()))
         {
-            BotTradeCache[bot.BotName] = new ConcurrentDictionary<string, TradeOffer>();
+            Utils.Logger.LogGenericWarning(string.Format(Langs.TradeCacheAlreadyInit, name));
+        }
+    }
+
+    /// <summary>
+    /// 刷新交易缓存
+    /// </summary>
+    /// <param name="bot"></param>
+    internal static async Task FreshTradeCache(Bot bot)
+    {
+        var name = bot.BotName;
+        if (bot.IsConnectedAndLoggedOn && BotTradeCache.TryGetValue(name, out var tradeCache))
+        {
+            tradeCache.Clear();
+            var tradeOffers = await bot.ArchiWebHandler.GetTradeOffers(true, true, false, true).ConfigureAwait(false);
+            if (tradeOffers != null)
+            {
+                foreach (var tradeOffer in tradeOffers)
+                {
+                    var tradeId = tradeOffer.TradeOfferID.ToString();
+                    bool hasTargetItem = tradeOffer.ItemsToGiveReadOnly.Any(x => x.AppID == 730 || x.AppID == 530);
+
+                    if (hasTargetItem)
+                    {
+                        if (!tradeCache.TryAdd(tradeId, tradeOffer))
+                        {
+                            tradeCache[tradeId] = tradeOffer;
+                            Utils.Logger.LogGenericDebug(string.Format(Langs.UpdateTradeCache, tradeId));
+                        }
+                        else
+                        {
+                            Utils.Logger.LogGenericDebug(string.Format(Langs.ReceivedNewTradeCache, tradeId));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// 清空交易缓存
+    /// </summary>
+    /// <param name="bot"></param>
+    internal static void ClearTradeCache(Bot bot)
+    {
+        var name = bot.BotName;
+        if (BotTradeCache.TryGetValue(name, out var tradeCache) && BotDeliverStatus.TryGetValue(name, out var status))
+        {
+            tradeCache.Clear();
+            status.DeliverAcceptCount = 0;
+            status.DeliverRejectCount = 0;
+            status.Message = null;
         }
         else
         {
-            Utils.Logger.LogGenericWarning(string.Format(Langs.TradeCacheAlreadyInit, bot.BotName));
+            Utils.Logger.LogGenericWarning(string.Format(Langs.TradeCacheNotInitCantClear, name));
         }
     }
 
-    internal static void ClearTradeCache(Bot bot)
-    {
-        if (!BotTradeCache.TryRemove(bot.BotName, out _))
-        {
-            Utils.Logger.LogGenericWarning(string.Format(Langs.TradeCacheNotInitCantClear, bot.BotName));
-        }
-    }
-
-    internal static int TradeCacheCount(Bot bot)
+    /// <summary>
+    /// 获取交易缓存数量
+    /// </summary>
+    /// <param name="bot"></param>
+    /// <returns></returns>
+    internal static int GetTradeCacheCount(Bot bot)
     {
         if (BotTradeCache.TryGetValue(bot.BotName, out var tradeCache))
         {
@@ -238,6 +309,23 @@ internal static class Handler
         else
         {
             return -1;
+        }
+    }
+
+    /// <summary>
+    /// 获取机器人交易统计
+    /// </summary>
+    /// <param name="bot"></param>
+    /// <returns></returns>
+    internal static BotDeliverStatus? GetBotStatus(Bot bot)
+    {
+        if (BotDeliverStatus.TryGetValue(bot.BotName, out var status))
+        {
+            return status;
+        }
+        else
+        {
+            return null;
         }
     }
 }

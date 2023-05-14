@@ -18,7 +18,7 @@ internal static class Utils
     /// <summary>
     /// BuffCookies
     /// </summary>
-    internal static CookiesStorage BuffCookies { get; private set; } = new();
+    internal static BuffBotStorage BuffBots { get; private set; } = new();
 
     /// <summary>
     /// 更新已就绪
@@ -70,10 +70,10 @@ internal static class Utils
     /// 获取Cookies文件路径
     /// </summary>
     /// <returns></returns>
-    internal static string GetCookiesFilePath()
+    internal static string GetFilePath()
     {
         string pluginFolder = Path.GetDirectoryName(MyLocation) ?? ".";
-        string cookieFilePath = Path.Combine(pluginFolder, "BuffCookies.json");
+        string cookieFilePath = Path.Combine(pluginFolder, "BuffBots.json");
         return cookieFilePath;
     }
 
@@ -81,20 +81,20 @@ internal static class Utils
     /// 读取Cookies
     /// </summary>
     /// <returns></returns>
-    internal static async Task<bool> LoadCookiesFile()
+    internal static async Task<bool> LoadFile()
     {
         try
         {
-            string cookieFilePath = GetCookiesFilePath();
+            string cookieFilePath = GetFilePath();
             using var fs = File.Open(cookieFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
             using var sr = new StreamReader(fs);
             string? raw = await sr.ReadLineAsync().ConfigureAwait(false);
             if (!string.IsNullOrEmpty(raw))
             {
-                var json = JsonConvert.DeserializeObject<CookiesStorage>(raw);
+                var json = JsonConvert.DeserializeObject<BuffBotStorage>(raw);
                 if (json != null)
                 {
-                    BuffCookies = json;
+                    BuffBots = json;
                     return true;
                 }
             }
@@ -111,14 +111,14 @@ internal static class Utils
     /// 写入Cookies
     /// </summary>
     /// <returns></returns>
-    internal static async Task<bool> SaveCookiesFile()
+    internal static async Task<bool> SaveFile()
     {
         try
         {
-            string cookieFilePath = GetCookiesFilePath();
+            string cookieFilePath = GetFilePath();
             using var fs = File.Open(cookieFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
             using var sw = new StreamWriter(fs);
-            string json = JsonConvert.SerializeObject(BuffCookies);
+            string json = JsonConvert.SerializeObject(BuffBots);
             await sw.WriteAsync(json).ConfigureAwait(false);
             return true;
         }
@@ -148,6 +148,12 @@ internal static class Utils
     /// Steam社区链接
     /// </summary>
     internal static Uri SteamCommunityURL => ArchiWebHandler.SteamCommunityURL;
+
+    /// <summary>
+    /// Buff链接
+    /// </summary>
+    internal static Uri BuffUrl => new("https://buff.163.com/");
+
 
     /// <summary>
     /// 日志

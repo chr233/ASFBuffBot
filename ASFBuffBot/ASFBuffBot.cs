@@ -2,10 +2,10 @@ using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
-using ArchiSteamFarm.Steam.Exchange;
 using ASFBuffBot.Data;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SteamKit2;
 using System.ComponentModel;
 using System.Composition;
 using System.Text;
@@ -13,7 +13,7 @@ using System.Text;
 namespace ASFBuffBot;
 
 [Export(typeof(IPlugin))]
-internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTradeOffer, IBotTradeOfferResults
+internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTradeOffer
 {
     public string Name => nameof(ASFBuffBot);
     public Version Version => Utils.MyVersion;
@@ -63,7 +63,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
         //统计
         if (Config.Statistic)
         {
-            Uri request = new("https://asfe.chrxw.com/");
+            var request = new Uri("https://asfe.chrxw.com/asfbuffbot");
             StatisticTimer = new Timer(
                 async (_) =>
                 {
@@ -88,6 +88,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
             }
         }
 
+        //每轮检测间隔
         if (Config.BuffCheckInterval < 30)
         {
             Config.BuffCheckInterval = 30;
@@ -96,6 +97,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
             warning.AppendLine(Static.Line);
         }
 
+        //每个机器人检测间隔
         if (Config.BotInterval < 5)
         {
             Config.BotInterval = 5;
@@ -104,14 +106,12 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
             warning.AppendLine(Static.Line);
         }
 
-        var succ = await Utils.LoadCookiesFile().ConfigureAwait(false);
-        if (!succ || Utils.BuffCookies.Count == 0)
+        var succ = await Utils.LoadFile().ConfigureAwait(false);
+        if (!succ || Utils.BuffBots.Count == 0)
         {
             warning.AppendLine(Static.Line);
-            warning.AppendLine(Langs.BuffCookiesWarn);
-            warning.AppendLine(Langs.BuffCookiesWarn2);
-            warning.AppendLine(Langs.BuffCookiesWarn3);
-            warning.AppendLine(Langs.BuffCookiesWarn4);
+            warning.AppendLine(Langs.BuffBotNotSetWarn1);
+            warning.AppendLine(Langs.BuffBotNotSetWarn2);
             warning.AppendLine(Static.Line);
         }
 
@@ -134,7 +134,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
                {
                    foreach (var (_, bot) in bots)
                    {
-                       if (Utils.BuffCookies.ContainsKey(bot.BotName))
+                       if (Utils.BuffBots.Contains(bot.BotName) && bot.IsConnectedAndLoggedOn)
                        {
                            await Core.Handler.CheckDeliver(bot).ConfigureAwait(false);
                            await Task.Delay(TimeSpan.FromSeconds(Utils.Config.BotInterval)).ConfigureAwait(false);
@@ -145,7 +145,23 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
            null,
            TimeSpan.FromSeconds(30),
            TimeSpan.FromSeconds(Config.BuffCheckInterval)
-       );
+        );
+
+        Utils.Logger.LogGenericInfo(Langs.BuffCheckWillStartIn30);
+
+        //注册Buff Service
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await Task.Delay(1000).ConfigureAwait(false);
+                await Core.ReflectionHelper.AddBuffService().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Utils.Logger.LogGenericException(ex, Langs.RegisterBuffServiceFailed);
+            }
+        });
     }
 
     /// <summary>
@@ -198,10 +214,9 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
     /// <param name="access"></param>
     /// <param name="message"></param>
     /// <param name="args"></param>
-    /// <param name="steamId"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
-    private static async Task<string?> ResponseCommand(Bot bot, EAccess access, string message, string[] args)
+    private static async Task<string?> ResponseCommand(Bot bot, EAccess access, string[] args)
     {
         string cmd = args[0].ToUpperInvariant();
 
@@ -228,16 +243,17 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
                 switch (cmd)
                 {
                     //Core
-                    case "VALIDCOOKIES" when access >= EAccess.Master:
-                    case "VC" when access >= EAccess.Master:
-                        return await Core.Command.ResponseValidCoolies(bot).ConfigureAwait(false);
+                    case "ENABLEBUFF" when access >= EAccess.Master:
+                    case "EB" when access >= EAccess.Master:
+                        return await Core.Command.ResponseEnableBuffBot(bot).ConfigureAwait(false);
 
-                    case "DELETECOOKIES" when access >= EAccess.Master:
-                    case "DC" when access >= EAccess.Master:
-                        return await Core.Command.ResponseDeleteCoolies(bot).ConfigureAwait(false);
+                    case "DISABLEBUFF" when access >= EAccess.Master:
+                    case "DB" when access >= EAccess.Master:
+                        return await Core.Command.ResponseDisableBuffBot(bot).ConfigureAwait(false);
 
-                    case "COOKIESSTATUS" when access >= EAccess.Master:
-                    case "CS" when access >= EAccess.Master:
+
+                    case "BUFFSTATUS" when access >= EAccess.Master:
+                    case "BS" when access >= EAccess.Master:
                         return await Core.Command.ResponseBotStatus(bot).ConfigureAwait(false);
 
                     //Update
@@ -260,25 +276,17 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
                 switch (cmd)
                 {
                     //Core
-                    case "VALIDCOOKIES" when access >= EAccess.Master:
-                    case "VC" when access >= EAccess.Master:
-                        return await Core.Command.ResponseValidCoolies(Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
+                    case "ENABLEBUFF" when access >= EAccess.Master:
+                    case "EB" when access >= EAccess.Master:
+                        return await Core.Command.ResponseEnableBuffBot(Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 
-                    case "DELETECOOKIES" when access >= EAccess.Master:
-                    case "DC" when access >= EAccess.Master:
-                        return await Core.Command.ResponseDeleteCoolies(Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
+                    case "DISABLEBUFF" when access >= EAccess.Master:
+                    case "DB" when access >= EAccess.Master:
+                        return await Core.Command.ResponseDisableBuffBot(Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 
-                    case "COOKIESSTATUS" when access >= EAccess.Master:
-                    case "CS" when access >= EAccess.Master:
+                    case "BUFFSTATUS" when access >= EAccess.Master:
+                    case "BS" when access >= EAccess.Master:
                         return await Core.Command.ResponseBotStatus(Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
-
-                    case "UPDATECOOKIES" when access >= EAccess.Master:
-                    case "UC" when access >= EAccess.Master:
-                        return await Core.Command.ResponseUpdateCoolies(Utilities.GetArgsAsText(message, 1)).ConfigureAwait(false);
-
-                    case "UPDATECOOKIESBOT" when argLength >= 3 && access >= EAccess.Master:
-                    case "UCB" when argLength >= 3 && access >= EAccess.Master:
-                        return await Core.Command.ResponseUpdateCoolies(args[1], Utilities.GetArgsAsText(message, 2)).ConfigureAwait(false);
 
                     default:
                         return null;
@@ -306,7 +314,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
 
         try
         {
-            return await ResponseCommand(bot, access, message, args).ConfigureAwait(false);
+            return await ResponseCommand(bot, access, args).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
@@ -351,7 +359,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
     /// <returns></returns>
     public Task<bool> OnBotTradeOffer(Bot bot, TradeOffer tradeOffer)
     {
-        if (Utils.BuffCookies.ContainsKey(bot.BotName))
+        if (Utils.BuffBots.Contains(bot.BotName))
         {
             Core.Handler.AddTradeCache(bot, tradeOffer);
         }
@@ -359,30 +367,30 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
     }
 
     /// <summary>
-    /// 报价完成
+    /// Steam上线
     /// </summary>
     /// <param name="bot"></param>
-    /// <param name="tradeResults"></param>
     /// <returns></returns>
-    public Task OnBotTradeOfferResults(Bot bot, IReadOnlyCollection<ParseTradeResult> tradeResults)
+    public Task OnBotLoggedOn(Bot bot)
     {
-        return Task.CompletedTask;
-    }
-
-    public Task OnBotDisconnected(Bot bot, SteamKit2.EResult reason)
-    {
-        if (Utils.BuffCookies.ContainsKey(bot.BotName))
+        if (Utils.BuffBots.Contains(bot.BotName))
         {
-            Core.Handler.ClearTradeCache(bot);
+            Core.Handler.InitTradeCache(bot);
         }
         return Task.CompletedTask;
     }
 
-    public Task OnBotLoggedOn(Bot bot)
+    /// <summary>
+    /// Steam离线
+    /// </summary>
+    /// <param name="bot"></param>
+    /// <param name="reason"></param>
+    /// <returns></returns>
+    public Task OnBotDisconnected(Bot bot, EResult reason)
     {
-        if (Utils.BuffCookies.ContainsKey(bot.BotName))
+        if (Utils.BuffBots.Contains(bot.BotName))
         {
-            Core.Handler.InitTradeCache(bot);
+            Core.Handler.ClearTradeCache(bot);
         }
         return Task.CompletedTask;
     }

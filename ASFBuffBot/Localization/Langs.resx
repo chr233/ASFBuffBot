@@ -175,10 +175,10 @@
     <value>旧的插件备份清理失败</value>
   </data>
   <data name="ASFEVersionTips" xml:space="preserve">
-    <value>使用命令 ASFEVERSION / AV 检查插件更新</value>
+    <value>使用命令 ABBVERSION / ABBV 检查插件更新</value>
   </data>
   <data name="ASFEUpdateTips" xml:space="preserve">
-    <value>使用命令 ASFEUPDATE / AU 自动更新插件</value>
+    <value>使用命令 ABBUPDATE / ABBU 自动更新插件</value>
   </data>
   <data name="ErrorLogTitle" xml:space="preserve">
     <value>ASFBuffBot 遇到错误, 日志如下</value>
@@ -205,7 +205,7 @@
     <value> - 描述: {0}</value>
   </data>
   <data name="UpdateTips" xml:space="preserve">
-    <value>可以使用命令 ASFEUPDATE / AU 自动更新插件</value>
+    <value>可以使用命令 ABBUPDATE / ABBU 自动更新插件</value>
   </data>
   <data name="SubLink" xml:space="preserve">
     <value>   - 链接: {0}</value>
@@ -325,19 +325,10 @@
     <value>未设置Cookies</value>
   </data>
   <data name="BuffCheckIntervalWarn" xml:space="preserve">
-    <value>BuffCheckInterval值过小, 容易被Buff封禁, 推荐设定为180或者更大的值</value>
+    <value>BuffCheckInterval值过小, 推荐设定为180或者更大的值</value>
   </data>
   <data name="BotIntervalWarn" xml:space="preserve">
-    <value>BotInterval值过小, 容易被Buff封禁, 推荐设定为30或者更大的值</value>
-  </data>
-  <data name="BuffCookiesWarn" xml:space="preserve">
-    <value>BuffCookies未设置, 正确设置前插件将不会工作</value>
-  </data>
-  <data name="BuffCookiesWarn3" xml:space="preserve">
-    <value>或者用命令 UPDATECOOKIESBOT Bot Cookies 为指定机器人设定Buff Cookies</value>
-  </data>
-  <data name="BuffCookiesWarn2" xml:space="preserve">
-    <value>可以使用命令 UPDATECOOKIES Cookies 自动为匹配机器人设置Buff Cookies</value>
+    <value>BotInterval值过小, 推荐设定为30或者更大的值</value>
   </data>
   <data name="WriteCookiesFailed" xml:space="preserve">
     <value>写入Cookies文件出错</value>
@@ -350,9 +341,6 @@
   </data>
   <data name="NoBotAvilable" xml:space="preserve">
     <value>找不到可用的机器人, 添加失败</value>
-  </data>
-  <data name="BuffCookiesWarn4" xml:space="preserve">
-    <value>未设置Cookies的机器人将不会监听交易事件</value>
   </data>
   <data name="DeleteCookiesSuccess" xml:space="preserve">
     <value>删除Buff Cookies成功</value>
@@ -380,5 +368,59 @@
   </data>
   <data name="TradeCacheNotInitCantClear" xml:space="preserve">
     <value>{0} 未初始化缓存, 无法清空交易缓存</value>
+  </data>
+  <data name="BuffBotNotSetWarn1" xml:space="preserve">
+    <value>未设置启用自动发货的机器人, 插件将不会工作</value>
+  </data>
+  <data name="BuffBotNotSetWarn2" xml:space="preserve">
+    <value>使用命令 ENABLEBUFF [Bots] 来为机器人启用自动发货</value>
+  </data>
+  <data name="BuffCheckWillStartIn30" xml:space="preserve">
+    <value>插件初始化完成, 第一次Buff发货检测将于30秒后进行</value>
+  </data>
+  <data name="RegisterBuffServiceFailed" xml:space="preserve">
+    <value>注册Buff Service失败</value>
+  </data>
+  <data name="AlreadyEnabledBuff" xml:space="preserve">
+    <value>已经开启自动发货功能</value>
+  </data>
+  <data name="Need2FaToEnableBuff" xml:space="preserve">
+    <value>机器人尚未启用2FA验证, 无法开启自动发货功能</value>
+  </data>
+  <data name="EnableBuffSuccess" xml:space="preserve">
+    <value>登录Buff成功, 开启自动发货功能</value>
+  </data>
+  <data name="EnableBuffFailed" xml:space="preserve">
+    <value>登录Buff失败, 可能该账号 {0} 未注册Buff账号</value>
+  </data>
+  <data name="NotEnabledBuff" xml:space="preserve">
+    <value>尚未开启自动发货功能</value>
+  </data>
+  <data name="DisableBuffSuccess" xml:space="preserve">
+    <value>关闭自动发货功能成功, 自动清空交易缓存和交易统计</value>
+  </data>
+  <data name="BuffStatus" xml:space="preserve">
+    <value>Buff登录 {0}, 交易缓存数 {1}, 自动发货接受/拒绝交易数 {2}/{3}, 信息 {4}</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>无</value>
+  </data>
+  <data name="InternalError" xml:space="preserve">
+    <value>插件内部数据错误</value>
+  </data>
+  <data name="AutoLoginFailedRetryNextTime" xml:space="preserve">
+    <value>自动登录Buff失败, 将在下一轮检测中重试, 本轮检测跳过</value>
+  </data>
+  <data name="AutoLoginSuccess" xml:space="preserve">
+    <value>自动登录Buff成功</value>
+  </data>
+  <data name="FetchBuffNotificationFailed" xml:space="preserve">
+    <value>获取Buff交易通知失败</value>
+  </data>
+  <data name="FetchBuffDeliverFailed" xml:space="preserve">
+    <value>获取Buff待发货订单失败</value>
+  </data>
+  <data name="ConfirmTradeFailed" xml:space="preserve">
+    <value>同意交易报价失败 (一般不要紧)</value>
   </data>
 </root>

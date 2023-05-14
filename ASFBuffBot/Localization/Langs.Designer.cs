@@ -79,6 +79,15 @@ namespace ASFBuffBot.Localization {
         }
         
         /// <summary>
+        ///   查找类似 已经开启自动发货功能 的本地化字符串。
+        /// </summary>
+        internal static string AlreadyEnabledBuff {
+            get {
+                return ResourceManager.GetString("AlreadyEnabledBuff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 当前已经是最新版本, 无需更新插件 的本地化字符串。
         /// </summary>
         internal static string AlreadyLatest {
@@ -124,7 +133,7 @@ namespace ASFBuffBot.Localization {
         }
         
         /// <summary>
-        ///   查找类似 使用命令 ASFEUPDATE / AU 自动更新插件 的本地化字符串。
+        ///   查找类似 使用命令 ABBUPDATE / ABBU 自动更新插件 的本地化字符串。
         /// </summary>
         internal static string ASFEUpdateTips {
             get {
@@ -133,7 +142,7 @@ namespace ASFBuffBot.Localization {
         }
         
         /// <summary>
-        ///   查找类似 使用命令 ASFEVERSION / AV 检查插件更新 的本地化字符串。
+        ///   查找类似 使用命令 ABBVERSION / ABBV 检查插件更新 的本地化字符串。
         /// </summary>
         internal static string ASFEVersionTips {
             get {
@@ -151,7 +160,25 @@ namespace ASFBuffBot.Localization {
         }
         
         /// <summary>
-        ///   查找类似 BotInterval值过小, 容易被Buff封禁, 推荐设定为30或者更大的值 的本地化字符串。
+        ///   查找类似 自动登录Buff失败, 将在下一轮检测中重试, 本轮检测跳过 的本地化字符串。
+        /// </summary>
+        internal static string AutoLoginFailedRetryNextTime {
+            get {
+                return ResourceManager.GetString("AutoLoginFailedRetryNextTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 自动登录Buff成功 的本地化字符串。
+        /// </summary>
+        internal static string AutoLoginSuccess {
+            get {
+                return ResourceManager.GetString("AutoLoginSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 BotInterval值过小, 推荐设定为30或者更大的值 的本地化字符串。
         /// </summary>
         internal static string BotIntervalWarn {
             get {
@@ -169,11 +196,38 @@ namespace ASFBuffBot.Localization {
         }
         
         /// <summary>
-        ///   查找类似 BuffCheckInterval值过小, 容易被Buff封禁, 推荐设定为180或者更大的值 的本地化字符串。
+        ///   查找类似 未设置启用自动发货的机器人, 插件将不会工作 的本地化字符串。
+        /// </summary>
+        internal static string BuffBotNotSetWarn1 {
+            get {
+                return ResourceManager.GetString("BuffBotNotSetWarn1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 使用命令 ENABLEBUFF [Bots] 来为机器人启用自动发货 的本地化字符串。
+        /// </summary>
+        internal static string BuffBotNotSetWarn2 {
+            get {
+                return ResourceManager.GetString("BuffBotNotSetWarn2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 BuffCheckInterval值过小, 推荐设定为180或者更大的值 的本地化字符串。
         /// </summary>
         internal static string BuffCheckIntervalWarn {
             get {
                 return ResourceManager.GetString("BuffCheckIntervalWarn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 插件初始化完成, 第一次Buff发货检测将于30秒后进行 的本地化字符串。
+        /// </summary>
+        internal static string BuffCheckWillStartIn30 {
+            get {
+                return ResourceManager.GetString("BuffCheckWillStartIn30", resourceCulture);
             }
         }
         
@@ -196,42 +250,6 @@ namespace ASFBuffBot.Localization {
         }
         
         /// <summary>
-        ///   查找类似 BuffCookies未设置, 正确设置前插件将不会工作 的本地化字符串。
-        /// </summary>
-        internal static string BuffCookiesWarn {
-            get {
-                return ResourceManager.GetString("BuffCookiesWarn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 可以使用命令 UPDATECOOKIES Cookies 自动为匹配机器人设置Buff Cookies 的本地化字符串。
-        /// </summary>
-        internal static string BuffCookiesWarn2 {
-            get {
-                return ResourceManager.GetString("BuffCookiesWarn2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 或者用命令 UPDATECOOKIESBOT Bot Cookies 为指定机器人设定Buff Cookies 的本地化字符串。
-        /// </summary>
-        internal static string BuffCookiesWarn3 {
-            get {
-                return ResourceManager.GetString("BuffCookiesWarn3", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 未设置Cookies的机器人将不会监听交易事件 的本地化字符串。
-        /// </summary>
-        internal static string BuffCookiesWarn4 {
-            get {
-                return ResourceManager.GetString("BuffCookiesWarn4", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   查找类似 检测到共有 {0} 个Csgo订单, {1} 个Dota2订单等待发货 的本地化字符串。
         /// </summary>
         internal static string BuffDeliverCount {
@@ -246,6 +264,15 @@ namespace ASFBuffBot.Localization {
         internal static string BuffDeliverItemCount {
             get {
                 return ResourceManager.GetString("BuffDeliverItemCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Buff登录 {0}, 交易缓存数 {1}, 自动发货接受/拒绝交易数 {2}/{3}, 信息 {4} 的本地化字符串。
+        /// </summary>
+        internal static string BuffStatus {
+            get {
+                return ResourceManager.GetString("BuffStatus", resourceCulture);
             }
         }
         
@@ -282,6 +309,15 @@ namespace ASFBuffBot.Localization {
         internal static string CleanUpOldBackupFailed {
             get {
                 return ResourceManager.GetString("CleanUpOldBackupFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 同意交易报价失败 (一般不要紧) 的本地化字符串。
+        /// </summary>
+        internal static string ConfirmTradeFailed {
+            get {
+                return ResourceManager.GetString("ConfirmTradeFailed", resourceCulture);
             }
         }
         
@@ -385,6 +421,15 @@ namespace ASFBuffBot.Localization {
         }
         
         /// <summary>
+        ///   查找类似 关闭自动发货功能成功, 自动清空交易缓存和交易统计 的本地化字符串。
+        /// </summary>
+        internal static string DisableBuffSuccess {
+            get {
+                return ResourceManager.GetString("DisableBuffSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 完成 的本地化字符串。
         /// </summary>
         internal static string Done {
@@ -399,6 +444,24 @@ namespace ASFBuffBot.Localization {
         internal static string DownloadFailed {
             get {
                 return ResourceManager.GetString("DownloadFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 登录Buff失败, 可能该账号 {0} 未注册Buff账号 的本地化字符串。
+        /// </summary>
+        internal static string EnableBuffFailed {
+            get {
+                return ResourceManager.GetString("EnableBuffFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 登录Buff成功, 开启自动发货功能 的本地化字符串。
+        /// </summary>
+        internal static string EnableBuffSuccess {
+            get {
+                return ResourceManager.GetString("EnableBuffSuccess", resourceCulture);
             }
         }
         
@@ -484,11 +547,38 @@ namespace ASFBuffBot.Localization {
         }
         
         /// <summary>
+        ///   查找类似 获取Buff待发货订单失败 的本地化字符串。
+        /// </summary>
+        internal static string FetchBuffDeliverFailed {
+            get {
+                return ResourceManager.GetString("FetchBuffDeliverFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 获取Buff交易通知失败 的本地化字符串。
+        /// </summary>
+        internal static string FetchBuffNotificationFailed {
+            get {
+                return ResourceManager.GetString("FetchBuffNotificationFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 读取插件发行版信息失败! 的本地化字符串。
         /// </summary>
         internal static string GetReleaseInfoFailed {
             get {
                 return ResourceManager.GetString("GetReleaseInfoFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 插件内部数据错误 的本地化字符串。
+        /// </summary>
+        internal static string InternalError {
+            get {
+                return ResourceManager.GetString("InternalError", resourceCulture);
             }
         }
         
@@ -525,6 +615,15 @@ namespace ASFBuffBot.Localization {
         internal static string MultipleLineResult {
             get {
                 return ResourceManager.GetString("MultipleLineResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 机器人尚未启用2FA验证, 无法开启自动发货功能 的本地化字符串。
+        /// </summary>
+        internal static string Need2FaToEnableBuff {
+            get {
+                return ResourceManager.GetString("Need2FaToEnableBuff", resourceCulture);
             }
         }
         
@@ -601,6 +700,24 @@ namespace ASFBuffBot.Localization {
         }
         
         /// <summary>
+        ///   查找类似 无 的本地化字符串。
+        /// </summary>
+        internal static string None {
+            get {
+                return ResourceManager.GetString("None", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 尚未开启自动发货功能 的本地化字符串。
+        /// </summary>
+        internal static string NotEnabledBuff {
+            get {
+                return ResourceManager.GetString("NotEnabledBuff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 无Trade缓存信息, 跳过执行 的本地化字符串。
         /// </summary>
         internal static string NoTradeCacheSkip {
@@ -651,6 +768,15 @@ namespace ASFBuffBot.Localization {
         internal static string ReceivedNewTradeCache {
             get {
                 return ResourceManager.GetString("ReceivedNewTradeCache", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 注册Buff Service失败 的本地化字符串。
+        /// </summary>
+        internal static string RegisterBuffServiceFailed {
+            get {
+                return ResourceManager.GetString("RegisterBuffServiceFailed", resourceCulture);
             }
         }
         
@@ -817,7 +943,7 @@ namespace ASFBuffBot.Localization {
         }
         
         /// <summary>
-        ///   查找类似 可以使用命令 ASFEUPDATE / AU 自动更新插件 的本地化字符串。
+        ///   查找类似 可以使用命令 ABBUPDATE / ABBU 自动更新插件 的本地化字符串。
         /// </summary>
         internal static string UpdateTips {
             get {
