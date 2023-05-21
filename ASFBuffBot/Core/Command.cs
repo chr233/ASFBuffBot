@@ -24,6 +24,11 @@ internal static partial class Command
             return bot.FormatBotResponse(Langs.Need2FaToEnableBuff);
         }
 
+        if (!bot.IsConnectedAndLoggedOn)
+        {
+            return bot.FormatBotResponse(Strings.BotNotConnected);
+        }
+
         await WebRequest.LoginToBuffViaSteam(bot).ConfigureAwait(false);
 
         bool login = await WebRequest.CheckCookiesValid(bot).ConfigureAwait(false);
