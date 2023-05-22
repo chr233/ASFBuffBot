@@ -125,7 +125,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
         BuffTimer = new Timer(
            Core.Handler.OnBuffTimer,
            null,
-           TimeSpan.FromSeconds(10),
+           TimeSpan.FromSeconds(30),
            TimeSpan.FromSeconds(Config.BuffCheckInterval)
         );
 
