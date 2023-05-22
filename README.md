@@ -38,11 +38,12 @@ ASFBuffBot 介绍 & 使用指南: [https://keylol.com/t887696-1-1](https://keylo
 
 ### 更新日志
 
-| ASFBuffBot 版本                                                      | 适配 ASF 版本 | 更新说明               |
-| -------------------------------------------------------------------- | :-----------: | ---------------------- |
-| [1.0.5.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.8.0) |    5.4.5.2    | 支持自动登录Buff, bug 修复   |
-| [1.0.4.1](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.4.1) |    5.4.5.2    | 支持多账号, bug 修复   |
-| [1.0.0.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.0.0) |    5.4.4.5    | 第一个版本, 单账号模式 |
+| ASFBuffBot 版本                                                      | 适配 ASF 版本 | 更新说明                    |
+| -------------------------------------------------------------------- | :-----------: | --------------------------- |
+| [1.0.6.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.6.0) |    5.4.5.2    | bug 修复                    |
+| [1.0.5.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.5.0) |    5.4.5.2    | 支持自动登录 Buff, bug 修复 |
+| [1.0.4.1](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.4.1) |    5.4.5.2    | 支持多账号, bug 修复        |
+| [1.0.0.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.0.0) |    5.4.4.5    | 第一个版本, 单账号模式      |
 
 ## 插件配置说明
 
