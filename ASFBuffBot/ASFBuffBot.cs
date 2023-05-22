@@ -21,9 +21,9 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
     [JsonProperty]
     public static PluginConfig Config => Utils.Config;
 
-    private static Timer? BuffTimer;
+    private Timer? BuffTimer;
 
-    private static Timer? StatisticTimer;
+    private Timer? StatisticTimer;
 
     /// <summary>
     /// ASF启动事件
