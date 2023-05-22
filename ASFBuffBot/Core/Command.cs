@@ -4,7 +4,7 @@ using ArchiSteamFarm.Steam;
 
 namespace ASFBuffBot.Core;
 
-internal static partial class Command
+internal static class Command
 {
     /// <summary>
     /// 启用自动发货功能
