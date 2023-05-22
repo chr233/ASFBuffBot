@@ -41,4 +41,15 @@ internal static class WebRequest
         BinaryResponse? response = await ASF.WebBrowser!.UrlGetToBinary(request).ConfigureAwait(false);
         return response;
     }
+
+    /// <summary>
+    /// 统计使用率
+    /// </summary>
+    /// <param name="_"></param>
+    internal static async void OnStatisticTimer(object? _ = null)
+    {
+        var version = Utils.MyVersion.ToString();
+        var request = new Uri($"https://asfe.chrxw.com/asfbuffbot/{version}");
+        await ASF.WebBrowser!.UrlGetToHtmlDocument(request).ConfigureAwait(false);
+    }
 }

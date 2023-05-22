@@ -63,12 +63,8 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
         //统计
         if (Config.Statistic)
         {
-            var request = new Uri("https://asfe.chrxw.com/asfbuffbot");
             StatisticTimer = new Timer(
-                async (_) =>
-                {
-                    await ASF.WebBrowser!.UrlGetToHtmlDocument(request).ConfigureAwait(false);
-                },
+                Update.WebRequest.OnStatisticTimer,
                 null,
                 TimeSpan.FromSeconds(30),
                 TimeSpan.FromHours(24)
@@ -127,23 +123,9 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
         }
 
         BuffTimer = new Timer(
-           async (_) =>
-           {
-               var bots = Bot.BotsReadOnly;
-               if (bots != null)
-               {
-                   foreach (var (_, bot) in bots)
-                   {
-                       if (Utils.BuffBots.Contains(bot.BotName) && bot.IsConnectedAndLoggedOn)
-                       {
-                           await Core.Handler.CheckDeliver(bot).ConfigureAwait(false);
-                           await Task.Delay(TimeSpan.FromSeconds(Utils.Config.BotInterval)).ConfigureAwait(false);
-                       }
-                   }
-               }
-           },
+           Core.Handler.OnBuffTimer,
            null,
-           TimeSpan.FromSeconds(30),
+           TimeSpan.FromSeconds(10),
            TimeSpan.FromSeconds(Config.BuffCheckInterval)
         );
 

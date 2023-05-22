@@ -16,17 +16,55 @@ internal static class Handler
 
     private const int CheckCountMax = 20;
 
+    internal static async void OnBuffTimer(object? _ = null)
+    {
+
+        var bots = Bot.BotsReadOnly;
+        if (bots != null)
+        {
+            foreach (var (_, bot) in bots)
+            {
+                if (Utils.BuffBots.Contains(bot.BotName))
+                {
+                    try
+                    {
+                        Utils.Logger.LogGenericInfo(string.Format("开始为 {0} 检查发货信息", bot.BotName));
+
+                        bool delay = await CheckDeliver(bot).ConfigureAwait(false);
+
+                        Utils.Logger.LogGenericInfo(string.Format("发货检查结束", bot.BotName));
+
+                        if (delay)
+                        {
+                            await Task.Delay(TimeSpan.FromSeconds(Utils.Config.BotInterval)).ConfigureAwait(false);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Utils.Logger.LogGenericException(ex, "检查发货遇到错误");
+                    }
+                }
+            }
+        }
+    }
+
     /// <summary>
     /// 读取Buff发货详情
     /// </summary>
     /// <param name="bot"></param>
     /// <returns></returns>
-    internal static async Task CheckDeliver(Bot bot)
+    internal static async Task<bool> CheckDeliver(Bot bot)
     {
+        if (!bot.IsConnectedAndLoggedOn)
+        {
+            Utils.Logger.LogGenericInfo("当前机器人未登录, 跳过执行");
+            return false;
+        }
+
         if (!bot.HasMobileAuthenticator)
         {
             Utils.Logger.LogGenericWarning(Langs.No2FaSetSkip);
-            return;
+            return false;
         }
 
         string name = bot.BotName;
@@ -37,7 +75,7 @@ internal static class Handler
             if (!BotTradeCache.TryGetValue(name, out tradeCache) || !BotDeliverStatus.TryGetValue(name, out status))
             {
                 Utils.Logger.LogGenericWarning(string.Format(Langs.NoTradeCacheSkip, bot.BotName));
-                return;
+                return false;
             }
         }
 
@@ -58,11 +96,11 @@ internal static class Handler
 
                 if (!login)
                 {
-                    status.Message = "自动登录Buff失败, 将在下一轮检测中重试, 本轮检测跳过";
-                    return;
+                    status.Message = Langs.AutoLoginFailedRetryNextTime;
+                    return true;
                 }
             }
-            status.Message = "自动登录Buff成功";
+            status.Message = Langs.AutoLoginSuccess;
         }
         else if (CheckCount >= CheckCountMax)
         {
@@ -74,8 +112,8 @@ internal static class Handler
         if (notifResponse?.Code != "OK" || notifResponse?.Data?.ToDeliverOrder == null)
         {
             Utils.Logger.LogGenericWarning(string.Format(Langs.BotNotificationRequestFailedSkip, notifResponse?.Code));
-            status.Message = "获取Buff交易通知失败";
-            return;
+            status.Message = Langs.FetchBuffNotificationFailed;
+            return true;
         }
 
         int csgo = notifResponse.Data.ToDeliverOrder.Csgo;
@@ -84,7 +122,7 @@ internal static class Handler
         if (csgo + dota2 == 0)
         {
             Utils.Logger.LogGenericInfo(Langs.NoItemToDeliver);
-            return;
+            return true;
         }
         else
         {
@@ -96,15 +134,18 @@ internal static class Handler
         if (tradeResponse?.Code != "OK" || tradeResponse?.Data == null)
         {
             Utils.Logger.LogGenericWarning(string.Format(Langs.BuffSteamTradeRequestFailed, tradeResponse?.Code));
-            status.Message = "获取Buff待发货订单失败";
-            return;
+            status.Message = Langs.FetchBuffDeliverFailed;
+            return true;
         }
         else
         {
-            int totalItems = tradeResponse.Data.Select(x => x.ItemsToTrade.Count).Sum();
+            int totalItems = 0;
+            foreach (var item in tradeResponse.Data)
+            {
+                totalItems += item.ItemsToTrade.Count;
+            }
             Utils.Logger.LogGenericInfo(string.Format(Langs.BuffDeliverItemCount, totalItems));
         }
-
 
         foreach (var buffTrade in tradeResponse.Data)
         {
@@ -140,7 +181,7 @@ internal static class Handler
                     if (response == null)
                     {
                         Utils.Logger.LogGenericError(string.Format(Langs.ConfitmTradeFailed, tradeId));
-                        status.Message = "同意交易报价失败 (一般不要紧)";
+                        status.Message = Langs.ConfirmTradeFailed;
                         continue;
                     }
                     else
@@ -187,6 +228,8 @@ internal static class Handler
                 continue;
             }
         }
+
+        return true;
     }
 
     /// <summary>

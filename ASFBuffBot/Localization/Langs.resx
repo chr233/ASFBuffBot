@@ -423,4 +423,16 @@
   <data name="ConfirmTradeFailed" xml:space="preserve">
     <value>同意交易报价失败 (一般不要紧)</value>
   </data>
+  <data name="NotLoginSkip" xml:space="preserve">
+    <value>当前机器人未登录, 跳过执行</value>
+  </data>
+  <data name="StartDeliverCheck" xml:space="preserve">
+    <value>开始为 {0} 检查发货信息</value>
+  </data>
+  <data name="EndDeliverCheck" xml:space="preserve">
+    <value>发货检查结束</value>
+  </data>
+  <data name="ErrorDeliverCheck" xml:space="preserve">
+    <value>检查发货遇到错误</value>
+  </data>
 </root>

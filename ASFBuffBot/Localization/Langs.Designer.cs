@@ -466,11 +466,29 @@ namespace ASFBuffBot.Localization {
         }
         
         /// <summary>
+        ///   查找类似 发货检查结束 的本地化字符串。
+        /// </summary>
+        internal static string EndDeliverCheck {
+            get {
+                return ResourceManager.GetString("EndDeliverCheck", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 出错 的本地化字符串。
         /// </summary>
         internal static string Error {
             get {
                 return ResourceManager.GetString("Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 检查发货遇到错误 的本地化字符串。
+        /// </summary>
+        internal static string ErrorDeliverCheck {
+            get {
+                return ResourceManager.GetString("ErrorDeliverCheck", resourceCulture);
             }
         }
         
@@ -718,6 +736,15 @@ namespace ASFBuffBot.Localization {
         }
         
         /// <summary>
+        ///   查找类似 当前机器人未登录, 跳过执行 的本地化字符串。
+        /// </summary>
+        internal static string NotLoginSkip {
+            get {
+                return ResourceManager.GetString("NotLoginSkip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 无Trade缓存信息, 跳过执行 的本地化字符串。
         /// </summary>
         internal static string NoTradeCacheSkip {
@@ -804,6 +831,15 @@ namespace ASFBuffBot.Localization {
         internal static string SendTradeResult {
             get {
                 return ResourceManager.GetString("SendTradeResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 开始为 {0} 检查发货信息 的本地化字符串。
+        /// </summary>
+        internal static string StartDeliverCheck {
+            get {
+                return ResourceManager.GetString("StartDeliverCheck", resourceCulture);
             }
         }
         
