@@ -40,6 +40,7 @@ ASFBuffBot 介绍 & 使用指南: [https://keylol.com/t887696-1-1](https://keylo
 
 | ASFBuffBot 版本                                                      | 适配 ASF 版本 | 更新说明               |
 | -------------------------------------------------------------------- | :-----------: | ---------------------- |
+| [1.0.5.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.8.0) |    5.4.5.2    | 支持自动登录Buff, bug 修复   |
 | [1.0.4.1](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.4.1) |    5.4.5.2    | 支持多账号, bug 修复   |
 | [1.0.0.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.0.0) |    5.4.4.5    | 第一个版本, 单账号模式 |
 
@@ -91,9 +92,8 @@ ASF.json
 
 ### 功能指令
 
-| 命令                           | 缩写  | 权限     | 说明                                                     |
-| ------------------------------ | ----- | -------- | -------------------------------------------------------- |
-| `VALIDCOOKIES [Bots]`          | `VC`  | `Master` | 手动测试当前设置的 Cookies 是否有效                      |
-| `UPDATECOOKIES cookies`        | `UC`  | `Master` | 手动更新 Cookies, 自动根据 Buff 账号信息绑定到对应机器人 |
-| `UPDATECOOKIESBOT Bot cookies` | `UCB` | `Master` | 手动更新 Cookies, 需要指定要绑定的机器人                 |
-| `COOKIESSTATUS [Bots]`         | `CS`  | `Master` | 查看机器人 Cookies 状态                                  |
+| 命令                 | 缩写 | 权限     | 说明                                                          |
+| -------------------- | ---- | -------- | ------------------------------------------------------------- |
+| `ENABLEBUFF [Bots]`  | `EB` | `Master` | 为指定机器人开启自动发货功能, 将会尝试自动登录到 buff.163.com |
+| `DISABLEBUFF [Bots]` | `DB` | `Master` | 为指定机器人开启自动发货功能                                  |
+| `BUFFSTATUS [Bots]`  | `BS` | `Master` | 查看指定机器人自动发货状态                                    |

@@ -28,11 +28,11 @@ internal static class Handler
                 {
                     try
                     {
-                        Utils.Logger.LogGenericInfo(string.Format("开始为 {0} 检查发货信息", bot.BotName));
+                        Utils.Logger.LogGenericInfo(string.Format(Langs.StartDeliverCheck, bot.BotName));
 
                         bool delay = await CheckDeliver(bot).ConfigureAwait(false);
 
-                        Utils.Logger.LogGenericInfo(string.Format("发货检查结束", bot.BotName));
+                        Utils.Logger.LogGenericInfo(Langs.EndDeliverCheck);
 
                         if (delay)
                         {
@@ -41,7 +41,7 @@ internal static class Handler
                     }
                     catch (Exception ex)
                     {
-                        Utils.Logger.LogGenericException(ex, "检查发货遇到错误");
+                        Utils.Logger.LogGenericException(ex, Langs.ErrorDeliverCheck);
                     }
                 }
             }
@@ -57,7 +57,7 @@ internal static class Handler
     {
         if (!bot.IsConnectedAndLoggedOn)
         {
-            Utils.Logger.LogGenericInfo("当前机器人未登录, 跳过执行");
+            Utils.Logger.LogGenericInfo(Langs.NotLoginSkip);
             return false;
         }
 
