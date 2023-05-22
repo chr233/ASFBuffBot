@@ -342,4 +342,91 @@
   <data name="NoBotAvilable" xml:space="preserve">
     <value>找不到可用的机器人, 添加失败</value>
   </data>
+  <data name="AlreadyEnabledBuff" xml:space="preserve">
+    <value>已经开启自动发货功能</value>
+  </data>
+  <data name="AutoLoginSuccess" xml:space="preserve">
+    <value>自动登录Buff成功</value>
+  </data>
+  <data name="AutoLoginFailedRetryNextTime" xml:space="preserve">
+    <value>自动登录Buff失败, 将在2轮检测后重试</value>
+  </data>
+  <data name="BuffBotNotSetWarn2" xml:space="preserve">
+    <value>使用命令 ENABLEBUFF [Bots] 来为机器人启用自动发货</value>
+  </data>
+  <data name="BuffBotNotSetWarn1" xml:space="preserve">
+    <value>未设置启用自动发货的机器人, 插件将不会工作</value>
+  </data>
+  <data name="BuffCheckWillStartIn30" xml:space="preserve">
+    <value>插件初始化完成, 第一次Buff发货检测将于30秒后进行</value>
+  </data>
+  <data name="BuffStatus" xml:space="preserve">
+    <value>Buff登录 {0}, 交易缓存数 {1}, 自动发货接受/拒绝交易数 {2}/{3}, 信息 {4}</value>
+  </data>
+  <data name="ConfirmTradeFailed" xml:space="preserve">
+    <value>同意交易报价失败 (一般不要紧)</value>
+  </data>
+  <data name="CookiesAndTradeCacheCount" xml:space="preserve">
+    <value>Cookies {0}, 交易缓存数: {1}</value>
+  </data>
+  <data name="CookiesNotSet" xml:space="preserve">
+    <value>Cookies未设置</value>
+  </data>
+  <data name="DisableBuffSuccess" xml:space="preserve">
+    <value>关闭自动发货功能成功, 自动清空交易缓存和交易统计</value>
+  </data>
+  <data name="Need2FaToEnableBuff" xml:space="preserve">
+    <value>机器人尚未启用2FA验证, 无法开启自动发货功能</value>
+  </data>
+  <data name="InternalError" xml:space="preserve">
+    <value>插件内部数据错误</value>
+  </data>
+  <data name="FetchBuffDeliverFailed" xml:space="preserve">
+    <value>获取Buff待发货订单失败</value>
+  </data>
+  <data name="FetchBuffNotificationFailed" xml:space="preserve">
+    <value>获取Buff交易通知失败</value>
+  </data>
+  <data name="ErrorDeliverCheck" xml:space="preserve">
+    <value>检查发货遇到错误</value>
+  </data>
+  <data name="Invalid" xml:space="preserve">
+    <value>无效</value>
+  </data>
+  <data name="Valid" xml:space="preserve">
+    <value>有效</value>
+  </data>
+  <data name="TradeCacheNotInitCantClear" xml:space="preserve">
+    <value>{0} 未初始化缓存, 无法清空交易缓存</value>
+  </data>
+  <data name="TradeCacheNotInit" xml:space="preserve">
+    <value>{0} 未初始化缓存, 无法记录交易</value>
+  </data>
+  <data name="TradeCacheAlreadyInit" xml:space="preserve">
+    <value>{0} 已初始化缓存, 无法初始化交易缓存</value>
+  </data>
+  <data name="StartDeliverCheck" xml:space="preserve">
+    <value>开始为 {0} 检查发货信息</value>
+  </data>
+  <data name="RegisterBuffServiceFailed" xml:space="preserve">
+    <value>注册Buff Service失败</value>
+  </data>
+  <data name="NotEnabledBuff" xml:space="preserve">
+    <value>尚未开启自动发货功能</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>无</value>
+  </data>
+  <data name="NotLoginSkip" xml:space="preserve">
+    <value>当前机器人未登录, 跳过执行</value>
+  </data>
+  <data name="EnableBuffSuccess" xml:space="preserve">
+    <value>登录Buff成功, 开启自动发货功能</value>
+  </data>
+  <data name="EnableBuffFailed" xml:space="preserve">
+    <value>登录Buff失败, 可能该账号 {0} 未注册Buff账号</value>
+  </data>
+  <data name="EndDeliverCheck" xml:space="preserve">
+    <value>发货检查结束</value>
+  </data>
 </root>

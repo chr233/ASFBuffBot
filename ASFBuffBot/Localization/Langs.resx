@@ -342,12 +342,6 @@
   <data name="NoBotAvilable" xml:space="preserve">
     <value>找不到可用的机器人, 添加失败</value>
   </data>
-  <data name="DeleteCookiesSuccess" xml:space="preserve">
-    <value>删除Buff Cookies成功</value>
-  </data>
-  <data name="DeleteCookiesFailedNotSetYet" xml:space="preserve">
-    <value>删除Buff Cookies失败, 尚未设置此机器人的Cookies</value>
-  </data>
   <data name="Valid" xml:space="preserve">
     <value>有效</value>
   </data>
@@ -409,7 +403,7 @@
     <value>插件内部数据错误</value>
   </data>
   <data name="AutoLoginFailedRetryNextTime" xml:space="preserve">
-    <value>自动登录Buff失败, 将在下一轮检测中重试, 本轮检测跳过</value>
+    <value>自动登录Buff失败, 将在2轮检测后重试</value>
   </data>
   <data name="AutoLoginSuccess" xml:space="preserve">
     <value>自动登录Buff成功</value>

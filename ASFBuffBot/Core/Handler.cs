@@ -97,6 +97,7 @@ internal static class Handler
                 if (!login)
                 {
                     status.Message = Langs.AutoLoginFailedRetryNextTime;
+                    CheckCount = CheckCountMax - 2;
                     return true;
                 }
             }

@@ -160,7 +160,7 @@ namespace ASFBuffBot.Localization {
         }
         
         /// <summary>
-        ///   查找类似 自动登录Buff失败, 将在下一轮检测中重试, 本轮检测跳过 的本地化字符串。
+        ///   查找类似 自动登录Buff失败, 将在2轮检测后重试 的本地化字符串。
         /// </summary>
         internal static string AutoLoginFailedRetryNextTime {
             get {
@@ -390,24 +390,6 @@ namespace ASFBuffBot.Localization {
         internal static string CurrentLanguage {
             get {
                 return ResourceManager.GetString("CurrentLanguage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 删除Buff Cookies失败, 尚未设置此机器人的Cookies 的本地化字符串。
-        /// </summary>
-        internal static string DeleteCookiesFailedNotSetYet {
-            get {
-                return ResourceManager.GetString("DeleteCookiesFailedNotSetYet", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 删除Buff Cookies成功 的本地化字符串。
-        /// </summary>
-        internal static string DeleteCookiesSuccess {
-            get {
-                return ResourceManager.GetString("DeleteCookiesSuccess", resourceCulture);
             }
         }
         
