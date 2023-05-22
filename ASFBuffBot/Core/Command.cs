@@ -140,6 +140,11 @@ internal static partial class Command
             return bot.FormatBotResponse(Langs.NotEnabledBuff);
         }
 
+        if (!bot.IsConnectedAndLoggedOn)
+        {
+            return bot.FormatBotResponse(Langs.EnabledButOffline);
+        }
+
         bool login = await WebRequest.CheckCookiesValid(bot).ConfigureAwait(false);
         var cacheCount = Handler.GetTradeCacheCount(bot);
         var status = Handler.GetBotStatus(bot);

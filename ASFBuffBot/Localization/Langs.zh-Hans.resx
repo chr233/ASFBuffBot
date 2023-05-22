@@ -429,4 +429,7 @@
   <data name="EndDeliverCheck" xml:space="preserve">
     <value>发货检查结束</value>
   </data>
+  <data name="EnabledButOffline" xml:space="preserve">
+    <value>已启用自动发货, 但是当前机器人离线</value>
+  </data>
 </root>

@@ -448,6 +448,15 @@ namespace ASFBuffBot.Localization {
         }
         
         /// <summary>
+        ///   查找类似 已启用自动发货, 但是当前机器人离线 的本地化字符串。
+        /// </summary>
+        internal static string EnabledButOffline {
+            get {
+                return ResourceManager.GetString("EnabledButOffline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 发货检查结束 的本地化字符串。
         /// </summary>
         internal static string EndDeliverCheck {

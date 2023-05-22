@@ -429,4 +429,7 @@
   <data name="ErrorDeliverCheck" xml:space="preserve">
     <value>检查发货遇到错误</value>
   </data>
+  <data name="EnabledButOffline" xml:space="preserve">
+    <value>已启用自动发货, 但是当前机器人离线</value>
+  </data>
 </root>
