@@ -185,4 +185,30 @@ internal static partial class Command
 
         return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
     }
+
+    /// <summary>
+    /// 命令更新Cookies
+    /// </summary>
+    /// <param name="cookies"></param>
+    /// <returns></returns>
+    internal static async Task<string?> ResponseUpdateCoolies(string botName, string cookies)
+    {
+        var bot = Bot.GetBot(botName);
+        if (bot == null)
+        {
+            return Utils.FormatStaticResponse(string.Format(Strings.BotNotFound, botName));
+        }
+
+        bot.ArchiWebHandler.WebBrowser.CookieContainer.SetCookies(new Uri("https://buff.163.com"), cookies);
+
+        var valid = await WebRequest.CheckCookiesValid(bot).ConfigureAwait(false);
+        if (valid)
+        {
+            return bot.FormatBotResponse(Langs.BuffCookiesValid);
+        }
+        else
+        {
+            return bot.FormatBotResponse(Langs.BuffCookiesInvalid);
+        }
+    }
 }

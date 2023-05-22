@@ -310,7 +310,7 @@
     <value>未找到匹配的交易报价, 可能交易报价已取消, Id: {0}</value>
   </data>
   <data name="BuffCookiesValid" xml:space="preserve">
-    <value>Cookies有效, Cookies信息保存{0}</value>
+    <value>Cookies有效</value>
   </data>
   <data name="BuffCookiesInvalid" xml:space="preserve">
     <value>Cookies无效, 请检查Buff是否登录以及Cookies是否完整</value>
