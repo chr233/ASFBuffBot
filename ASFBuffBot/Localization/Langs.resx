@@ -432,4 +432,7 @@
   <data name="EnabledButOffline" xml:space="preserve">
     <value>已启用自动发货, 但是当前机器人离线</value>
   </data>
+  <data name="TradeDismatch" xml:space="preserve">
+    <value>交易物品不匹配, Id: {0}</value>
+  </data>
 </root>

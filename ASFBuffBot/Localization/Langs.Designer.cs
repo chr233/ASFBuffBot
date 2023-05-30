@@ -925,6 +925,15 @@ namespace ASFBuffBot.Localization {
         }
         
         /// <summary>
+        ///   查找类似 交易物品不匹配, Id: {0} 的本地化字符串。
+        /// </summary>
+        internal static string TradeDismatch {
+            get {
+                return ResourceManager.GetString("TradeDismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 交易物品不匹配, 自动拒绝报价, Id: {0} 的本地化字符串。
         /// </summary>
         internal static string TradeDismatchAutoReject {

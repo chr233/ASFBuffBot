@@ -214,12 +214,21 @@ internal static class Handler
                 }
                 else
                 {
-                    Utils.Logger.LogGenericWarning(string.Format(Langs.TradeDismatchAutoReject, tradeId));
+                    if (Utils.Config.RejectNotMatch)
+                    {
+                        Utils.Logger.LogGenericWarning(string.Format(Langs.TradeDismatchAutoReject, tradeId));
 
-                    var result = await WebRequest.DeclineTradeOffer(bot, tradeId).ConfigureAwait(false);
-                    Utils.Logger.LogGenericWarning(string.Format(Langs.RejectTrade, result ? Langs.Success : Langs.Failure, tradeId));
-                    BotTradeCache.TryRemove(tradeId, out _);
-                    status.DeliverRejectCount++;
+                        var result = await WebRequest.DeclineTradeOffer(bot, tradeId).ConfigureAwait(false);
+                        Utils.Logger.LogGenericWarning(string.Format(Langs.RejectTrade, result ? Langs.Success : Langs.Failure, tradeId));
+                        BotTradeCache.TryRemove(tradeId, out _);
+                        status.DeliverRejectCount++;
+                    }
+                    else
+                    {
+                        Utils.Logger.LogGenericWarning(string.Format(Langs.TradeDismatch, tradeId));
+
+                    }
+
                     continue;
                 }
             }

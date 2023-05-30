@@ -1,4 +1,6 @@
 using ArchiSteamFarm.Steam;
+using ArchiSteamFarm.Steam.Integration;
+using ArchiSteamFarm.Web;
 using ArchiSteamFarm.Web.Responses;
 using ASFBuffBot.Data;
 
@@ -40,7 +42,7 @@ internal static class WebRequest
     {
         var request = new Uri(Utils.BuffUrl, "/api/message/notification");
         var headers = GenerateBuffHeader();
-        var response = await bot.ArchiWebHandler.UrlGetToJsonObjectWithSession<BuffNotificationResponse>(request, headers, requestOptions: ArchiSteamFarm.Web.WebBrowser.ERequestOptions.ReturnRedirections, checkSessionPreemptively: false, allowSessionRefresh: false).ConfigureAwait(false);
+        var response = await bot.ArchiWebHandler.UrlGetToJsonObjectWithSession<BuffNotificationResponse>(request, headers, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections, checkSessionPreemptively: false, allowSessionRefresh: false).ConfigureAwait(false);
         return response?.Content;
     }
 
@@ -53,7 +55,7 @@ internal static class WebRequest
     {
         var request = new Uri(Utils.BuffUrl, "/api/market/steam_trade");
         var headers = GenerateBuffHeader();
-        var response = await bot.ArchiWebHandler.UrlGetToJsonObjectWithSession<BuffSteamTradeResponse>(request, headers, requestOptions: ArchiSteamFarm.Web.WebBrowser.ERequestOptions.ReturnRedirections, checkSessionPreemptively: false, allowSessionRefresh: false).ConfigureAwait(false);
+        var response = await bot.ArchiWebHandler.UrlGetToJsonObjectWithSession<BuffSteamTradeResponse>(request, headers, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections, checkSessionPreemptively: false, allowSessionRefresh: false).ConfigureAwait(false);
         return response?.Content;
     }
 
@@ -67,7 +69,7 @@ internal static class WebRequest
     {
         var request = new Uri(Utils.BuffUrl, "/account/api/user/info");
         var headers = GenerateBuffHeader();
-        var response = await bot.ArchiWebHandler.UrlGetToJsonObjectWithSession<BuffUserInfoResponse>(request, headers, requestOptions: ArchiSteamFarm.Web.WebBrowser.ERequestOptions.ReturnRedirections, checkSessionPreemptively: false, allowSessionRefresh: false).ConfigureAwait(false);
+        var response = await bot.ArchiWebHandler.UrlGetToJsonObjectWithSession<BuffUserInfoResponse>(request, headers, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections, checkSessionPreemptively: false, allowSessionRefresh: false).ConfigureAwait(false);
         return response?.Content;
     }
 

@@ -33,4 +33,10 @@ public sealed record PluginConfig
     /// </summary>
     [JsonProperty(Required = Required.Default)]
     public string? CustomUserAgent { get; set; }
+
+    /// <summary>
+    /// 交易不匹配时自动拒绝
+    /// </summary>
+    [JsonProperty(Required = Required.Default)]
+    public bool RejectNotMatch { get; set; }
 }

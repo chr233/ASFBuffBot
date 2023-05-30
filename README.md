@@ -1,4 +1,5 @@
 # ASFBuffBot
+
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/28d15406751f42f499e2f53fde5bb808)](https://www.codacy.com/gh/chr233/ASFBuffBot/dashboard)
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/chr233/ASFBuffBot/autobuild.yml?logo=github)
 [![License](https://img.shields.io/github/license/chr233/ASFBuffBot?logo=apache)](https://github.com/chr233/ASFBuffBot/blob/master/license)
@@ -38,6 +39,7 @@ ASFBuffBot 介绍 & 使用指南: [https://keylol.com/t887696-1-1](https://keylo
 
 | ASFBuffBot 版本                                                      | 适配 ASF 版本 | 更新说明                                               |
 | -------------------------------------------------------------------- | :-----------: | ------------------------------------------------------ |
+| [1.0.8.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.8.0) |    5.4.5.2    | 新增 `RejectNotMatch` 选项                             |
 | [1.0.7.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.7.0) |    5.4.5.2    | 增加命令 `UPDATECOOKIESBOT` 用于手动设置机器人 cookies |
 | [1.0.6.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.6.0) |    5.4.5.2    | bug 修复                                               |
 | [1.0.5.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.5.0) |    5.4.5.2    | 支持自动登录 Buff, bug 修复                            |
@@ -62,18 +64,20 @@ ASF.json
     "DisabledCmds": ["foo", "bar"],
     "BuffCheckInterval": 180,
     "BotInterval": 30,
-    "CustomUserAgent": null
+    "CustomUserAgent": null,
+    "RejectNotMatch": false
   }
 }
 ```
 
-| 配置项              | 类型   | 默认值 | 说明                                                                              |
-| ------------------- | ------ | ------ | --------------------------------------------------------------------------------- |
-| `Statistic`         | bool   | `true` | 是否允许发送统计数据, 仅用于统计插件用户数量, 不会发送任何其他信息                |
-| `DisabledCmds`      | list   | `null` | 在此列表中的命令将会被禁用\*\* , **不区分大小写**, 仅对 `ASFBuffBot` 中的命令生效 |
-| `BuffCheckInterval` | int    | `180`  | 每一轮 Buff 发货检查的周期, 单位秒, 访问频率过快容易被 ban                        |
-| `BotInterval`       | int    | `30`   | 在一轮发货检查中每个机器人的检查间隔, 单位秒                                      |
-| `CustomUserAgent`   | string | `null` | 自定义 `User-Agent` 用于向 Buff 发送请求                                          |
+| 配置项              | 类型   | 默认值  | 说明                                                                              |
+| ------------------- | ------ | ------- | --------------------------------------------------------------------------------- |
+| `Statistic`         | bool   | `true`  | 是否允许发送统计数据, 仅用于统计插件用户数量, 不会发送任何其他信息                |
+| `DisabledCmds`      | list   | `null`  | 在此列表中的命令将会被禁用\*\* , **不区分大小写**, 仅对 `ASFBuffBot` 中的命令生效 |
+| `BuffCheckInterval` | int    | `180`   | 每一轮 Buff 发货检查的周期, 单位秒, 访问频率过快容易被 ban                        |
+| `BotInterval`       | int    | `30`    | 在一轮发货检查中每个机器人的检查间隔, 单位秒                                      |
+| `CustomUserAgent`   | string | `null`  | 自定义 `User-Agent` 用于向 Buff 发送请求                                          |
+| `RejectNotMatch`    | bool   | `false` | 交易物品不匹配时是否自动拒绝交易                                                  |
 
 > \*\* `DisabledCmds` 配置说明: 该项配置**不区分大小写**, 仅对 `ASFBuffBot` 中的命令有效
 > 例如配置为 `["foo","BAR"]` , 则代表 `FOO` 和 `BAR` 命令将会被禁用
@@ -92,8 +96,9 @@ ASF.json
 
 ### 功能指令
 
-| 命令                 | 缩写 | 权限     | 说明                                                          |
-| -------------------- | ---- | -------- | ------------------------------------------------------------- |
-| `ENABLEBUFF [Bots]`  | `EB` | `Master` | 为指定机器人开启自动发货功能, 将会尝试自动登录到 buff.163.com |
-| `DISABLEBUFF [Bots]` | `DB` | `Master` | 为指定机器人开启自动发货功能                                  |
-| `BUFFSTATUS [Bots]`  | `BS` | `Master` | 查看指定机器人自动发货状态                                    |
+| 命令                           | 缩写  | 权限     | 说明                                                          |
+| ------------------------------ | ----- | -------- | ------------------------------------------------------------- |
+| `ENABLEBUFF [Bots]`            | `EB`  | `Master` | 为指定机器人开启自动发货功能, 将会尝试自动登录到 buff.163.com |
+| `DISABLEBUFF [Bots]`           | `DB`  | `Master` | 为指定机器人开启自动发货功能                                  |
+| `BUFFSTATUS [Bots]`            | `BS`  | `Master` | 查看指定机器人自动发货状态                                    |
+| `UPDATECOOKIESBOT Bot Cookies` | `UCB` | `Master` | 查看指定机器人自动发货状态                                    |
