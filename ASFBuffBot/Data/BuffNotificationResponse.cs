@@ -1,17 +1,9 @@
 using Newtonsoft.Json;
+using static ASFBuffBot.Data.BuffNotificationResponse;
 
 namespace ASFBuffBot.Data;
-public sealed record BuffNotificationResponse
+public sealed record BuffNotificationResponse : AbstractBuffResponse<NotificationData>
 {
-    [JsonProperty(PropertyName = "msg", Required = Required.Default)]
-    public string? Message { get; set; }
-
-    [JsonProperty(PropertyName = "code", Required = Required.Default)]
-    public string? Code { get; set; }
-
-    [JsonProperty(PropertyName = "data", Required = Required.Default)]
-    public NotificationData? Data { get; set; }
-
     public sealed record NotificationData
     {
         [JsonProperty(PropertyName = "to_deliver_order", Required = Required.Default)]

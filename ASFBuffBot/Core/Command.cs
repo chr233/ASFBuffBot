@@ -33,10 +33,17 @@ internal static class Command
 
         bool login = await WebRequest.CheckCookiesValid(bot).ConfigureAwait(false);
 
+        var s = await WebRequest.BuffSendSmsCode(bot).ConfigureAwait(false);
+        Utils.Logger.LogGenericInfo(s.ToString());
+
+
         if (!login)
         {
-            await WebRequest.LoginToBuffViaSteam(bot).ConfigureAwait(false);
-            login = await WebRequest.CheckCookiesValid(bot).ConfigureAwait(false);
+            //await WebRequest.LoginToBuffViaSteam(bot).ConfigureAwait(false);
+            //login = await WebRequest.CheckCookiesValid(bot).ConfigureAwait(false);
+
+            //var s = await WebRequest.SendAuthCode(bot).ConfigureAwait(false);
+            Utils.Logger.LogGenericInfo(s.ToString());
         }
 
         if (login)
@@ -184,6 +191,23 @@ internal static class Command
         List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
 
         return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
+    }
+
+    /// <summary>
+    /// 输入验证码
+    /// </summary>
+    /// <param name="cookies"></param>
+    /// <returns></returns>
+    internal static async Task<string?> ResponseVerifyCode(string botName, string code)
+    {
+        var bot = Bot.GetBot(botName);
+        if (bot == null)
+        {
+            return Utils.FormatStaticResponse(string.Format(Strings.BotNotFound, botName));
+        }
+
+        var result = await WebRequest.BuffVerifyAuthCode(bot, code).ConfigureAwait(false);
+        return bot.FormatBotResponse(result ? Langs.Success : Langs.Failure);
     }
 
     /// <summary>

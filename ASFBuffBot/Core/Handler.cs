@@ -1,6 +1,5 @@
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
-using ArchiSteamFarm.Steam.Security;
 using ASFBuffBot.Data;
 using System.Collections.Concurrent;
 
@@ -94,9 +93,13 @@ internal static class Handler
                 await WebRequest.LoginToBuffViaSteam(bot).ConfigureAwait(false);
                 login = await WebRequest.CheckCookiesValid(bot).ConfigureAwait(false);
 
+                var s = await WebRequest.BuffSendSmsCode(bot).ConfigureAwait(false);
+                Utils.Logger.LogGenericInfo(s.ToString());
+
                 if (!login)
                 {
                     status.Message = Langs.AutoLoginFailedRetryNextTime;
+
                     CheckCount = CheckCountMax - 2;
                     return true;
                 }
@@ -192,7 +195,7 @@ internal static class Handler
                             Utils.Logger.LogGenericInfo(string.Format(Langs.AcceptTradeSuccess2FaRequired, tradeId));
 
                             var offerIDs = new List<ulong> { steamTrade.TradeOfferID };
-                            (bool success, _, string message) = await bot.Actions.HandleTwoFactorAuthenticationConfirmations(accept, Confirmation.EType.Trade, offerIDs, true).ConfigureAwait(false);
+                            (bool success, _, string message) = await bot.Actions.HandleTwoFactorAuthenticationConfirmations(accept, Confirmation.EConfirmationType.Trade, offerIDs, true).ConfigureAwait(false);
 
                             Utils.Logger.LogGenericWarning(string.Format(Langs.SteamTradeDetail, accept ? Langs.Approve : Langs.Reject, success ? Langs.Success : Langs.Failure, message, tradeId));
 

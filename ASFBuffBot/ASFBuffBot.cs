@@ -274,6 +274,10 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
                     case "UCB" when argLength >= 3 && access >= EAccess.Master:
                         return await Core.Command.ResponseUpdateCoolies(args[1], Utilities.GetArgsAsText(message, 2)).ConfigureAwait(false);
 
+                    case "VERIFYCODE" when argLength >= 3 && access >= EAccess.Master:
+                    case "VC" when argLength >= 3 && access >= EAccess.Master:
+                        return await Core.Command.ResponseVerifyCode(args[1], args[2]).ConfigureAwait(false);
+
                     default:
                         return null;
                 }
@@ -300,7 +304,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
 
         try
         {
-            return await ResponseCommand(bot, access, message,args).ConfigureAwait(false);
+            return await ResponseCommand(bot, access, message, args).ConfigureAwait(false);
         }
         catch (Exception ex)
         {

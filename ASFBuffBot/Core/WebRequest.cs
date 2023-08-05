@@ -1,8 +1,11 @@
+using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Integration;
 using ArchiSteamFarm.Web;
 using ArchiSteamFarm.Web.Responses;
 using ASFBuffBot.Data;
+using Newtonsoft.Json.Linq;
+using System.Reflection;
 
 namespace ASFBuffBot.Core;
 
@@ -31,6 +34,46 @@ internal static class WebRequest
     {
         var response = await FetcbBuffUserInfo(bot).ConfigureAwait(false);
         return response?.Code == "OK";
+    }
+
+    internal static async Task<bool> BuffSendSmsCode(Bot bot)
+    {
+        var request = new Uri(Utils.BuffUrl, "/account/api/logged_in_from_steam/send_authcode");
+        var referer = new Uri(Utils.BuffUrl, "/market/steam_inventory?game=csgo");
+
+        var headers = GenerateBuffHeader();
+        var cookieValue = Utilities.GetCookieValue(bot.ArchiWebHandler.WebBrowser.CookieContainer, Utils.BuffUrl, "csrf_token");
+        if (string.IsNullOrEmpty(cookieValue))
+        {
+            return false;
+        }
+
+        headers.Add("X-CSRFToken", cookieValue);
+
+        var response = await bot.ArchiWebHandler.UrlPostToJsonObjectWithSession<BaseBuffResponse>(request, headers: headers, null, referer: referer, session: ArchiWebHandler.ESession.None).ConfigureAwait(false);
+        return response?.Content?.Code == "OK";
+    }
+
+    internal static async Task<bool> BuffVerifyAuthCode(Bot bot, string authCode)
+    {
+        var request = new Uri(Utils.BuffUrl, "/account/api/logged_in_from_steam/verify_authcode");
+        var referer = new Uri(Utils.BuffUrl, "/market/steam_inventory?game=csgo");
+
+        var headers = GenerateBuffHeader();
+        var cookieValue = Utilities.GetCookieValue(bot.ArchiWebHandler.WebBrowser.CookieContainer, Utils.BuffUrl, "csrf_token");
+        if (string.IsNullOrEmpty(cookieValue))
+        {
+            return false;
+        }
+
+        headers.Add("X-CSRFToken", cookieValue);
+
+        var data = new Dictionary<string, string>
+        {
+            { "authcode", authCode }
+        };
+        var response = await bot.ArchiWebHandler.UrlPostToJsonObjectWithSession<BaseBuffResponse>(request, headers, data, referer: referer, session: ArchiWebHandler.ESession.None).ConfigureAwait(false);
+        return response?.Content?.Code == "OK";
     }
 
     /// <summary>
