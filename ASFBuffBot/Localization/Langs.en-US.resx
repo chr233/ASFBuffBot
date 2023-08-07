@@ -225,4 +225,28 @@
   <data name="TwoItem" xml:space="preserve">
     <value>{0}: {1}</value>
   </data>
+  <data name="NotEnabledBuff" xml:space="preserve">
+    <value>Auto delivery not enabled</value>
+  </data>
+  <data name="EnableBuffFailed" xml:space="preserve">
+    <value>Login to Buff failed, maybe steam account not linked</value>
+  </data>
+  <data name="EnableBuffSuccess" xml:space="preserve">
+    <value>Login to Buff successful, auto delivery enabled</value>
+  </data>
+  <data name="Approve" xml:space="preserve">
+    <value>Approve</value>
+  </data>
+  <data name="AcceptTradeSuccess" xml:space="preserve">
+    <value>Confirm trade successful, no need 2fa, ID: {0}</value>
+  </data>
+  <data name="AcceptTradeSuccess2FaRequired" xml:space="preserve">
+    <value>Confirm trade successful, need 2fa, ID: {0}</value>
+  </data>
+  <data name="AlreadyEnabledBuff" xml:space="preserve">
+    <value>Already enabled auto delivery</value>
+  </data>
+  <data name="Valid" xml:space="preserve">
+    <value>Valid</value>
+  </data>
 </root>
