@@ -42,7 +42,7 @@ internal static class WebRequest
         var referer = new Uri(Utils.BuffUrl, "/market/steam_inventory?game=csgo");
 
         var headers = GenerateBuffHeader();
-        var cookieValue = Utilities.GetCookieValue(bot.ArchiWebHandler.WebBrowser.CookieContainer, Utils.BuffUrl, "csrf_token");
+        var cookieValue = bot.ArchiWebHandler.WebBrowser.CookieContainer.GetCookieValue(Utils.BuffUrl, "csrf_token");
         if (string.IsNullOrEmpty(cookieValue))
         {
             return false;
@@ -60,7 +60,7 @@ internal static class WebRequest
         var referer = new Uri(Utils.BuffUrl, "/market/steam_inventory?game=csgo");
 
         var headers = GenerateBuffHeader();
-        var cookieValue = Utilities.GetCookieValue(bot.ArchiWebHandler.WebBrowser.CookieContainer, Utils.BuffUrl, "csrf_token");
+        var cookieValue = bot.ArchiWebHandler.WebBrowser.CookieContainer.GetCookieValue(Utils.BuffUrl, "csrf_token");
         if (string.IsNullOrEmpty(cookieValue))
         {
             return false;

@@ -160,11 +160,11 @@ namespace ASFBuffBot.Localization {
         }
         
         /// <summary>
-        ///   查找类似 自动登录Buff失败, 将在2轮检测后重试 的本地化字符串。
+        ///   查找类似 自动登录Buff失败, 请使用命令 ENABLEBUFF {0} 重新登录 的本地化字符串。
         /// </summary>
-        internal static string AutoLoginFailedRetryNextTime {
+        internal static string AutoLoginFailedNeedCode {
             get {
-                return ResourceManager.GetString("AutoLoginFailedRetryNextTime", resourceCulture);
+                return ResourceManager.GetString("AutoLoginFailedNeedCode", resourceCulture);
             }
         }
         
@@ -174,6 +174,15 @@ namespace ASFBuffBot.Localization {
         internal static string AutoLoginSuccess {
             get {
                 return ResourceManager.GetString("AutoLoginSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 {0} 被禁用, 可能需要重新登录 Buff 的本地化字符串。
+        /// </summary>
+        internal static string BotDisabledBuff {
+            get {
+                return ResourceManager.GetString("BotDisabledBuff", resourceCulture);
             }
         }
         
@@ -435,6 +444,24 @@ namespace ASFBuffBot.Localization {
         internal static string EnableBuffFailed {
             get {
                 return ResourceManager.GetString("EnableBuffFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 登录Buff需要验证手机, 验证码已发送, 使用命令 VERIFYCODE {0} xxxx 完成登录 (xxxx 请替换成收到的验证码) 的本地化字符串。
+        /// </summary>
+        internal static string EnableBuffNeedCode {
+            get {
+                return ResourceManager.GetString("EnableBuffNeedCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 登录Buff失败, 发送短信验证码失败 的本地化字符串。
+        /// </summary>
+        internal static string EnableBuffSendCodeFailed {
+            get {
+                return ResourceManager.GetString("EnableBuffSendCodeFailed", resourceCulture);
             }
         }
         
@@ -1002,6 +1029,24 @@ namespace ASFBuffBot.Localization {
         internal static string Valid {
             get {
                 return ResourceManager.GetString("Valid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 验证Buff手机号 {0}, 登录Buff {1} 的本地化字符串。
+        /// </summary>
+        internal static string VerifyCodeAndLoginStatus {
+            get {
+                return ResourceManager.GetString("VerifyCodeAndLoginStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 请先使用命令 ENABLEBUFF {0} 登录Buff, 如果需要输入验证码再使用此命令 的本地化字符串。
+        /// </summary>
+        internal static string VerifyCodeNeedLoginFirst {
+            get {
+                return ResourceManager.GetString("VerifyCodeNeedLoginFirst", resourceCulture);
             }
         }
         

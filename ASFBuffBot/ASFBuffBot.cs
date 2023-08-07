@@ -58,7 +58,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
 
         Utils.Config = config ?? new();
 
-        StringBuilder warning = new();
+        var warning = new StringBuilder();
 
         //统计
         if (Config.Statistic)
@@ -103,7 +103,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
         }
 
         var succ = await Utils.LoadFile().ConfigureAwait(false);
-        if (!succ || Utils.BuffBots.Count == 0)
+        if (!succ || Utils.BuffBotStorage.Count == 0)
         {
             warning.AppendLine(Static.Line);
             warning.AppendLine(Langs.BuffBotNotSetWarn1);
@@ -152,7 +152,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
     /// <returns></returns>
     public Task OnLoaded()
     {
-        StringBuilder message = new("\n");
+        var message = new StringBuilder("\n");
         message.AppendLine(Static.Line);
         message.AppendLine(Static.Logo);
         message.AppendLine(string.Format(Langs.PluginVer, nameof(ASFBuffBot), Utils.MyVersion.ToString()));
@@ -316,7 +316,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
             }
             string cfg = JsonConvert.SerializeObject(Config, Formatting.Indented);
 
-            StringBuilder sb = new();
+            var sb = new StringBuilder();
             sb.AppendLine(Langs.ErrorLogTitle);
             sb.AppendLine(Static.Line);
             sb.AppendLine(string.Format(Langs.ErrorLogOriginMessage, message));
@@ -349,7 +349,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
     /// <returns></returns>
     public Task<bool> OnBotTradeOffer(Bot bot, TradeOffer tradeOffer)
     {
-        if (Utils.BuffBots.Contains(bot.BotName))
+        if (Utils.BuffBotStorage.ContainsKey(bot.BotName))
         {
             Core.Handler.AddTradeCache(bot, tradeOffer);
         }
@@ -363,9 +363,15 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
     /// <returns></returns>
     public Task OnBotLoggedOn(Bot bot)
     {
-        if (Utils.BuffBots.Contains(bot.BotName))
+        if (Utils.BuffBotStorage.TryGetValue(bot.BotName, out var storage))
         {
             Core.Handler.InitTradeCache(bot);
+
+            var currentCookies = bot.ArchiWebHandler.WebBrowser.GetBuffCookies();
+            if (string.IsNullOrEmpty(currentCookies) && !string.IsNullOrEmpty(storage.Cookies))
+            {
+                bot.ArchiWebHandler.WebBrowser.SetBuffCookies(storage.Cookies);
+            }
         }
         return Task.CompletedTask;
     }
@@ -376,12 +382,13 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
     /// <param name="bot"></param>
     /// <param name="reason"></param>
     /// <returns></returns>
-    public Task OnBotDisconnected(Bot bot, EResult reason)
+    public async Task OnBotDisconnected(Bot bot, EResult reason)
     {
-        if (Utils.BuffBots.Contains(bot.BotName))
+        if (Utils.BuffBotStorage.TryGetValue(bot.BotName, out var storage))
         {
             Core.Handler.ClearTradeCache(bot);
+            storage.Cookies = bot.ArchiWebHandler.WebBrowser.GetBuffCookies();
+            await Utils.SaveFile().ConfigureAwait(false);
         }
-        return Task.CompletedTask;
     }
 }

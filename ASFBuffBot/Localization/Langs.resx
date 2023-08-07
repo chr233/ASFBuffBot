@@ -402,8 +402,8 @@
   <data name="InternalError" xml:space="preserve">
     <value>插件内部数据错误</value>
   </data>
-  <data name="AutoLoginFailedRetryNextTime" xml:space="preserve">
-    <value>自动登录Buff失败, 将在2轮检测后重试</value>
+  <data name="AutoLoginFailedNeedCode" xml:space="preserve">
+    <value>自动登录Buff失败, 请使用命令 ENABLEBUFF {0} 重新登录</value>
   </data>
   <data name="AutoLoginSuccess" xml:space="preserve">
     <value>自动登录Buff成功</value>
@@ -434,5 +434,20 @@
   </data>
   <data name="TradeDismatch" xml:space="preserve">
     <value>交易物品不匹配, Id: {0}</value>
+  </data>
+  <data name="EnableBuffNeedCode" xml:space="preserve">
+    <value>登录Buff需要验证手机, 验证码已发送, 使用命令 VERIFYCODE {0} xxxx 完成登录 (xxxx 请替换成收到的验证码)</value>
+  </data>
+  <data name="EnableBuffSendCodeFailed" xml:space="preserve">
+    <value>登录Buff失败, 发送短信验证码失败</value>
+  </data>
+  <data name="VerifyCodeAndLoginStatus" xml:space="preserve">
+    <value>验证Buff手机号 {0}, 登录Buff {1}</value>
+  </data>
+  <data name="VerifyCodeNeedLoginFirst" xml:space="preserve">
+    <value>请先使用命令 ENABLEBUFF {0} 登录Buff, 如果需要输入验证码再使用此命令</value>
+  </data>
+  <data name="BotDisabledBuff" xml:space="preserve">
+    <value>{0} 被禁用, 可能需要重新登录 Buff</value>
   </data>
 </root>

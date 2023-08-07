@@ -2,9 +2,11 @@ using ArchiSteamFarm.Core;
 using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Integration;
+using ArchiSteamFarm.Web;
 using ASFBuffBot.Data;
 using Newtonsoft.Json;
 using System.Reflection;
+using System.Text;
 
 namespace ASFBuffBot;
 
@@ -18,7 +20,7 @@ internal static class Utils
     /// <summary>
     /// BuffCookies
     /// </summary>
-    internal static BuffBotStorage BuffBots { get; private set; } = new();
+    internal static BuffBotStorage BuffBotStorage { get; private set; } = new();
 
     /// <summary>
     /// 更新已就绪
@@ -94,15 +96,16 @@ internal static class Utils
                 var json = JsonConvert.DeserializeObject<BuffBotStorage>(raw);
                 if (json != null)
                 {
-                    BuffBots = json;
+                    BuffBotStorage = json;
                     return true;
                 }
             }
             return false;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Logger.LogGenericException(ex, Langs.ReadCookiesFailed);
+            Logger.LogGenericError(Langs.ReadCookiesFailed);
+            await SaveFile().ConfigureAwait(false);
             return false;
         }
     }
@@ -118,7 +121,7 @@ internal static class Utils
             string cookieFilePath = GetFilePath();
             using var fs = File.Open(cookieFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
             using var sw = new StreamWriter(fs);
-            string json = JsonConvert.SerializeObject(BuffBots);
+            string json = JsonConvert.SerializeObject(BuffBotStorage);
             await sw.WriteAsync(json).ConfigureAwait(false);
             return true;
         }
@@ -159,4 +162,20 @@ internal static class Utils
     /// 日志
     /// </summary>
     internal static ArchiLogger Logger => ASF.ArchiLogger;
+
+    internal static string GetBuffCookies(this WebBrowser webBrowser)
+    {
+        var cookiesCollection = webBrowser.CookieContainer.GetCookies(BuffUrl);
+        var sb = new StringBuilder();
+        foreach (var cookies in cookiesCollection.ToList())
+        {
+            sb.Append(string.Format("{0}={1}; ", cookies.Name, cookies.Value));
+        }
+        return sb.ToString();
+    }
+
+    internal static void SetBuffCookies(this WebBrowser webBrowser, string cookies)
+    {
+        webBrowser.CookieContainer.SetCookies(BuffUrl, cookies);
+    }
 }

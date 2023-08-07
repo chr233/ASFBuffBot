@@ -17,30 +17,36 @@ internal static class Handler
 
     internal static async void OnBuffTimer(object? _ = null)
     {
-
         var bots = Bot.BotsReadOnly;
         if (bots != null)
         {
             foreach (var (_, bot) in bots)
             {
-                if (Utils.BuffBots.Contains(bot.BotName))
+                if (Utils.BuffBotStorage.TryGetValue(bot.BotName, out var storage))
                 {
-                    try
+                    if (storage.Enabled)
                     {
-                        Utils.Logger.LogGenericInfo(string.Format(Langs.StartDeliverCheck, bot.BotName));
-
-                        bool delay = await CheckDeliver(bot).ConfigureAwait(false);
-
-                        Utils.Logger.LogGenericInfo(Langs.EndDeliverCheck);
-
-                        if (delay)
+                        try
                         {
-                            await Task.Delay(TimeSpan.FromSeconds(Utils.Config.BotInterval)).ConfigureAwait(false);
+                            Utils.Logger.LogGenericInfo(string.Format(Langs.StartDeliverCheck, bot.BotName));
+
+                            bool delay = await CheckDeliver(bot).ConfigureAwait(false);
+
+                            Utils.Logger.LogGenericInfo(Langs.EndDeliverCheck);
+
+                            if (delay)
+                            {
+                                await Task.Delay(TimeSpan.FromSeconds(Utils.Config.BotInterval)).ConfigureAwait(false);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Utils.Logger.LogGenericException(ex, Langs.ErrorDeliverCheck);
                         }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        Utils.Logger.LogGenericException(ex, Langs.ErrorDeliverCheck);
+                        Utils.Logger.LogGenericInfo(string.Format(Langs.BotDisabledBuff, bot.BotName));
                     }
                 }
             }
@@ -73,7 +79,7 @@ internal static class Handler
             InitTradeCache(bot);
             if (!BotTradeCache.TryGetValue(name, out tradeCache) || !BotDeliverStatus.TryGetValue(name, out status))
             {
-                Utils.Logger.LogGenericWarning(string.Format(Langs.NoTradeCacheSkip, bot.BotName));
+                Utils.Logger.LogGenericWarning(string.Format(Langs.NoTradeCacheSkip, name));
                 return false;
             }
         }
@@ -81,7 +87,7 @@ internal static class Handler
         //无交易信息, 跳过
         if (!tradeCache.Any())
         {
-            Utils.Logger.LogGenericInfo(string.Format(Langs.NoTradeCacheSkip, bot.BotName));
+            Utils.Logger.LogGenericInfo(string.Format(Langs.NoTradeCacheSkip, name));
         }
 
         //验证Buff登录状态
@@ -93,14 +99,13 @@ internal static class Handler
                 await WebRequest.LoginToBuffViaSteam(bot).ConfigureAwait(false);
                 login = await WebRequest.CheckCookiesValid(bot).ConfigureAwait(false);
 
-                var s = await WebRequest.BuffSendSmsCode(bot).ConfigureAwait(false);
-                Utils.Logger.LogGenericInfo(s.ToString());
-
                 if (!login)
                 {
-                    status.Message = Langs.AutoLoginFailedRetryNextTime;
-
-                    CheckCount = CheckCountMax - 2;
+                    status.Message = string.Format(Langs.AutoLoginFailedNeedCode, name);
+                    if (Utils.BuffBotStorage.TryGetValue(name, out var storage))
+                    {
+                        storage.Enabled = false;
+                    }
                     return true;
                 }
             }

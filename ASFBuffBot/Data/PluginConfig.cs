@@ -39,4 +39,10 @@ public sealed record PluginConfig
     /// </summary>
     [JsonProperty(Required = Required.Default)]
     public bool RejectNotMatch { get; set; }
+
+    /// <summary>
+    /// 总是发送手机验证码
+    /// </summary>
+    [JsonProperty(Required = Required.Default)]
+    public bool AlwaysSendSmsCode { get; set; }
 }

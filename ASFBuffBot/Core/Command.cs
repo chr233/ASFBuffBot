@@ -14,7 +14,7 @@ internal static class Command
     internal static async Task<string?> ResponseEnableBuffBot(Bot bot)
     {
         var name = bot.BotName;
-        if (Utils.BuffBots.Contains(name))
+        if (Utils.BuffBotStorage.TryGetValue(name, out var storage) && storage.Enabled)
         {
             return bot.FormatBotResponse(Langs.AlreadyEnabledBuff);
         }
@@ -33,24 +33,30 @@ internal static class Command
 
         bool login = await WebRequest.CheckCookiesValid(bot).ConfigureAwait(false);
 
-        var s = await WebRequest.BuffSendSmsCode(bot).ConfigureAwait(false);
-        Utils.Logger.LogGenericInfo(s.ToString());
-
-
-        if (!login)
+        if (!login || Utils.Config.AlwaysSendSmsCode)
         {
-            //await WebRequest.LoginToBuffViaSteam(bot).ConfigureAwait(false);
-            //login = await WebRequest.CheckCookiesValid(bot).ConfigureAwait(false);
+            // 如果未成功登录就发送验证码
+            var success = await WebRequest.BuffSendSmsCode(bot).ConfigureAwait(false);
 
-            //var s = await WebRequest.SendAuthCode(bot).ConfigureAwait(false);
-            Utils.Logger.LogGenericInfo(s.ToString());
+            if (success)
+            {
+                Utils.BuffBotStorage.TryAdd(name, new Data.BotStorage { Enabled = false });
+                return bot.FormatBotResponse(Langs.EnableBuffNeedCode);
+            }
+            else
+            {
+                return bot.FormatBotResponse(Langs.EnableBuffSendCodeFailed);
+            }
         }
 
         if (login)
         {
             Handler.InitTradeCache(bot);
             await Handler.FreshTradeCache(bot).ConfigureAwait(false);
-            Utils.BuffBots.Add(name);
+
+            var cookies = bot.ArchiWebHandler.WebBrowser.GetBuffCookies();
+            Utils.BuffBotStorage.TryAdd(name, new Data.BotStorage { Enabled = true, Cookies = cookies });
+
             await Utils.SaveFile().ConfigureAwait(false);
             return bot.FormatBotResponse(Langs.EnableBuffSuccess);
         }
@@ -74,18 +80,16 @@ internal static class Command
             throw new ArgumentNullException(nameof(botNames));
         }
 
-        HashSet<Bot>? bots = Bot.GetBots(botNames);
+        var bots = Bot.GetBots(botNames);
 
         if ((bots == null) || (bots.Count == 0))
         {
             return Utils.FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
         }
 
-        IList<string?>? results = await Utilities.InParallel(bots.Select(bot => ResponseEnableBuffBot(bot))).ConfigureAwait(false);
+        var results = await Utilities.InParallel(bots.Select(bot => ResponseEnableBuffBot(bot))).ConfigureAwait(false);
 
-        List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
-
-        return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
+        return results.Any() ? string.Join(Environment.NewLine, results) : null;
     }
 
     /// <summary>
@@ -96,7 +100,7 @@ internal static class Command
     internal static Task<string> ResponseDisableBuffBot(Bot bot)
     {
         var name = bot.BotName;
-        if (!Utils.BuffBots.Remove(name))
+        if (!Utils.BuffBotStorage.Remove(name))
         {
             return Task.FromResult(bot.FormatBotResponse(Langs.NotEnabledBuff));
         }
@@ -129,9 +133,7 @@ internal static class Command
 
         var results = await Utilities.InParallel(bots.Select(bot => ResponseDisableBuffBot(bot))).ConfigureAwait(false);
 
-        List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
-
-        return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
+        return results.Any() ? string.Join(Environment.NewLine, results) : null;
     }
 
     /// <summary>
@@ -142,7 +144,14 @@ internal static class Command
     internal static async Task<string> ResponseBotStatus(Bot bot)
     {
         var name = bot.BotName;
-        if (!Utils.BuffBots.Contains(name))
+        if (Utils.BuffBotStorage.TryGetValue(name, out var storage))
+        {
+            if (!storage.Enabled)
+            {
+                return bot.FormatBotResponse(Langs.NotEnabledBuff);
+            }
+        }
+        else
         {
             return bot.FormatBotResponse(Langs.NotEnabledBuff);
         }
@@ -179,18 +188,16 @@ internal static class Command
             throw new ArgumentNullException(nameof(botNames));
         }
 
-        HashSet<Bot>? bots = Bot.GetBots(botNames);
+        var bots = Bot.GetBots(botNames);
 
         if ((bots == null) || (bots.Count == 0))
         {
             return Utils.FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
         }
 
-        IList<string> results = await Utilities.InParallel(bots.Select(bot => ResponseBotStatus(bot))).ConfigureAwait(false);
+        var results = await Utilities.InParallel(bots.Select(bot => ResponseBotStatus(bot))).ConfigureAwait(false);
 
-        List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
-
-        return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
+        return results.Any() ? string.Join(Environment.NewLine, results) : null;
     }
 
     /// <summary>
@@ -206,8 +213,21 @@ internal static class Command
             return Utils.FormatStaticResponse(string.Format(Strings.BotNotFound, botName));
         }
 
+        if (!Utils.BuffBotStorage.TryGetValue(bot.BotName, out var storage))
+        {
+            return bot.FormatBotResponse(string.Format(Langs.VerifyCodeNeedLoginFirst, bot.BotName));
+        }
+
         var result = await WebRequest.BuffVerifyAuthCode(bot, code).ConfigureAwait(false);
-        return bot.FormatBotResponse(result ? Langs.Success : Langs.Failure);
+        var login = await WebRequest.CheckCookiesValid(bot).ConfigureAwait(false);
+
+        if (login)
+        {
+            storage.Enabled = true;
+            storage.Cookies = bot.ArchiWebHandler.WebBrowser.GetBuffCookies();
+        }
+
+        return bot.FormatBotResponse(string.Format(Langs.VerifyCodeAndLoginStatus, result ? Langs.Success : Langs.Failure, login ? Langs.Success : Langs.Failure));
     }
 
     /// <summary>
