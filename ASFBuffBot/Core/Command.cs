@@ -243,7 +243,7 @@ internal static class Command
             return Utils.FormatStaticResponse(string.Format(Strings.BotNotFound, botName));
         }
 
-        bot.ArchiWebHandler.WebBrowser.CookieContainer.SetCookies(new Uri("https://buff.163.com"), cookies);
+        bot.ArchiWebHandler.WebBrowser.SetBuffCookies(cookies);
 
         var valid = await WebRequest.CheckCookiesValid(bot).ConfigureAwait(false);
         if (valid)
