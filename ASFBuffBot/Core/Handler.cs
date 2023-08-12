@@ -38,6 +38,8 @@ internal static class Handler
                             {
                                 await Task.Delay(TimeSpan.FromSeconds(Utils.Config.BotInterval)).ConfigureAwait(false);
                             }
+
+                            storage.Cookies = bot.ArchiWebHandler.WebBrowser.GetBuffCookies();
                         }
                         catch (Exception ex)
                         {
@@ -50,6 +52,8 @@ internal static class Handler
                     }
                 }
             }
+
+            await Utils.SaveFile().ConfigureAwait(false);
         }
     }
 

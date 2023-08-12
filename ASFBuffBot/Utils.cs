@@ -20,7 +20,7 @@ internal static class Utils
     /// <summary>
     /// BuffCookies
     /// </summary>
-    internal static BuffBotStorage BuffBotStorage { get; private set; } = new();
+    internal static Dictionary<string, BotStorage> BuffBotStorage { get; private set; } = new();
 
     /// <summary>
     /// 更新已就绪
@@ -93,13 +93,38 @@ internal static class Utils
             string? raw = await sr.ReadLineAsync().ConfigureAwait(false);
             if (!string.IsNullOrEmpty(raw))
             {
-                var json = JsonConvert.DeserializeObject<BuffBotStorage>(raw);
-                if (json != null)
+                var encStorage = JsonConvert.DeserializeObject<Dictionary<string, BotStorage>>(raw);
+
+                BuffBotStorage = new Dictionary<string, BotStorage>();
+                if (encStorage != null)
                 {
-                    BuffBotStorage = json;
+                    foreach (var (botName, storage) in encStorage)
+                    {
+                        var cookies = storage.Cookies;
+                        if (!string.IsNullOrEmpty(cookies))
+                        {
+                            try
+                            {
+                                cookies = Encoding.UTF8.GetString(Convert.FromBase64String(cookies));
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.LogGenericException(ex);
+                            }
+                        }
+                        else
+                        {
+                            cookies = null;
+                        }
+                        storage.Cookies = cookies;
+
+                        BuffBotStorage.Add(botName, storage);
+                    }
+
                     return true;
                 }
             }
+            await SaveFile().ConfigureAwait(false);
             return false;
         }
         catch (Exception)
@@ -118,10 +143,31 @@ internal static class Utils
     {
         try
         {
+            var encStorage = new Dictionary<string, BotStorage>();
+            foreach (var (botName, storage) in BuffBotStorage)
+            {
+                var cookies = storage.Cookies;
+                if (!string.IsNullOrEmpty(cookies))
+                {
+                    cookies = Convert.ToBase64String(Encoding.UTF8.GetBytes(cookies));
+                }
+                else
+                {
+                    cookies = null;
+                }
+
+                var enc = new BotStorage
+                {
+                    Enabled = storage.Enabled,
+                    Cookies = cookies,
+                };
+                encStorage.Add(botName, enc);
+            }
+
             string cookieFilePath = GetFilePath();
-            using var fs = File.Open(cookieFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
+            using var fs = File.Open(cookieFilePath, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
             using var sw = new StreamWriter(fs);
-            string json = JsonConvert.SerializeObject(BuffBotStorage);
+            string json = JsonConvert.SerializeObject(encStorage);
             await sw.WriteAsync(json).ConfigureAwait(false);
             return true;
         }

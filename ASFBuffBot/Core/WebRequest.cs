@@ -1,11 +1,7 @@
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Steam;
-using ArchiSteamFarm.Steam.Integration;
-using ArchiSteamFarm.Web;
 using ArchiSteamFarm.Web.Responses;
 using ASFBuffBot.Data;
-using Newtonsoft.Json.Linq;
-using System.Reflection;
 
 namespace ASFBuffBot.Core;
 
@@ -25,6 +21,75 @@ internal static class WebRequest
         return header;
     }
 
+    private static async Task<T?> GetToObjAsync<T>(this Bot bot, Uri request, Dictionary<string, string>? headers = null) where T : class
+    {
+        var referer = new Uri(Utils.BuffUrl, "/market/steam_inventory?game=csgo");
+
+        if (headers == null)
+        {
+            headers = GenerateBuffHeader();
+        }
+
+        //var response = await bot.ArchiWebHandler.UrlGetToJsonObjectWithSession<T>(request, headers, referer, checkSessionPreemptively: false, maxTries: 1, allowSessionRefresh: false).ConfigureAwait(false);
+        var response = await bot.ArchiWebHandler.WebBrowser.UrlGetToJsonObject<T>(request, headers, referer, maxTries: 1).ConfigureAwait(false);
+        return response?.Content;
+
+        //var response = await bot.ArchiWebHandler.WebBrowser.UrlGetToStream(request, headers, referer).ConfigureAwait(false);
+
+        //if (response?.Content == null)
+        //{
+        //    return default;
+        //}
+
+        //try
+        //{
+        //    using var streamReader = new StreamReader(response.Content);
+        //    var json = await streamReader.ReadToEndAsync().ConfigureAwait(false);
+
+        //    var result = JsonConvert.DeserializeObject<T>(json);
+        //    return result;
+        //}
+        //catch (Exception ex)
+        //{
+        //    Utils.Logger.LogGenericException(ex);
+        //    return default;
+        //}
+    }
+
+    private static async Task<T?> PostToObjAsync<T>(this Bot bot, Uri request, Dictionary<string, string>? data = null, Dictionary<string, string>? headers = null) where T : class
+    {
+        var referer = new Uri(Utils.BuffUrl, "/market/steam_inventory?game=csgo");
+
+        if (headers == null)
+        {
+            headers = GenerateBuffHeader();
+        }
+
+        //var response = await bot.ArchiWebHandler.UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, session: ArchiSteamFarm.Steam.Integration.ArchiWebHandler.ESession.None, checkSessionPreemptively: false, maxTries: 1).ConfigureAwait(false);
+        var response = await bot.ArchiWebHandler.WebBrowser.UrlPostToJsonObject<T, Dictionary<string, string>>(request, headers, data, referer, maxTries: 1).ConfigureAwait(false);
+        return response?.Content;
+        //var response = await bot.ArchiWebHandler.WebBrowser.UrlPostToStream(request, headers, data, referer).ConfigureAwait(false);
+
+        //if (response?.Content == null)
+        //{
+        //    return default;
+        //}
+
+        //try
+        //{
+        //    using var streamReader = new StreamReader(response.Content);
+        //    var json = await streamReader.ReadToEndAsync().ConfigureAwait(false);
+
+        //    var result = JsonConvert.DeserializeObject<T>(json);
+        //    return result;
+        //}
+        //catch (Exception ex)
+        //{
+        //    Utils.Logger.LogGenericException(ex);
+        //    return default;
+        //}
+    }
+
     /// <summary>
     /// 验证Cookies是否有效
     /// </summary>
@@ -33,13 +98,16 @@ internal static class WebRequest
     internal static async Task<bool> CheckCookiesValid(Bot bot)
     {
         var response = await FetcbBuffUserInfo(bot).ConfigureAwait(false);
+        //if (response?.Code != null)
+        //{
+        //    Utils.Logger.LogGenericInfo(response.Code);
+        //}
         return response?.Code == "OK";
     }
 
     internal static async Task<bool> BuffSendSmsCode(Bot bot)
     {
         var request = new Uri(Utils.BuffUrl, "/account/api/logged_in_from_steam/send_authcode");
-        var referer = new Uri(Utils.BuffUrl, "/market/steam_inventory?game=csgo");
 
         var headers = GenerateBuffHeader();
         var cookieValue = bot.ArchiWebHandler.WebBrowser.CookieContainer.GetCookieValue(Utils.BuffUrl, "csrf_token");
@@ -47,17 +115,15 @@ internal static class WebRequest
         {
             return false;
         }
-
         headers.Add("X-CSRFToken", cookieValue);
 
-        var response = await bot.ArchiWebHandler.UrlPostToJsonObjectWithSession<BaseBuffResponse>(request, headers: headers, null, referer: referer, session: ArchiWebHandler.ESession.None).ConfigureAwait(false);
-        return response?.Content?.Code == "OK";
+        var response = await bot.PostToObjAsync<BaseBuffResponse>(request, null, headers).ConfigureAwait(false);
+        return response?.Code == "OK";
     }
 
     internal static async Task<bool> BuffVerifyAuthCode(Bot bot, string authCode)
     {
         var request = new Uri(Utils.BuffUrl, "/account/api/logged_in_from_steam/verify_authcode");
-        var referer = new Uri(Utils.BuffUrl, "/market/steam_inventory?game=csgo");
 
         var headers = GenerateBuffHeader();
         var cookieValue = bot.ArchiWebHandler.WebBrowser.CookieContainer.GetCookieValue(Utils.BuffUrl, "csrf_token");
@@ -72,8 +138,9 @@ internal static class WebRequest
         {
             { "authcode", authCode }
         };
-        var response = await bot.ArchiWebHandler.UrlPostToJsonObjectWithSession<BaseBuffResponse>(request, headers, data, referer: referer, session: ArchiWebHandler.ESession.None).ConfigureAwait(false);
-        return response?.Content?.Code == "OK";
+
+        var response = await bot.PostToObjAsync<BaseBuffResponse>(request, data, headers).ConfigureAwait(false);
+        return response?.Code == "OK";
     }
 
     /// <summary>
@@ -84,9 +151,8 @@ internal static class WebRequest
     internal static async Task<BuffNotificationResponse?> FetchBuffNotification(Bot bot)
     {
         var request = new Uri(Utils.BuffUrl, "/api/message/notification");
-        var headers = GenerateBuffHeader();
-        var response = await bot.ArchiWebHandler.UrlGetToJsonObjectWithSession<BuffNotificationResponse>(request, headers, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections, checkSessionPreemptively: false, allowSessionRefresh: false).ConfigureAwait(false);
-        return response?.Content;
+        var response = await bot.GetToObjAsync<BuffNotificationResponse>(request, null).ConfigureAwait(false);
+        return response;
     }
 
     /// <summary>
@@ -97,9 +163,8 @@ internal static class WebRequest
     internal static async Task<BuffSteamTradeResponse?> FetchBuffSteamTrade(Bot bot)
     {
         var request = new Uri(Utils.BuffUrl, "/api/market/steam_trade");
-        var headers = GenerateBuffHeader();
-        var response = await bot.ArchiWebHandler.UrlGetToJsonObjectWithSession<BuffSteamTradeResponse>(request, headers, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections, checkSessionPreemptively: false, allowSessionRefresh: false).ConfigureAwait(false);
-        return response?.Content;
+        var response = await bot.GetToObjAsync<BuffSteamTradeResponse>(request, null).ConfigureAwait(false);
+        return response;
     }
 
     /// <summary>
@@ -108,12 +173,12 @@ internal static class WebRequest
     /// <param name="bot"></param>
     /// <param name="cookies"></param>
     /// <returns></returns>
-    internal static async Task<BuffUserInfoResponse?> FetcbBuffUserInfo(Bot bot)
+    internal static async Task<BaseBuffResponse?> FetcbBuffUserInfo(Bot bot)
     {
         var request = new Uri(Utils.BuffUrl, "/account/api/user/info");
-        var headers = GenerateBuffHeader();
-        var response = await bot.ArchiWebHandler.UrlGetToJsonObjectWithSession<BuffUserInfoResponse>(request, headers, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections, checkSessionPreemptively: false, allowSessionRefresh: false).ConfigureAwait(false);
-        return response?.Content;
+
+        var response = await bot.GetToObjAsync<BaseBuffResponse>(request, null).ConfigureAwait(false);
+        return response;
     }
 
     /// <summary>

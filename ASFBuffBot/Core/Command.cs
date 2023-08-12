@@ -16,7 +16,20 @@ internal static class Command
         var name = bot.BotName;
         if (Utils.BuffBotStorage.TryGetValue(name, out var storage) && storage.Enabled)
         {
-            return bot.FormatBotResponse(Langs.AlreadyEnabledBuff);
+            if (storage.Enabled)
+            {
+                return bot.FormatBotResponse(Langs.AlreadyEnabledBuff);
+            }
+            else
+            {
+                bool login1 = await WebRequest.CheckCookiesValid(bot).ConfigureAwait(false);
+                if (login1)
+                {
+                    storage.Enabled = true;
+                    await Utils.SaveFile().ConfigureAwait(false);
+                    return bot.FormatBotResponse(Langs.EnableBuffSuccess);
+                }
+            }
         }
 
         if (!bot.HasMobileAuthenticator)
@@ -41,7 +54,7 @@ internal static class Command
             if (success)
             {
                 Utils.BuffBotStorage.TryAdd(name, new Data.BotStorage { Enabled = false });
-                return bot.FormatBotResponse(Langs.EnableBuffNeedCode);
+                return bot.FormatBotResponse(string.Format(Langs.EnableBuffNeedCode, bot.BotName));
             }
             else
             {
@@ -63,7 +76,6 @@ internal static class Command
         else
         {
             return bot.FormatBotResponse(string.Format(Langs.EnableBuffFailed, bot.SteamID));
-
         }
     }
 
@@ -221,11 +233,12 @@ internal static class Command
         var result = await WebRequest.BuffVerifyAuthCode(bot, code).ConfigureAwait(false);
         var login = await WebRequest.CheckCookiesValid(bot).ConfigureAwait(false);
 
-        if (login)
+        if (result)
         {
             storage.Enabled = true;
             storage.Cookies = bot.ArchiWebHandler.WebBrowser.GetBuffCookies();
         }
+        await Utils.SaveFile().ConfigureAwait(false);
 
         return bot.FormatBotResponse(string.Format(Langs.VerifyCodeAndLoginStatus, result ? Langs.Success : Langs.Failure, login ? Langs.Success : Langs.Failure));
     }
