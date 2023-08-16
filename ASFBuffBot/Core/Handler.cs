@@ -24,32 +24,32 @@ internal static class Handler
             {
                 if (Utils.BuffBotStorage.TryGetValue(bot.BotName, out var storage))
                 {
-                    if (storage.Enabled)
+                    //if (storage.Enabled)
+                    //{
+                    try
                     {
-                        try
+                        Utils.Logger.LogGenericInfo(string.Format(Langs.StartDeliverCheck, bot.BotName));
+
+                        bool delay = await CheckDeliver(bot).ConfigureAwait(false);
+
+                        Utils.Logger.LogGenericInfo(Langs.EndDeliverCheck);
+
+                        if (delay)
                         {
-                            Utils.Logger.LogGenericInfo(string.Format(Langs.StartDeliverCheck, bot.BotName));
-
-                            bool delay = await CheckDeliver(bot).ConfigureAwait(false);
-
-                            Utils.Logger.LogGenericInfo(Langs.EndDeliverCheck);
-
-                            if (delay)
-                            {
-                                await Task.Delay(TimeSpan.FromSeconds(Utils.Config.BotInterval)).ConfigureAwait(false);
-                            }
-
-                            storage.Cookies = bot.ArchiWebHandler.WebBrowser.GetBuffCookies();
+                            await Task.Delay(TimeSpan.FromSeconds(Utils.Config.BotInterval)).ConfigureAwait(false);
                         }
-                        catch (Exception ex)
-                        {
-                            Utils.Logger.LogGenericException(ex, Langs.ErrorDeliverCheck);
-                        }
+
+                        storage.Cookies = bot.ArchiWebHandler.WebBrowser.GetBuffCookies();
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        Utils.Logger.LogGenericInfo(string.Format(Langs.BotDisabledBuff, bot.BotName));
+                        Utils.Logger.LogGenericException(ex, Langs.ErrorDeliverCheck);
                     }
+                    //}
+                    //else
+                    //{
+                    //    Utils.Logger.LogGenericInfo(string.Format(Langs.BotDisabledBuff, bot.BotName));
+                    //}
                 }
             }
 
@@ -106,10 +106,10 @@ internal static class Handler
                 if (!login)
                 {
                     status.Message = string.Format(Langs.AutoLoginFailedNeedCode, name);
-                    if (Utils.BuffBotStorage.TryGetValue(name, out var storage))
-                    {
-                        storage.Enabled = false;
-                    }
+                    //if (Utils.BuffBotStorage.TryGetValue(name, out var storage))
+                    //{
+                    //    storage.Enabled = false;
+                    //}
                     return true;
                 }
             }

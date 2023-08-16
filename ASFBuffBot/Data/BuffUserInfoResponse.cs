@@ -15,5 +15,5 @@ public sealed record UserInfoData
     public string? NickName { get; set; }
 
     [JsonProperty(PropertyName = "steamid", Required = Required.Default)]
-    public ulong SteamId { get; set; }
+    public string? SteamId { get; set; }
 }

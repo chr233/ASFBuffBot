@@ -25,69 +25,22 @@ internal static class WebRequest
     {
         var referer = new Uri(Utils.BuffUrl, "/market/steam_inventory?game=csgo");
 
-        if (headers == null)
-        {
-            headers = GenerateBuffHeader();
-        }
+        headers ??= GenerateBuffHeader();
 
         //var response = await bot.ArchiWebHandler.UrlGetToJsonObjectWithSession<T>(request, headers, referer, checkSessionPreemptively: false, maxTries: 1, allowSessionRefresh: false).ConfigureAwait(false);
         var response = await bot.ArchiWebHandler.WebBrowser.UrlGetToJsonObject<T>(request, headers, referer, maxTries: 1).ConfigureAwait(false);
         return response?.Content;
-
-        //var response = await bot.ArchiWebHandler.WebBrowser.UrlGetToStream(request, headers, referer).ConfigureAwait(false);
-
-        //if (response?.Content == null)
-        //{
-        //    return default;
-        //}
-
-        //try
-        //{
-        //    using var streamReader = new StreamReader(response.Content);
-        //    var json = await streamReader.ReadToEndAsync().ConfigureAwait(false);
-
-        //    var result = JsonConvert.DeserializeObject<T>(json);
-        //    return result;
-        //}
-        //catch (Exception ex)
-        //{
-        //    Utils.Logger.LogGenericException(ex);
-        //    return default;
-        //}
     }
 
     private static async Task<T?> PostToObjAsync<T>(this Bot bot, Uri request, Dictionary<string, string>? data = null, Dictionary<string, string>? headers = null) where T : class
     {
         var referer = new Uri(Utils.BuffUrl, "/market/steam_inventory?game=csgo");
 
-        if (headers == null)
-        {
-            headers = GenerateBuffHeader();
-        }
+        headers ??= GenerateBuffHeader();
 
         //var response = await bot.ArchiWebHandler.UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, session: ArchiSteamFarm.Steam.Integration.ArchiWebHandler.ESession.None, checkSessionPreemptively: false, maxTries: 1).ConfigureAwait(false);
         var response = await bot.ArchiWebHandler.WebBrowser.UrlPostToJsonObject<T, Dictionary<string, string>>(request, headers, data, referer, maxTries: 1).ConfigureAwait(false);
         return response?.Content;
-        //var response = await bot.ArchiWebHandler.WebBrowser.UrlPostToStream(request, headers, data, referer).ConfigureAwait(false);
-
-        //if (response?.Content == null)
-        //{
-        //    return default;
-        //}
-
-        //try
-        //{
-        //    using var streamReader = new StreamReader(response.Content);
-        //    var json = await streamReader.ReadToEndAsync().ConfigureAwait(false);
-
-        //    var result = JsonConvert.DeserializeObject<T>(json);
-        //    return result;
-        //}
-        //catch (Exception ex)
-        //{
-        //    Utils.Logger.LogGenericException(ex);
-        //    return default;
-        //}
     }
 
     /// <summary>
@@ -97,11 +50,11 @@ internal static class WebRequest
     /// <returns></returns>
     internal static async Task<bool> CheckCookiesValid(Bot bot)
     {
-        var response = await FetcbBuffUserInfo(bot).ConfigureAwait(false);
-        //if (response?.Code != null)
-        //{
-        //    Utils.Logger.LogGenericInfo(response.Code);
-        //}
+        var response = await FetchBuffSteamTrade(bot).ConfigureAwait(false);
+        if (response?.Code != null)
+        {
+            Utils.Logger.LogGenericInfo(response.Code);
+        }
         return response?.Code == "OK";
     }
 
@@ -173,11 +126,11 @@ internal static class WebRequest
     /// <param name="bot"></param>
     /// <param name="cookies"></param>
     /// <returns></returns>
-    internal static async Task<BaseBuffResponse?> FetcbBuffUserInfo(Bot bot)
+    internal static async Task<BuffUserInfoResponse?> FetcbBuffUserInfo(Bot bot)
     {
         var request = new Uri(Utils.BuffUrl, "/account/api/user/info");
 
-        var response = await bot.GetToObjAsync<BaseBuffResponse>(request, null).ConfigureAwait(false);
+        var response = await bot.GetToObjAsync<BuffUserInfoResponse>(request, null).ConfigureAwait(false);
         return response;
     }
 

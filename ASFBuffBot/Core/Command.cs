@@ -14,23 +14,6 @@ internal static class Command
     internal static async Task<string?> ResponseEnableBuffBot(Bot bot)
     {
         var name = bot.BotName;
-        if (Utils.BuffBotStorage.TryGetValue(name, out var storage) && storage.Enabled)
-        {
-            if (storage.Enabled)
-            {
-                return bot.FormatBotResponse(Langs.AlreadyEnabledBuff);
-            }
-            else
-            {
-                bool login1 = await WebRequest.CheckCookiesValid(bot).ConfigureAwait(false);
-                if (login1)
-                {
-                    storage.Enabled = true;
-                    await Utils.SaveFile().ConfigureAwait(false);
-                    return bot.FormatBotResponse(Langs.EnableBuffSuccess);
-                }
-            }
-        }
 
         if (!bot.HasMobileAuthenticator)
         {
@@ -42,40 +25,50 @@ internal static class Command
             return bot.FormatBotResponse(Strings.BotNotConnected);
         }
 
-        await WebRequest.LoginToBuffViaSteam(bot).ConfigureAwait(false);
-
         bool login = await WebRequest.CheckCookiesValid(bot).ConfigureAwait(false);
-
-        if (!login || Utils.Config.AlwaysSendSmsCode)
-        {
-            // 如果未成功登录就发送验证码
-            var success = await WebRequest.BuffSendSmsCode(bot).ConfigureAwait(false);
-
-            if (success)
-            {
-                Utils.BuffBotStorage.TryAdd(name, new Data.BotStorage { Enabled = false });
-                return bot.FormatBotResponse(string.Format(Langs.EnableBuffNeedCode, bot.BotName));
-            }
-            else
-            {
-                return bot.FormatBotResponse(Langs.EnableBuffSendCodeFailed);
-            }
-        }
-
         if (login)
         {
-            Handler.InitTradeCache(bot);
-            await Handler.FreshTradeCache(bot).ConfigureAwait(false);
-
-            var cookies = bot.ArchiWebHandler.WebBrowser.GetBuffCookies();
-            Utils.BuffBotStorage.TryAdd(name, new Data.BotStorage { Enabled = true, Cookies = cookies });
-
             await Utils.SaveFile().ConfigureAwait(false);
-            return bot.FormatBotResponse(Langs.EnableBuffSuccess);
+            return Utils.BuffBotStorage.ContainsKey(name) ? bot.FormatBotResponse(Langs.AlreadyEnabledBuff) : bot.FormatBotResponse(Langs.EnableBuffSuccess);
         }
         else
         {
-            return bot.FormatBotResponse(string.Format(Langs.EnableBuffFailed, bot.SteamID));
+            await WebRequest.LoginToBuffViaSteam(bot).ConfigureAwait(false);
+
+            login = await WebRequest.CheckCookiesValid(bot).ConfigureAwait(false);
+
+            if (!login || Utils.Config.AlwaysSendSmsCode)
+            {
+                // 如果未成功登录就发送验证码
+                var success = await WebRequest.BuffSendSmsCode(bot).ConfigureAwait(false);
+                if (success)
+                {
+                    var cookies = bot.ArchiWebHandler.WebBrowser.GetBuffCookies();
+                    Utils.BuffBotStorage.TryAdd(name, new Data.BotStorage { Cookies = cookies });
+                    Utils.PaddingBots.Add(name);
+                    return bot.FormatBotResponse(string.Format(Langs.EnableBuffNeedCode, bot.BotName));
+                }
+                else
+                {
+                    return bot.FormatBotResponse(Langs.EnableBuffSendCodeFailed);
+                }
+            }
+
+            if (login)
+            {
+                Handler.InitTradeCache(bot);
+                await Handler.FreshTradeCache(bot).ConfigureAwait(false);
+
+                var cookies = bot.ArchiWebHandler.WebBrowser.GetBuffCookies();
+                Utils.BuffBotStorage.TryAdd(name, new Data.BotStorage { Cookies = cookies });
+
+                await Utils.SaveFile().ConfigureAwait(false);
+                return bot.FormatBotResponse(Langs.EnableBuffSuccess);
+            }
+            else
+            {
+                return bot.FormatBotResponse(string.Format(Langs.EnableBuffFailed, bot.SteamID));
+            }
         }
     }
 
@@ -156,14 +149,7 @@ internal static class Command
     internal static async Task<string> ResponseBotStatus(Bot bot)
     {
         var name = bot.BotName;
-        if (Utils.BuffBotStorage.TryGetValue(name, out var storage))
-        {
-            if (!storage.Enabled)
-            {
-                return bot.FormatBotResponse(Langs.NotEnabledBuff);
-            }
-        }
-        else
+        if (!Utils.BuffBotStorage.ContainsKey(name))
         {
             return bot.FormatBotResponse(Langs.NotEnabledBuff);
         }
@@ -235,7 +221,7 @@ internal static class Command
 
         if (result)
         {
-            storage.Enabled = true;
+            Utils.PaddingBots.Remove(bot.BotName);
             storage.Cookies = bot.ArchiWebHandler.WebBrowser.GetBuffCookies();
         }
         await Utils.SaveFile().ConfigureAwait(false);

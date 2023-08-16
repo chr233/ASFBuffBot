@@ -13,18 +13,18 @@ public sealed record SteamTradeData
     /// <summary>
     /// AppId
     /// </summary>
-    [JsonProperty(PropertyName = "appid", Required = Required.Default)]
-    public uint AppId { get; set; }
+    //[JsonProperty(PropertyName = "appid", Required = Required.Default)]
+    //public uint AppId { get; set; }
     /// <summary>
     /// 账户年限
     /// </summary>
-    [JsonProperty(PropertyName = "bot_age", Required = Required.Default)]
-    public uint BotAge { get; set; }
+    //[JsonProperty(PropertyName = "bot_age", Required = Required.Default)]
+    //public uint BotAge { get; set; }
     /// <summary>
     /// 账户年限图标
     /// </summary>
-    [JsonProperty(PropertyName = "bot_age_icon", Required = Required.Default)]
-    public string BotAgeIcon { get; set; } = "";
+    //[JsonProperty(PropertyName = "bot_age_icon", Required = Required.Default)]
+    //public string BotAgeIcon { get; set; } = "";
 
     /// <summary>
     /// 账户头像
@@ -41,8 +41,8 @@ public sealed record SteamTradeData
     /// <summary>
     /// 账户等级
     /// </summary>
-    [JsonProperty(PropertyName = "bot_level", Required = Required.Default)]
-    public int BotLevel { get; set; }
+    //[JsonProperty(PropertyName = "bot_level", Required = Required.Default)]
+    //public int BotLevel { get; set; }
 
     /// <summary>
     /// 账户昵称
@@ -71,8 +71,8 @@ public sealed record SteamTradeData
     /// <summary>
     /// 商品信息
     /// </summary>
-    [JsonProperty(PropertyName = "goods_infos", Required = Required.Default)]
-    public Dictionary<string, GoodInfoData> GoodsInfos { get; set; } = new();
+    //[JsonProperty(PropertyName = "goods_infos", Required = Required.Default)]
+    //public Dictionary<string, GoodInfoData> GoodsInfos { get; set; } = new();
 
     /// <summary>
     /// Buff交易ID
@@ -167,8 +167,8 @@ public sealed record IteamToTradeData
     [JsonProperty(PropertyName = "contextid", Required = Required.Default)]
     public ulong ContextId { get; set; }
 
-    [JsonProperty(PropertyName = "goods_id", Required = Required.Default)]
-    public long GoodsId { get; set; }
+    //[JsonProperty(PropertyName = "goods_id", Required = Required.Default)]
+    //public long GoodsId { get; set; }
 
     [JsonProperty(PropertyName = "instanceid", Required = Required.Default)]
     public ulong InstanceID { get; set; }

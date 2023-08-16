@@ -233,7 +233,6 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
                     case "DB" when access >= EAccess.Master:
                         return await Core.Command.ResponseDisableBuffBot(bot).ConfigureAwait(false);
 
-
                     case "BUFFSTATUS" when access >= EAccess.Master:
                     case "BS" when access >= EAccess.Master:
                         return await Core.Command.ResponseBotStatus(bot).ConfigureAwait(false);

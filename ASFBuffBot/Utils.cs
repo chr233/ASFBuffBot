@@ -22,6 +22,8 @@ internal static class Utils
     /// </summary>
     internal static Dictionary<string, BotStorage> BuffBotStorage { get; private set; } = new();
 
+    internal static HashSet<string> PaddingBots { get; set; } = new();
+
     /// <summary>
     /// 更新已就绪
     /// </summary>
@@ -158,7 +160,7 @@ internal static class Utils
 
                 var enc = new BotStorage
                 {
-                    Enabled = storage.Enabled,
+                    //Enabled = storage.Enabled,
                     Cookies = cookies,
                 };
                 encStorage.Add(botName, enc);
