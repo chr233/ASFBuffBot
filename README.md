@@ -2,6 +2,14 @@
 
 反序列化暂时有问题，插件可能无法正常工作，请使用自编译版本的ASF
 
+反序列化暂时有问题，插件可能无法正常工作，请使用自编译版本的ASF
+
+反序列化暂时有问题，插件可能无法正常工作，请使用自编译版本的ASF
+
+反序列化暂时有问题，插件可能无法正常工作，请使用自编译版本的ASF
+
+反序列化暂时有问题，插件可能无法正常工作，请使用自编译版本的ASF
+
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/28d15406751f42f499e2f53fde5bb808)](https://www.codacy.com/gh/chr233/ASFBuffBot/dashboard)
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/chr233/ASFBuffBot/autobuild.yml?logo=github)
 [![License](https://img.shields.io/github/license/chr233/ASFBuffBot?logo=apache)](https://github.com/chr233/ASFBuffBot/blob/master/license)
