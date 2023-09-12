@@ -132,18 +132,18 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
         Utils.Logger.LogGenericInfo(Langs.BuffCheckWillStartIn30);
 
         //注册Buff Service
-        _ = Task.Run(async () =>
-        {
-            try
-            {
-                await Task.Delay(1000).ConfigureAwait(false);
-                await Core.ReflectionHelper.AddBuffService().ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                Utils.Logger.LogGenericException(ex, Langs.RegisterBuffServiceFailed);
-            }
-        });
+        //_ = Task.Run(async () =>
+        //{
+        //    try
+        //    {
+        //        await Task.Delay(1000).ConfigureAwait(false);
+        //        await Core.ReflectionHelper.AddBuffService().ConfigureAwait(false);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Utils.Logger.LogGenericException(ex, Langs.RegisterBuffServiceFailed);
+        //    }
+        //});
     }
 
     /// <summary>
