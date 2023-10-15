@@ -1,5 +1,3 @@
-using ArchiSteamFarm.Core;
-using ArchiSteamFarm.Steam;
 using System.Reflection;
 
 namespace ASFBuffBot;

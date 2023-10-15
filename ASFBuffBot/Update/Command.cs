@@ -1,7 +1,3 @@
-using ASFBuffBot.Data;
-using System.IO.Compression;
-using System.Text;
-
 namespace ASFBuffBot.Update;
 
 internal static class Command
