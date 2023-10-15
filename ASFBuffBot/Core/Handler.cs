@@ -28,11 +28,11 @@ internal static class Handler
                     //{
                     try
                     {
-                        Utils.Logger.LogGenericInfo(string.Format(Langs.StartDeliverCheck, bot.BotName));
+                        Utils.ASFLogger.LogGenericInfo(string.Format(Langs.StartDeliverCheck, bot.BotName));
 
                         bool delay = await CheckDeliver(bot).ConfigureAwait(false);
 
-                        Utils.Logger.LogGenericInfo(Langs.EndDeliverCheck);
+                        Utils.ASFLogger.LogGenericInfo(Langs.EndDeliverCheck);
 
                         if (delay)
                         {
@@ -43,7 +43,7 @@ internal static class Handler
                     }
                     catch (Exception ex)
                     {
-                        Utils.Logger.LogGenericException(ex, Langs.ErrorDeliverCheck);
+                        Utils.ASFLogger.LogGenericException(ex, Langs.ErrorDeliverCheck);
                     }
                     //}
                     //else
@@ -66,13 +66,13 @@ internal static class Handler
     {
         if (!bot.IsConnectedAndLoggedOn)
         {
-            Utils.Logger.LogGenericInfo(Langs.NotLoginSkip);
+            Utils.ASFLogger.LogGenericInfo(Langs.NotLoginSkip);
             return false;
         }
 
         if (!bot.HasMobileAuthenticator)
         {
-            Utils.Logger.LogGenericWarning(Langs.No2FaSetSkip);
+            Utils.ASFLogger.LogGenericWarning(Langs.No2FaSetSkip);
             return false;
         }
 
@@ -83,7 +83,7 @@ internal static class Handler
             InitTradeCache(bot);
             if (!BotTradeCache.TryGetValue(name, out tradeCache) || !BotDeliverStatus.TryGetValue(name, out status))
             {
-                Utils.Logger.LogGenericWarning(string.Format(Langs.NoTradeCacheSkip, name));
+                Utils.ASFLogger.LogGenericWarning(string.Format(Langs.NoTradeCacheSkip, name));
                 return false;
             }
         }
@@ -91,7 +91,7 @@ internal static class Handler
         //无交易信息, 跳过
         if (!tradeCache.Any())
         {
-            Utils.Logger.LogGenericInfo(string.Format(Langs.NoTradeCacheSkip, name));
+            Utils.ASFLogger.LogGenericInfo(string.Format(Langs.NoTradeCacheSkip, name));
         }
 
         //验证Buff登录状态
@@ -124,7 +124,7 @@ internal static class Handler
         var notifResponse = await WebRequest.FetchBuffNotification(bot).ConfigureAwait(false);
         if (notifResponse?.Code != "OK" || notifResponse?.Data?.ToDeliverOrder == null)
         {
-            Utils.Logger.LogGenericWarning(string.Format(Langs.BotNotificationRequestFailedSkip, notifResponse?.Code));
+            Utils.ASFLogger.LogGenericWarning(string.Format(Langs.BotNotificationRequestFailedSkip, notifResponse?.Code));
             status.Message = Langs.FetchBuffNotificationFailed;
             return true;
         }
@@ -134,19 +134,19 @@ internal static class Handler
 
         if (csgo + dota2 == 0)
         {
-            Utils.Logger.LogGenericInfo(Langs.NoItemToDeliver);
+            Utils.ASFLogger.LogGenericInfo(Langs.NoItemToDeliver);
             return true;
         }
         else
         {
-            Utils.Logger.LogGenericInfo(string.Format(Langs.BuffDeliverCount, csgo, dota2));
+            Utils.ASFLogger.LogGenericInfo(string.Format(Langs.BuffDeliverCount, csgo, dota2));
         }
 
         //检查待发货订单
         var tradeResponse = await WebRequest.FetchBuffSteamTrade(bot).ConfigureAwait(false);
         if (tradeResponse?.Code != "OK" || tradeResponse?.Data == null)
         {
-            Utils.Logger.LogGenericWarning(string.Format(Langs.BuffSteamTradeRequestFailed, tradeResponse?.Code));
+            Utils.ASFLogger.LogGenericWarning(string.Format(Langs.BuffSteamTradeRequestFailed, tradeResponse?.Code));
             status.Message = Langs.FetchBuffDeliverFailed;
             return true;
         }
@@ -157,7 +157,7 @@ internal static class Handler
             {
                 totalItems += item.ItemsToTrade.Count;
             }
-            Utils.Logger.LogGenericInfo(string.Format(Langs.BuffDeliverItemCount, totalItems));
+            Utils.ASFLogger.LogGenericInfo(string.Format(Langs.BuffDeliverItemCount, totalItems));
         }
 
         foreach (var buffTrade in tradeResponse.Data)
@@ -189,11 +189,11 @@ internal static class Handler
                 bool accept = matchCount == steamTrade.ItemsToGiveReadOnly.Count;
                 if (accept)
                 {
-                    Utils.Logger.LogGenericInfo(string.Format(Langs.TradeMatchAtuoAccept, tradeId));
+                    Utils.ASFLogger.LogGenericInfo(string.Format(Langs.TradeMatchAtuoAccept, tradeId));
                     var response = await WebRequest.AcceptTradeOffer(bot, tradeId).ConfigureAwait(false);
                     if (response == null)
                     {
-                        Utils.Logger.LogGenericError(string.Format(Langs.ConfitmTradeFailed, tradeId));
+                        Utils.ASFLogger.LogGenericError(string.Format(Langs.ConfitmTradeFailed, tradeId));
                         status.Message = Langs.ConfirmTradeFailed;
                         continue;
                     }
@@ -201,12 +201,12 @@ internal static class Handler
                     {
                         if (response.RequiresMobileConfirmation)
                         {
-                            Utils.Logger.LogGenericInfo(string.Format(Langs.AcceptTradeSuccess2FaRequired, tradeId));
+                            Utils.ASFLogger.LogGenericInfo(string.Format(Langs.AcceptTradeSuccess2FaRequired, tradeId));
 
                             var offerIDs = new List<ulong> { steamTrade.TradeOfferID };
                             (bool success, _, string message) = await bot.Actions.HandleTwoFactorAuthenticationConfirmations(accept, Confirmation.EConfirmationType.Trade, offerIDs, true).ConfigureAwait(false);
 
-                            Utils.Logger.LogGenericWarning(string.Format(Langs.SteamTradeDetail, accept ? Langs.Approve : Langs.Reject, success ? Langs.Success : Langs.Failure, message, tradeId));
+                            Utils.ASFLogger.LogGenericWarning(string.Format(Langs.SteamTradeDetail, accept ? Langs.Approve : Langs.Reject, success ? Langs.Success : Langs.Failure, message, tradeId));
 
                             if (success)
                             {
@@ -217,7 +217,7 @@ internal static class Handler
                         }
                         else
                         {
-                            Utils.Logger.LogGenericInfo(string.Format(Langs.AcceptTradeSuccess, tradeId));
+                            Utils.ASFLogger.LogGenericInfo(string.Format(Langs.AcceptTradeSuccess, tradeId));
                             BotTradeCache.TryRemove(tradeId, out _);
                             status.DeliverAcceptCount++;
                             continue;
@@ -228,16 +228,16 @@ internal static class Handler
                 {
                     if (Utils.Config.RejectNotMatch)
                     {
-                        Utils.Logger.LogGenericWarning(string.Format(Langs.TradeDismatchAutoReject, tradeId));
+                        Utils.ASFLogger.LogGenericWarning(string.Format(Langs.TradeDismatchAutoReject, tradeId));
 
                         var result = await WebRequest.DeclineTradeOffer(bot, tradeId).ConfigureAwait(false);
-                        Utils.Logger.LogGenericWarning(string.Format(Langs.RejectTrade, result ? Langs.Success : Langs.Failure, tradeId));
+                        Utils.ASFLogger.LogGenericWarning(string.Format(Langs.RejectTrade, result ? Langs.Success : Langs.Failure, tradeId));
                         BotTradeCache.TryRemove(tradeId, out _);
                         status.DeliverRejectCount++;
                     }
                     else
                     {
-                        Utils.Logger.LogGenericWarning(string.Format(Langs.TradeDismatch, tradeId));
+                        Utils.ASFLogger.LogGenericWarning(string.Format(Langs.TradeDismatch, tradeId));
 
                     }
 
@@ -246,7 +246,7 @@ internal static class Handler
             }
             else
             {
-                Utils.Logger.LogGenericInfo(string.Format(Langs.NoMatchTradeFound, tradeId));
+                Utils.ASFLogger.LogGenericInfo(string.Format(Langs.NoMatchTradeFound, tradeId));
                 continue;
             }
         }
@@ -266,7 +266,7 @@ internal static class Handler
             InitTradeCache(bot);
             if (!BotTradeCache.TryGetValue(bot.BotName, out tradeCache))
             {
-                Utils.Logger.LogGenericWarning(string.Format(Langs.TradeCacheNotInit, bot.BotName));
+                Utils.ASFLogger.LogGenericWarning(string.Format(Langs.TradeCacheNotInit, bot.BotName));
                 return;
             }
         }
@@ -279,11 +279,11 @@ internal static class Handler
             if (!tradeCache.TryAdd(tradeId, tradeOffer))
             {
                 tradeCache[tradeId] = tradeOffer;
-                Utils.Logger.LogGenericDebug(string.Format(Langs.UpdateTradeCache, tradeId));
+                Utils.ASFLogger.LogGenericDebug(string.Format(Langs.UpdateTradeCache, tradeId));
             }
             else
             {
-                Utils.Logger.LogGenericDebug(string.Format(Langs.ReceivedNewTradeCache, tradeId));
+                Utils.ASFLogger.LogGenericDebug(string.Format(Langs.ReceivedNewTradeCache, tradeId));
             }
         }
     }
@@ -297,7 +297,7 @@ internal static class Handler
         var name = bot.BotName;
         if (!BotTradeCache.TryAdd(name, new ConcurrentDictionary<string, TradeOffer>()) || !BotDeliverStatus.TryAdd(name, new BotDeliverStatus()))
         {
-            Utils.Logger.LogGenericWarning(string.Format(Langs.TradeCacheAlreadyInit, name));
+            Utils.ASFLogger.LogGenericWarning(string.Format(Langs.TradeCacheAlreadyInit, name));
         }
     }
 
@@ -324,11 +324,11 @@ internal static class Handler
                         if (!tradeCache.TryAdd(tradeId, tradeOffer))
                         {
                             tradeCache[tradeId] = tradeOffer;
-                            Utils.Logger.LogGenericDebug(string.Format(Langs.UpdateTradeCache, tradeId));
+                            Utils.ASFLogger.LogGenericDebug(string.Format(Langs.UpdateTradeCache, tradeId));
                         }
                         else
                         {
-                            Utils.Logger.LogGenericDebug(string.Format(Langs.ReceivedNewTradeCache, tradeId));
+                            Utils.ASFLogger.LogGenericDebug(string.Format(Langs.ReceivedNewTradeCache, tradeId));
                         }
                     }
                 }
@@ -352,7 +352,7 @@ internal static class Handler
         }
         else
         {
-            Utils.Logger.LogGenericWarning(string.Format(Langs.TradeCacheNotInitCantClear, name));
+            Utils.ASFLogger.LogGenericWarning(string.Format(Langs.TradeCacheNotInitCantClear, name));
         }
     }
 

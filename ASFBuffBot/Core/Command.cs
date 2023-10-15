@@ -102,7 +102,7 @@ internal static class Command
     /// </summary>
     /// <param name="bot"></param>
     /// <returns></returns>
-    internal static Task<string> ResponseDisableBuffBot(Bot bot)
+    internal static Task<string?> ResponseDisableBuffBot(Bot bot)
     {
         var name = bot.BotName;
         if (!Utils.BuffBotStorage.Remove(name))
@@ -146,7 +146,7 @@ internal static class Command
     /// </summary>
     /// <param name="bot"></param>
     /// <returns></returns>
-    internal static async Task<string> ResponseBotStatus(Bot bot)
+    internal static async Task<string?> ResponseBotStatus(Bot bot)
     {
         var name = bot.BotName;
         if (!Utils.BuffBotStorage.ContainsKey(name))

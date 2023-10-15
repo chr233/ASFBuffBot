@@ -34,7 +34,7 @@ internal static class ReflectionHelper
         }
         else
         {
-            Utils.Logger.LogGenericWarning("Fieldinfo is null");
+            Utils.ASFLogger.LogGenericWarning("Fieldinfo is null");
         }
     }
 }

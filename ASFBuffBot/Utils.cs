@@ -111,7 +111,7 @@ internal static class Utils
                             }
                             catch (Exception ex)
                             {
-                                Logger.LogGenericException(ex);
+                                ASFLogger.LogGenericException(ex);
                             }
                         }
                         else
@@ -131,7 +131,7 @@ internal static class Utils
         }
         catch (Exception)
         {
-            Logger.LogGenericError(Langs.ReadCookiesFailed);
+            ASFLogger.LogGenericError(Langs.ReadCookiesFailed);
             await SaveFile().ConfigureAwait(false);
             return false;
         }
@@ -175,7 +175,7 @@ internal static class Utils
         }
         catch (Exception ex)
         {
-            Logger.LogGenericException(ex, Langs.WriteCookiesFailed);
+            ASFLogger.LogGenericException(ex, Langs.WriteCookiesFailed);
             return false;
         }
     }
@@ -209,7 +209,7 @@ internal static class Utils
     /// <summary>
     /// 日志
     /// </summary>
-    internal static ArchiLogger Logger => ASF.ArchiLogger;
+    internal static ArchiLogger ASFLogger => ASF.ArchiLogger;
 
     internal static string GetBuffCookies(this WebBrowser webBrowser)
     {

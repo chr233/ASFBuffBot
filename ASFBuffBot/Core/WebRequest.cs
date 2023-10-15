@@ -53,7 +53,7 @@ internal static class WebRequest
         var response = await FetchBuffSteamTrade(bot).ConfigureAwait(false);
         if (response?.Code != null)
         {
-            Utils.Logger.LogGenericInfo(response.Code);
+            Utils.ASFLogger.LogGenericInfo(response.Code);
         }
         return response?.Code == "OK";
     }

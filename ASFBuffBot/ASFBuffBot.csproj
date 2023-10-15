@@ -34,6 +34,9 @@
 
 	<ItemGroup>
 		<Using Include="ASFBuffBot.Localization" />
+		<Using Include="ASFBuffBot.Utils">
+		  <Static>True</Static>
+		</Using>
 	</ItemGroup>
 
 	<ItemGroup>

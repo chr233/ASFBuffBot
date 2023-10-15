@@ -8,6 +8,7 @@ using Newtonsoft.Json.Linq;
 using SteamKit2;
 using System.ComponentModel;
 using System.Composition;
+using System.Reflection;
 using System.Text;
 
 namespace ASFBuffBot;
@@ -17,6 +18,8 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
 {
     public string Name => nameof(ASFBuffBot);
     public Version Version => Utils.MyVersion;
+
+    private AdapterBtidge? ASFEBridge = null;
 
     [JsonProperty]
     public static PluginConfig Config => Utils.Config;
@@ -50,7 +53,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
                     }
                     catch (Exception ex)
                     {
-                        Utils.Logger.LogGenericException(ex);
+                        Utils.ASFLogger.LogGenericException(ex);
                     }
                 }
             }
@@ -119,7 +122,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
         if (warning.Length > 0)
         {
             warning.Insert(0, Environment.NewLine);
-            Utils.Logger.LogGenericWarning(warning.ToString());
+            Utils.ASFLogger.LogGenericWarning(warning.ToString());
         }
 
         BuffTimer = new Timer(
@@ -129,7 +132,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
            TimeSpan.FromSeconds(Config.BuffCheckInterval)
         );
 
-        Utils.Logger.LogGenericInfo(Langs.BuffCheckWillStartIn30);
+        Utils.ASFLogger.LogGenericInfo(Langs.BuffCheckWillStartIn30);
 
         //注册Buff Service
         //_ = Task.Run(async () =>
@@ -152,40 +155,23 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
     /// <returns></returns>
     public Task OnLoaded()
     {
-        var message = new StringBuilder("\n");
-        message.AppendLine(Static.Line);
-        message.AppendLine(Static.Logo);
-        message.AppendLine(string.Format(Langs.PluginVer, nameof(ASFBuffBot), Utils.MyVersion.ToString()));
-        message.AppendLine(Langs.PluginContact);
-        message.AppendLine(Langs.PluginInfo);
-        message.AppendLine(Static.Line);
-
-        string pluginFolder = Path.GetDirectoryName(Utils.MyLocation) ?? ".";
-        string backupPath = Path.Combine(pluginFolder, $"{nameof(ASFBuffBot)}.bak");
-        bool existsBackup = File.Exists(backupPath);
-        if (existsBackup)
+        try
         {
-            try
-            {
-                File.Delete(backupPath);
-                message.AppendLine(Langs.CleanUpOldBackup);
-            }
-            catch (Exception e)
-            {
-                Utils.Logger.LogGenericException(e);
-                message.AppendLine(Langs.CleanUpOldBackupFailed);
-            }
+            var flag = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
+            var handler = typeof(ASFBuffBot).GetMethod(nameof(ResponseCommand), flag);
+
+            const string pluginName = nameof(ASFBuffBot);
+            const string cmdPrefix = "ABB";
+            const string repoName = "ASFBuffBot";
+
+            ASFEBridge = AdapterBtidge.InitAdapter(pluginName, cmdPrefix, repoName, handler);
+            ASF.ArchiLogger.LogGenericDebug(ASFEBridge != null ? "ASFEBridge 注册成功" : "ASFEBridge 注册失败");
         }
-        else
+        catch (Exception ex)
         {
-            message.AppendLine(Langs.ASFEVersionTips);
-            message.AppendLine(Langs.ASFEUpdateTips);
+            ASF.ArchiLogger.LogGenericDebug("ASFEBridge 注册出错");
+            ASF.ArchiLogger.LogGenericException(ex);
         }
-
-        message.AppendLine(Static.Line);
-
-        Utils.Logger.LogGenericInfo(message.ToString());
-
         return Task.CompletedTask;
     }
 
@@ -198,89 +184,60 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
     /// <param name="args"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
-    private static async Task<string?> ResponseCommand(Bot bot, EAccess access, string message, string[] args)
+    private static Task<string?>? ResponseCommand(Bot bot, EAccess access, string cmd, string message, string[] args)
     {
-        string cmd = args[0].ToUpperInvariant();
-
-        if (cmd.StartsWith("ABB."))
-        {
-            cmd = cmd[4..];
-        }
-        else
-        {
-            //跳过禁用命令
-            if (Config.DisabledCmds?.Contains(cmd) == true)
-            {
-                Utils.Logger.LogGenericInfo("Command {0} is disabled!");
-                return null;
-            }
-        }
-
         int argLength = args.Length;
-        switch (argLength)
+        return argLength switch
         {
-            case 0:
-                throw new InvalidOperationException(nameof(args));
-            case 1: //不带参数
-                switch (cmd)
-                {
-                    //Core
-                    case "ENABLEBUFF" when access >= EAccess.Master:
-                    case "EB" when access >= EAccess.Master:
-                        return await Core.Command.ResponseEnableBuffBot(bot).ConfigureAwait(false);
+            0 => throw new InvalidOperationException(nameof(args)),
+            1 => cmd switch  //不带参数
+            {
+                //Core
+                "ENABLEBUFF" or
+                "EB" when access >= EAccess.Master =>
+                    Core.Command.ResponseEnableBuffBot(bot),
 
-                    case "DISABLEBUFF" when access >= EAccess.Master:
-                    case "DB" when access >= EAccess.Master:
-                        return await Core.Command.ResponseDisableBuffBot(bot).ConfigureAwait(false);
+                "DISABLEBUFF" or
+                "DB" when access >= EAccess.Master =>
+                    Core.Command.ResponseDisableBuffBot(bot),
 
-                    case "BUFFSTATUS" when access >= EAccess.Master:
-                    case "BS" when access >= EAccess.Master:
-                        return await Core.Command.ResponseBotStatus(bot).ConfigureAwait(false);
+                "BUFFSTATUS" or
+                "BS" when access >= EAccess.Master =>
+                    Core.Command.ResponseBotStatus(bot),
 
-                    //Update
-                    case "ASFBUFFBOT" when access >= EAccess.FamilySharing:
-                    case "ABB" when access >= EAccess.FamilySharing:
-                        return Update.Command.ResponseASFBuffBotVersion();
+                //Update
+                "ASFBUFFBOT" or
+                "ABB" when access >= EAccess.FamilySharing =>
+                    Task.FromResult(Update.Command.ResponseASFBuffBotVersion()),
 
-                    case "ABBVERSION" when access >= EAccess.Operator:
-                    case "ABBV" when access >= EAccess.Operator:
-                        return await Update.Command.ResponseCheckLatestVersion().ConfigureAwait(false);
+                _ => null,
+            },
+            _ => cmd switch //带参数
+            {
+                //Core
+                "ENABLEBUFF" or
+                "EB" when access >= EAccess.Master =>
+                     Core.Command.ResponseEnableBuffBot(Utilities.GetArgsAsText(args, 1, ",")),
 
-                    case "ABBUPDATE" when access >= EAccess.Owner:
-                    case "ABBU" when access >= EAccess.Owner:
-                        return await Update.Command.ResponseUpdatePlugin().ConfigureAwait(false);
+                "DISABLEBUFF" or
+                "DB" when access >= EAccess.Master =>
+                     Core.Command.ResponseDisableBuffBot(Utilities.GetArgsAsText(args, 1, ",")),
 
-                    default:
-                        return null;
-                }
-            default: //带参数
-                switch (cmd)
-                {
-                    //Core
-                    case "ENABLEBUFF" when access >= EAccess.Master:
-                    case "EB" when access >= EAccess.Master:
-                        return await Core.Command.ResponseEnableBuffBot(Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
+                "BUFFSTATUS" or
+                "BS" when access >= EAccess.Master =>
+                     Core.Command.ResponseBotStatus(Utilities.GetArgsAsText(args, 1, ",")),
 
-                    case "DISABLEBUFF" when access >= EAccess.Master:
-                    case "DB" when access >= EAccess.Master:
-                        return await Core.Command.ResponseDisableBuffBot(Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
+                "UPDATECOOKIESBOT" or
+                "UCB" when argLength >= 3 && access >= EAccess.Master =>
+                     Core.Command.ResponseUpdateCoolies(args[1], Utilities.GetArgsAsText(message, 2)),
 
-                    case "BUFFSTATUS" when access >= EAccess.Master:
-                    case "BS" when access >= EAccess.Master:
-                        return await Core.Command.ResponseBotStatus(Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
+                "VERIFYCODE" or
+                "VC" when argLength >= 3 && access >= EAccess.Master =>
+                     Core.Command.ResponseVerifyCode(args[1], args[2]),
 
-                    case "UPDATECOOKIESBOT" when argLength >= 3 && access >= EAccess.Master:
-                    case "UCB" when argLength >= 3 && access >= EAccess.Master:
-                        return await Core.Command.ResponseUpdateCoolies(args[1], Utilities.GetArgsAsText(message, 2)).ConfigureAwait(false);
-
-                    case "VERIFYCODE" when argLength >= 3 && access >= EAccess.Master:
-                    case "VC" when argLength >= 3 && access >= EAccess.Master:
-                        return await Core.Command.ResponseVerifyCode(args[1], args[2]).ConfigureAwait(false);
-
-                    default:
-                        return null;
-                }
-        }
+                _ => null,
+            }
+        };
     }
 
     /// <summary>
@@ -296,6 +253,11 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
     /// <exception cref="InvalidOperationException"></exception>
     public async Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamId = 0)
     {
+        if (ASFEBridge != null)
+        {
+            return null;
+        }
+
         if (!Enum.IsDefined(access))
         {
             throw new InvalidEnumArgumentException(nameof(access), (int)access, typeof(EAccess));
@@ -303,40 +265,32 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
 
         try
         {
-            return await ResponseCommand(bot, access, message, args).ConfigureAwait(false);
+            var cmd = args[0].ToUpperInvariant();
+
+            if (cmd.StartsWith("DEMO."))
+            {
+                cmd = cmd[5..];
+            }
+
+            var task = ResponseCommand(bot, access, cmd, message, args);
+            if (task != null)
+            {
+                return await task.ConfigureAwait(false);
+            }
+            else
+            {
+                return null;
+            }
         }
         catch (Exception ex)
         {
-            string version = await bot.Commands.Response(EAccess.Owner, "VERSION").ConfigureAwait(false) ?? "Unknown";
-            var i = version.LastIndexOf('V');
-            if (i >= 0)
-            {
-                version = version[++i..];
-            }
-            string cfg = JsonConvert.SerializeObject(Config, Formatting.Indented);
-
-            var sb = new StringBuilder();
-            sb.AppendLine(Langs.ErrorLogTitle);
-            sb.AppendLine(Static.Line);
-            sb.AppendLine(string.Format(Langs.ErrorLogOriginMessage, message));
-            sb.AppendLine(string.Format(Langs.ErrorLogAccess, access.ToString()));
-            sb.AppendLine(string.Format(Langs.ErrorLogASFVersion, version));
-            sb.AppendLine(string.Format(Langs.ErrorLogPluginVersion, Utils.MyVersion));
-            sb.AppendLine(Static.Line);
-            sb.AppendLine(cfg);
-            sb.AppendLine(Static.Line);
-            sb.AppendLine(string.Format(Langs.ErrorLogErrorName, ex.GetType()));
-            sb.AppendLine(string.Format(Langs.ErrorLogErrorMessage, ex.Message));
-            sb.AppendLine(ex.StackTrace);
-
             _ = Task.Run(async () =>
             {
                 await Task.Delay(500).ConfigureAwait(false);
-                sb.Insert(0, '\n');
-                Utils.Logger.LogGenericError(sb.ToString());
+                Utils.ASFLogger.LogGenericException(ex);
             }).ConfigureAwait(false);
 
-            return sb.ToString();
+            return ex.StackTrace;
         }
     }
 
