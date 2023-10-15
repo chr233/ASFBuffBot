@@ -16,8 +16,8 @@ namespace ASFBuffBot;
 [Export(typeof(IPlugin))]
 internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTradeOffer
 {
-    public string Name => nameof(ASFBuffBot);
-    public Version Version => Utils.MyVersion;
+    public string Name => "ASF Buff Bot";
+    public Version Version => MyVersion;
 
     private AdapterBtidge? ASFEBridge = null;
 
@@ -66,8 +66,12 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
         //统计
         if (Config.Statistic)
         {
+            var request = new Uri("https://asfe.chrxw.com/asfbuffbot");
             StatisticTimer = new Timer(
-                Update.WebRequest.OnStatisticTimer,
+                async (_) =>
+                {
+                    await ASF.WebBrowser!.UrlGetToHtmlDocument(request).ConfigureAwait(false);
+                },
                 null,
                 TimeSpan.FromSeconds(30),
                 TimeSpan.FromHours(24)
@@ -135,18 +139,18 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
         Utils.ASFLogger.LogGenericInfo(Langs.BuffCheckWillStartIn30);
 
         //注册Buff Service
-        //_ = Task.Run(async () =>
-        //{
-        //    try
-        //    {
-        //        await Task.Delay(1000).ConfigureAwait(false);
-        //        await Core.ReflectionHelper.AddBuffService().ConfigureAwait(false);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Utils.Logger.LogGenericException(ex, Langs.RegisterBuffServiceFailed);
-        //    }
-        //});
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await Task.Delay(1000).ConfigureAwait(false);
+                await Core.ReflectionHelper.AddBuffService().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Utils.ASFLogger.LogGenericException(ex, Langs.RegisterBuffServiceFailed);
+            }
+        });
     }
 
     /// <summary>
