@@ -1,14 +1,10 @@
 # ASFBuffBot
 
-反序列化暂时有问题，插件可能无法正常工作，请使用自编译版本的ASF
+反序列化暂时有问题，插件可能无法正常工作，请使用自编译版本的 ASF
 
-反序列化暂时有问题，插件可能无法正常工作，请使用自编译版本的ASF
+反序列化暂时有问题，插件可能无法正常工作，请使用自编译版本的 ASF
 
-反序列化暂时有问题，插件可能无法正常工作，请使用自编译版本的ASF
-
-反序列化暂时有问题，插件可能无法正常工作，请使用自编译版本的ASF
-
-反序列化暂时有问题，插件可能无法正常工作，请使用自编译版本的ASF
+反序列化暂时有问题，插件可能无法正常工作，请使用自编译版本的 ASF
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/28d15406751f42f499e2f53fde5bb808)](https://www.codacy.com/gh/chr233/ASFBuffBot/dashboard)
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/chr233/ASFBuffBot/autobuild.yml?logo=github)
@@ -35,11 +31,11 @@ ASFBuffBot 介绍 & 使用指南: [https://keylol.com/t887696-1-1](https://keylo
 
 1. 从 [GitHub Releases](https://github.com/chr233/ASFBuffBot/releases) 下载插件的最新版本
 2. 解压后将 `ASFBuffBot.dll` 丢进 `ArchiSteamFarm` 目录下的 `plugins` 文件夹
-3. 重新启动 `ArchiSteamFarm` , 使用命令 `ABB` 来检查插件是否正常工作
+3. 重新启动 `ArchiSteamFarm` , 使用命令 `ASFBUFFBOT` 或者 `ABB` 来检查插件是否正常工作
 
 ### 使用命令升级插件
 
-> 可以使用插件自带的命令自带更新插件
+> 插件自动更新功能以前一直
 > ASF 版本升级有可能出现不兼容情况, 如果发现插件无法加载请尝试更新 ASF
 
 - `ABBVERSION` / `ABBV` 检查插件更新
@@ -69,10 +65,9 @@ ASF.json
   "CurrentCulture": "...",
   "IPCPassword": "...",
   "...": "...",
-  //ASFBuffBot 配置
-  "ASFBuffBot": {
+  "ASFEnhance": {
+    //ASFBuffBot 配置
     "Statistic": true,
-    "DisabledCmds": ["foo", "bar"],
     "BuffCheckInterval": 180,
     "BotInterval": 30,
     "CustomUserAgent": null,
@@ -84,16 +79,13 @@ ASF.json
 | 配置项              | 类型   | 默认值  | 说明                                                                                    |
 | ------------------- | ------ | ------- | --------------------------------------------------------------------------------------- |
 | `Statistic`         | bool   | `true`  | 是否允许发送统计数据, 仅用于统计插件用户数量, 不会发送任何其他信息                      |
-| `DisabledCmds`      | list   | `null`  | 在此列表中的命令将会被禁用\*\* , **不区分大小写**, 仅对 `ASFBuffBot` 中的命令生效       |
 | `BuffCheckInterval` | int    | `180`   | 每一轮 Buff 发货检查的周期, 单位秒, 访问频率过快容易被 ban                              |
 | `BotInterval`       | int    | `30`    | 在一轮发货检查中每个机器人的检查间隔, 单位秒                                            |
 | `CustomUserAgent`   | string | `null`  | 自定义 `User-Agent` 用于向 Buff 发送请求                                                |
 | `RejectNotMatch`    | bool   | `false` | 交易物品不匹配时是否自动拒绝交易                                                        |
 | `AlwaysSendSmsCode` | bool   | `false` | 设为 `true` 时每次登录 Buff 强制发送手机验证码, 设为 `false` 时仅在需要时发送手机验证码 |
 
-> \*\* `DisabledCmds` 配置说明: 该项配置**不区分大小写**, 仅对 `ASFBuffBot` 中的命令有效
-> 例如配置为 `["foo","BAR"]` , 则代表 `FOO` 和 `BAR` 命令将会被禁用
-> 如果无需禁用任何命令, 请将此项配置为 `null` 或者 `[]`
+> 禁用命令功能已经迁移至 `ASFEnhance` 插件中
 > 当某条命令被禁用时, 仍然可以使用 `ABB.xxx` 的形式调用被禁用的命令, 例如 `ABB.UPDATECOOKIES`
 
 ## 插件指令说明

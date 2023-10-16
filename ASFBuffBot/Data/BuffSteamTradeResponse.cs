@@ -11,22 +11,6 @@ public sealed record BuffSteamTradeResponse : BaseBuffResponse
 public sealed record SteamTradeData
 {
     /// <summary>
-    /// AppId
-    /// </summary>
-    //[JsonProperty(PropertyName = "appid", Required = Required.Default)]
-    //public uint AppId { get; set; }
-    /// <summary>
-    /// 账户年限
-    /// </summary>
-    //[JsonProperty(PropertyName = "bot_age", Required = Required.Default)]
-    //public uint BotAge { get; set; }
-    /// <summary>
-    /// 账户年限图标
-    /// </summary>
-    //[JsonProperty(PropertyName = "bot_age_icon", Required = Required.Default)]
-    //public string BotAgeIcon { get; set; } = "";
-
-    /// <summary>
     /// 账户头像
     /// </summary>
     [JsonProperty(PropertyName = "bot_avatar", Required = Required.Default)]
@@ -37,12 +21,6 @@ public sealed record SteamTradeData
     /// </summary>
     [JsonProperty(PropertyName = "bot_extra_info", Required = Required.Default)]
     public string BotExtraInfo { get; set; } = "";
-
-    /// <summary>
-    /// 账户等级
-    /// </summary>
-    //[JsonProperty(PropertyName = "bot_level", Required = Required.Default)]
-    //public int BotLevel { get; set; }
 
     /// <summary>
     /// 账户昵称
@@ -67,12 +45,6 @@ public sealed record SteamTradeData
     /// </summary>
     [JsonProperty(PropertyName = "game", Required = Required.Default)]
     public string Game { get; set; } = "";
-
-    /// <summary>
-    /// 商品信息
-    /// </summary>
-    //[JsonProperty(PropertyName = "goods_infos", Required = Required.Default)]
-    //public Dictionary<string, GoodInfoData> GoodsInfos { get; set; } = new();
 
     /// <summary>
     /// Buff交易ID

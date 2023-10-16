@@ -655,7 +655,7 @@ namespace ASFBuffBot.Localization {
         }
         
         /// <summary>
-        ///   查找类似 作者 Chr_, 联系方式 chr@chrxw.com 的本地化字符串。
+        ///   查找类似 插件作者: Chr_, 联系方式: chr@chrxw.com 的本地化字符串。
         /// </summary>
         internal static string PluginContact {
             get {

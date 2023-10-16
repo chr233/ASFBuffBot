@@ -2,6 +2,9 @@ using Newtonsoft.Json;
 
 namespace ASFBuffBot.Data;
 
+/// <summary>
+/// 插件配置
+/// </summary>
 public sealed record PluginConfig
 {
     /// <summary>

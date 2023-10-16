@@ -127,7 +127,7 @@
     <value>出错</value>
   </data>
   <data name="PluginContact" xml:space="preserve">
-    <value>作者 Chr_, 联系方式 chr@chrxw.com</value>
+    <value>插件作者: Chr_, 联系方式: chr@chrxw.com</value>
   </data>
   <data name="Success" xml:space="preserve">
     <value>成功</value>

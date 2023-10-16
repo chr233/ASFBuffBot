@@ -180,6 +180,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
     /// </summary>
     /// <param name="bot"></param>
     /// <param name="access"></param>
+    /// <param name="cmd"></param>
     /// <param name="message"></param>
     /// <param name="args"></param>
     /// <returns></returns>

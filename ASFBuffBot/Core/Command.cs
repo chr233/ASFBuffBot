@@ -107,12 +107,12 @@ internal static class Command
         var name = bot.BotName;
         if (!Utils.BuffBotStorage.Remove(name))
         {
-            return Task.FromResult(bot.FormatBotResponse(Langs.NotEnabledBuff));
+            return Task.FromResult<string?>(bot.FormatBotResponse(Langs.NotEnabledBuff));
         }
         else
         {
             Handler.ClearTradeCache(bot);
-            return Task.FromResult(bot.FormatBotResponse(Langs.DisableBuffSuccess));
+            return Task.FromResult<string?>(bot.FormatBotResponse(Langs.DisableBuffSuccess));
         }
     }
 
@@ -201,7 +201,8 @@ internal static class Command
     /// <summary>
     /// 输入验证码
     /// </summary>
-    /// <param name="cookies"></param>
+    /// <param name="botName"></param>
+    /// <param name="code"></param>
     /// <returns></returns>
     internal static async Task<string?> ResponseVerifyCode(string botName, string code)
     {
@@ -232,6 +233,7 @@ internal static class Command
     /// <summary>
     /// 命令更新Cookies
     /// </summary>
+    /// <param name="botName"></param>
     /// <param name="cookies"></param>
     /// <returns></returns>
     internal static async Task<string?> ResponseUpdateCoolies(string botName, string cookies)
