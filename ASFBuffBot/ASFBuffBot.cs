@@ -19,7 +19,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
     public string Name => "ASF Buff Bot";
     public Version Version => MyVersion;
 
-    private AdapterBtidge? ASFEBridge = null;
+    private bool ASFEBridge;
 
     [JsonProperty]
     public static PluginConfig Config => Utils.Config;
@@ -41,7 +41,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
         {
             foreach ((string configProperty, JToken configValue) in additionalConfigProperties)
             {
-                if (configProperty == nameof(ASFBuffBot) && configValue.Type == JTokenType.Object)
+                if (configProperty == "ASFEnhance" && configValue.Type == JTokenType.Object)
                 {
                     try
                     {
@@ -53,7 +53,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
                     }
                     catch (Exception ex)
                     {
-                        Utils.ASFLogger.LogGenericException(ex);
+                        ASFLogger.LogGenericException(ex);
                     }
                 }
             }
@@ -78,55 +78,42 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
             );
         }
 
-        //禁用命令
-        if (Config.DisabledCmds == null)
-        {
-            Config.DisabledCmds = new();
-        }
-        else
-        {
-            for (int i = 0; i < Config.DisabledCmds.Count; i++)
-            {
-                Config.DisabledCmds[i] = Config.DisabledCmds[i].ToUpperInvariant();
-            }
-        }
-
         //每轮检测间隔
         if (Config.BuffCheckInterval < 30)
         {
             Config.BuffCheckInterval = 30;
-            warning.AppendLine(Static.Line);
+            warning.AppendLine(Langs.Line);
             warning.AppendLine(Langs.BuffCheckIntervalWarn);
-            warning.AppendLine(Static.Line);
+            warning.AppendLine(Langs.Line);
         }
 
         //每个机器人检测间隔
         if (Config.BotInterval < 5)
         {
             Config.BotInterval = 5;
-            warning.AppendLine(Static.Line);
+            warning.AppendLine(Langs.Line);
             warning.AppendLine(Langs.BotIntervalWarn);
-            warning.AppendLine(Static.Line);
+            warning.AppendLine(Langs.Line);
         }
 
-        var succ = await Utils.LoadFile().ConfigureAwait(false);
-        if (!succ || Utils.BuffBotStorage.Count == 0)
+        var succ = await LoadFile().ConfigureAwait(false);
+        if (!succ || BuffBotStorage.Count == 0)
         {
-            warning.AppendLine(Static.Line);
+            warning.AppendLine(Langs.Line);
             warning.AppendLine(Langs.BuffBotNotSetWarn1);
             warning.AppendLine(Langs.BuffBotNotSetWarn2);
-            warning.AppendLine(Static.Line);
+            warning.AppendLine(Langs.Line);
         }
 
         if (string.IsNullOrEmpty(Config.CustomUserAgent))
         {
-            Config.CustomUserAgent = Static.DefaultUserAgent;
+            Config.CustomUserAgent = null;
         }
 
         if (warning.Length > 0)
         {
             warning.Insert(0, Environment.NewLine);
-            Utils.ASFLogger.LogGenericWarning(warning.ToString());
+            ASFLogger.LogGenericWarning(warning.ToString());
         }
 
         BuffTimer = new Timer(
@@ -136,7 +123,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
            TimeSpan.FromSeconds(Config.BuffCheckInterval)
         );
 
-        Utils.ASFLogger.LogGenericInfo(Langs.BuffCheckWillStartIn30);
+        ASFLogger.LogGenericInfo(Langs.BuffCheckWillStartIn30);
 
         //注册Buff Service
         _ = Task.Run(async () =>
@@ -148,7 +135,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
             }
             catch (Exception ex)
             {
-                Utils.ASFLogger.LogGenericException(ex, Langs.RegisterBuffServiceFailed);
+                ASFLogger.LogGenericException(ex, Langs.RegisterBuffServiceFailed);
             }
         });
     }
@@ -159,25 +146,34 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
     /// <returns></returns>
     public Task OnLoaded()
     {
-        try
+        ASFLogger.LogGenericInfo(Langs.PluginContact);
+        ASFLogger.LogGenericInfo(Langs.PluginInfo);
+
+        var flag = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
+        var handler = typeof(ASFBuffBot).GetMethod(nameof(ResponseCommand), flag);
+
+        const string pluginName = nameof(ASFBuffBot);
+        const string cmdPrefix = "ABB";
+        const string repoName = "ASFBuffBot";
+
+        ASFEBridge = AdapterBtidge.InitAdapter(pluginName, cmdPrefix, repoName, handler);
+
+        if (ASFEBridge)
         {
-            var flag = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
-            var handler = typeof(ASFBuffBot).GetMethod(nameof(ResponseCommand), flag);
-
-            const string pluginName = nameof(ASFBuffBot);
-            const string cmdPrefix = "ABB";
-            const string repoName = "ASFBuffBot";
-
-            ASFEBridge = AdapterBtidge.InitAdapter(pluginName, cmdPrefix, repoName, handler);
-            ASF.ArchiLogger.LogGenericDebug(ASFEBridge != null ? "ASFEBridge 注册成功" : "ASFEBridge 注册失败");
+            ASFLogger.LogGenericDebug(Langs.ASFEnhanceRegisterSuccess);
         }
-        catch (Exception ex)
+        else
         {
-            ASF.ArchiLogger.LogGenericDebug("ASFEBridge 注册出错");
-            ASF.ArchiLogger.LogGenericException(ex);
+            ASFLogger.LogGenericInfo(Langs.ASFEnhanceRegisterFailed);
+            ASFLogger.LogGenericWarning(Langs.PluginStandalongMode);
         }
         return Task.CompletedTask;
     }
+
+    /// <summary>
+    /// 获取插件信息
+    /// </summary>
+    private static string? PluginInfo => string.Format("{0} {1}", nameof(ASFBuffBot), MyVersion);
 
     /// <summary>
     /// 处理命令
@@ -196,6 +192,11 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
             0 => throw new InvalidOperationException(nameof(args)),
             1 => cmd switch  //不带参数
             {
+                //Plugin Info
+                "ASFBUFFBOT" or
+                "ABB" when access >= EAccess.FamilySharing =>
+                    Task.FromResult(PluginInfo),
+
                 //Core
                 "ENABLEBUFF" or
                 "EB" when access >= EAccess.Master =>
@@ -208,11 +209,6 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
                 "BUFFSTATUS" or
                 "BS" when access >= EAccess.Master =>
                     Core.Command.ResponseBotStatus(bot),
-
-                //Update
-                "ASFBUFFBOT" or
-                "ABB" when access >= EAccess.FamilySharing =>
-                    Task.FromResult(Update.Command.ResponseASFBuffBotVersion()),
 
                 _ => null,
             },
@@ -257,7 +253,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
     /// <exception cref="InvalidOperationException"></exception>
     public async Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamId = 0)
     {
-        if (ASFEBridge != null)
+        if (ASFEBridge)
         {
             return null;
         }

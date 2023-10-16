@@ -1,16 +1,9 @@
 using System.Reflection;
 
 namespace ASFBuffBot;
-internal sealed class AdapterBtidge
+internal static class AdapterBtidge
 {
-    private Type Endpoint { get; set; } = null!;
-
-    private AdapterBtidge(Type endpoint)
-    {
-        Endpoint = endpoint;
-    }
-
-    public static AdapterBtidge? InitAdapter(string pluginName, string? cmdPrefix, string? repoName, MethodInfo? cmdHandler)
+    public static bool InitAdapter(string pluginName, string? cmdPrefix, string? repoName, MethodInfo? cmdHandler)
     {
         try
         {
@@ -26,7 +19,7 @@ internal sealed class AdapterBtidge
                 {
                     if (str == pluginName)
                     {
-                        return new AdapterBtidge(adapterEndpoint);
+                        return true;
                     }
                     else
                     {
@@ -46,6 +39,6 @@ internal sealed class AdapterBtidge
             ASFLogger.LogGenericDebug("Community with ASFEnhance failed");
         }
 #endif
-        return null;
+        return false;
     }
 }

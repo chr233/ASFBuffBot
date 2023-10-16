@@ -22,7 +22,7 @@ internal static class Handler
         {
             foreach (var (_, bot) in bots)
             {
-                if (Utils.BuffBotStorage.TryGetValue(bot.BotName, out var storage))
+                if (BuffBotStorage.TryGetValue(bot.BotName, out var storage))
                 {
                     //if (storage.Enabled)
                     //{
