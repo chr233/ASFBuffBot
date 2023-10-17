@@ -152,11 +152,11 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
         var flag = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
         var handler = typeof(ASFBuffBot).GetMethod(nameof(ResponseCommand), flag);
 
-        const string pluginName = nameof(ASFBuffBot);
+        const string pluginId = nameof(ASFBuffBot);
         const string cmdPrefix = "ABB";
         const string repoName = "ASFBuffBot";
 
-        ASFEBridge = AdapterBtidge.InitAdapter(pluginName, cmdPrefix, repoName, handler);
+        ASFEBridge = AdapterBtidge.InitAdapter(Name, pluginId, cmdPrefix, repoName, handler);
 
         if (ASFEBridge)
         {

@@ -3,7 +3,16 @@ using System.Reflection;
 namespace ASFBuffBot;
 internal static class AdapterBtidge
 {
-    public static bool InitAdapter(string pluginName, string? cmdPrefix, string? repoName, MethodInfo? cmdHandler)
+    /// <summary>
+    /// 注册子模块
+    /// </summary>
+    /// <param name="pluginName">插件名称</param>
+    /// <param name="pluginIdentity">插件唯一标识符</param>
+    /// <param name="cmdPrefix">命令前缀</param>
+    /// <param name="repoName">自动更新仓库</param>
+    /// <param name="cmdHandler">命令处理函数</param>
+    /// <returns></returns>
+    public static bool InitAdapter(string pluginName, string pluginIdentity, string? cmdPrefix, string? repoName, MethodInfo? cmdHandler)
     {
         try
         {
@@ -13,7 +22,7 @@ internal static class AdapterBtidge
 
             if (registerModule != null && adapterEndpoint != null)
             {
-                var result = registerModule?.Invoke(null, new object?[] { pluginName, cmdPrefix, repoName, pluinVersion, cmdHandler });
+                var result = registerModule?.Invoke(null, new object?[] { pluginName, pluginIdentity, cmdPrefix, repoName, pluinVersion, cmdHandler });
 
                 if (result is string str)
                 {
