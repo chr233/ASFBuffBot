@@ -21,12 +21,11 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
 
     private bool ASFEBridge;
 
-    [JsonProperty]
     public static PluginConfig Config => Utils.Config;
 
-    private Timer? BuffTimer;
+    private Timer? BuffTimer { get; set; }
 
-    private Timer? StatisticTimer;
+    private Timer? StatisticTimer { get; set; }
 
     /// <summary>
     /// ASF启动事件
@@ -64,7 +63,7 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
         var warning = new StringBuilder();
 
         //统计
-        if (Config.Statistic)
+        if (Config.Statistic && !ASFEBridge)
         {
             var request = new Uri("https://asfe.chrxw.com/asfbuffbot");
             StatisticTimer = new Timer(

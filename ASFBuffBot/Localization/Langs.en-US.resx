@@ -201,4 +201,7 @@
   <data name="ASFEnhanceRegisterSuccess" xml:space="preserve">
     <value>ASFEBridge 注册成功</value>
   </data>
+  <data name="EulaWarning" xml:space="preserve">
+    <value>{0}: ASFEnhance.EULA not agreed, some features is disabled</value>
+  </data>
 </root>

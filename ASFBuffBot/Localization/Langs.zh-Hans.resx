@@ -399,4 +399,7 @@
   <data name="ASFEnhanceRegisterSuccess" xml:space="preserve">
     <value>ASFEBridge 注册成功</value>
   </data>
+  <data name="EulaWarning" xml:space="preserve">
+    <value>{0}: 尚未同意 ASFEnhance.EULA, 部分命令已禁用</value>
+  </data>
 </root>

@@ -457,6 +457,15 @@ namespace ASFBuffBot.Localization {
         }
         
         /// <summary>
+        ///   查找类似 {0}: 尚未同意 ASFEnhance.EULA, 部分命令已禁用 的本地化字符串。
+        /// </summary>
+        internal static string EulaWarning {
+            get {
+                return ResourceManager.GetString("EulaWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 失败 的本地化字符串。
         /// </summary>
         internal static string Failure {
