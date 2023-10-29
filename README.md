@@ -25,6 +25,8 @@
 
 ASFBuffBot 介绍 & 使用指南: [https://keylol.com/t887696-1-1](https://keylol.com/t887696-1-1)
 
+[Русская Версия](README.ru.md) | [English Version](README.en.md)
+
 ## 安装方式
 
 ### 初次安装 / 手动更新
