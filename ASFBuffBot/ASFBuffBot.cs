@@ -3,7 +3,6 @@ using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
 using ASFBuffBot.Data;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SteamKit2;
 using System.ComponentModel;

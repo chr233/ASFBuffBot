@@ -1,11 +1,14 @@
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam;
+using System.Collections.Concurrent;
 
 namespace ASFBuffBot.Core;
 
 internal static class Command
 {
+    //internal static ConcurrentDictionary<Bot, BuffHandler> Handlers { get; private set; } = new();
+
     /// <summary>
     /// 启用自动发货功能
     /// </summary>

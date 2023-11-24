@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 
 namespace ASFBuffBot.Core;
 
+[Obsolete]
 internal static class Handler
 {
     private static ConcurrentDictionary<string, ConcurrentDictionary<string, TradeOffer>> BotTradeCache { get; } = new();
