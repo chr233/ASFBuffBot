@@ -45,13 +45,15 @@ Temporary problem with deserialisation, plugin may not work properly，请使用
 
 | ASFBuffBot Version                                                   | Compatible ASF version | Description                                                                                |
 | -------------------------------------------------------------------- | :--------------------: | ------------------------------------------------------------------------------------------ |
-| [1.1.0.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.1.0.0) |    5.4.8.3             | 适配手机验证码登录, 支持存储 `Cookies`, 储存文件格式修改, 需要重新设定启用自动发货的机器人        |
-| [1.0.8.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.8.0) |    5.4.5.2             | Add `RejectNotMatch` option                                                                |
-| [1.0.7.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.7.0) |    5.4.5.2             | Add command `UPDATECOOKIESBOT` to manually set bot cookies                                 |
-| [1.0.6.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.6.0) |    5.4.5.2             | Bug fixes                                                                                  |
-| [1.0.5.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.5.0) |    5.4.5.2             | Support for auto-login Buff, bug fixes                                                     |
-| [1.0.4.1](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.4.1) |    5.4.5.2             | Multi-account support, bug fixes                                                           |
-| [1.0.0.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.0.0) |    5.4.4.5             | First version, single-account mode                                                         |
+| [1.1.2.3](https://github.com/chr233/ASFBuffBot/releases/tag/1.1.0.0) |        5.5.0.11        | ASF -> 5.5.0.11                                                                            |
+| [1.1.1.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.1.0.0) |        5.4.10.3        | ASF -> 5.4.10.3                                                                            |
+| [1.1.0.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.1.0.0) |        5.4.8.3         | 适配手机验证码登录, 支持存储 `Cookies`, 储存文件格式修改, 需要重新设定启用自动发货的机器人 |
+| [1.0.8.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.8.0) |        5.4.5.2         | Add `RejectNotMatch` option                                                                |
+| [1.0.7.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.7.0) |        5.4.5.2         | Add command `UPDATECOOKIESBOT` to manually set bot cookies                                 |
+| [1.0.6.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.6.0) |        5.4.5.2         | Bug fixes                                                                                  |
+| [1.0.5.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.5.0) |        5.4.5.2         | Support for auto-login Buff, bug fixes                                                     |
+| [1.0.4.1](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.4.1) |        5.4.5.2         | Multi-account support, bug fixes                                                           |
+| [1.0.0.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.0.0) |        5.4.4.5         | First version, single-account mode                                                         |
 
 ## Plugin Configuration
 
@@ -79,10 +81,10 @@ ASF.json
 | Configuration       | Type   | Default | Description                                                                                                       |
 | ------------------- | ------ | ------- | ----------------------------------------------------------------------------------------------------------------- |
 | `Statistic`         | bool   | `true`  | Allow send statistics data, it's used to count number of users, this will not send any other information          |
-| `BuffCheckInterval` | int    | `180`   | 每一轮 Buff 发货检查的周期, 单位秒, 访问频率过快容易被 ban                                                            |
-| `BotInterval`       | int    | `30`    | 在一轮发货检查中每个机器人的检查间隔, 单位秒                                                                          |
+| `BuffCheckInterval` | int    | `180`   | 每一轮 Buff 发货检查的周期, 单位秒, 访问频率过快容易被 ban                                                        |
+| `BotInterval`       | int    | `30`    | 在一轮发货检查中每个机器人的检查间隔, 单位秒                                                                      |
 | `CustomUserAgent`   | string | `null`  | Custom `User-Agent` to send requests to Buff                                                                      |
-| `RejectNotMatch`    | bool   | `false` | 交易物品不匹配时是否自动拒绝交易                                                                                     |
+| `RejectNotMatch`    | bool   | `false` | 交易物品不匹配时是否自动拒绝交易                                                                                  |
 | `AlwaysSendSmsCode` | bool   | `false` | Set to `true` to force send SMS code every time you log in Buff, set to `false` to send SMS code only when needed |
 
 > Disabled commands have been migrated to the `ASFEnhance` plugin
@@ -100,7 +102,7 @@ ASF.json
 
 ### Functional commands
 
-| Command                        | Shorthand | Access   | Description                                                    |
+| Command                        | Shorthand | Access   | Description                                                     |
 | ------------------------------ | --------- | -------- | --------------------------------------------------------------- |
 | `ENABLEBUFF [Bots]`            | `EB`      | `Master` | 为指定机器人开启自动发货功能, 将会尝试自动登录到 `buff.163.com` |
 | `VERIFYCODE Bot Code`          | `VC`      | `Master` | 输入手机验证码, 如果登录 Buff 要求验证手机号                    |

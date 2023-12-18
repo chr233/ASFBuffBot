@@ -47,7 +47,9 @@ ASFBuffBot 介绍 & 使用指南: [https://keylol.com/t887696-1-1](https://keylo
 
 | ASFBuffBot 版本                                                      | 适配 ASF 版本 | 更新说明                                                                                   |
 | -------------------------------------------------------------------- | :-----------: | ------------------------------------------------------------------------------------------ |
-| [1.1.0.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.1.0.0) |    5.4.8.3    | 适配手机验证码登录, 支持存储 `Cookies`, 储存文件格式修改, 需要重新设定启用自动发货的机器人 |
+| [1.1.2.3](https://github.com/chr233/ASFBuffBot/releases/tag/1.1.0.0) |   5.5.0.11    | ASF -> 5.5.0.11                                                                            |
+| [1.1.1.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.1.0.0) |   5.4.10.3    | ASF -> 5.4.10.3                                                                            |
+| [1.1.0.2](https://github.com/chr233/ASFBuffBot/releases/tag/1.1.0.0) |    5.4.8.3    | 适配手机验证码登录, 支持存储 `Cookies`, 储存文件格式修改, 需要重新设定启用自动发货的机器人 |
 | [1.0.8.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.8.0) |    5.4.5.2    | 新增 `RejectNotMatch` 选项                                                                 |
 | [1.0.7.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.7.0) |    5.4.5.2    | 增加命令 `UPDATECOOKIESBOT` 用于手动设置机器人 cookies                                     |
 | [1.0.6.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.6.0) |    5.4.5.2    | bug 修复                                                                                   |
