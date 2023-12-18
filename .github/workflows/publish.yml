@@ -8,7 +8,7 @@ on:
 env:
   PROJECT_NAME: "ASFBuffBot"
   REPO_NAME: "ASFBuffBot"
-  DOTNET_SDK_VERSION: 7.0.x
+  DOTNET_SDK_VERSION: 8.0.x
 
 jobs:
   build:
@@ -34,6 +34,7 @@ jobs:
         run: dotnet --info
 
       - name: Change language file to ${{ matrix.language }}
+        if: ${{ matrix.language != 'zh-Hans' }}
         shell: pwsh
         run: |
           $projectName = "${{ env.PROJECT_NAME }}";
