@@ -90,7 +90,7 @@ internal static class Handler
         }
 
         //无交易信息, 跳过
-        if (!tradeCache.Any())
+        if (tradeCache.IsEmpty)
         {
             Utils.ASFLogger.LogGenericInfo(string.Format(Langs.NoTradeCacheSkip, name));
         }
