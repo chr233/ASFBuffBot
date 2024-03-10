@@ -1,12 +1,12 @@
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace ASFBuffBot.Data;
 public sealed record TradeOfferAcceptResponse
 {
-    [JsonProperty("strError", Required = Required.DisallowNull)]
+    [JsonPropertyName("strError")]
     public string ErrorText { get; set; } = "";
 
-    [JsonProperty("needs_mobile_confirmation", Required = Required.DisallowNull)]
+    [JsonPropertyName("needs_mobile_confirmation")]
     public bool RequiresMobileConfirmation { get; set; }
 }
 

@@ -1,19 +1,19 @@
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace ASFBuffBot.Data;
 public sealed record BuffUserInfoResponse : BaseBuffResponse
 {
-    [JsonProperty(PropertyName = "data", Required = Required.Default)]
+    [JsonPropertyName("data")]
     public UserInfoData? Data { get; set; }
 }
 public sealed record UserInfoData
 {
-    [JsonProperty(PropertyName = "id", Required = Required.Default)]
+    [JsonPropertyName("id")]
     public string? Id { get; set; }
 
-    [JsonProperty(PropertyName = "nickname", Required = Required.Default)]
+    [JsonPropertyName("nickname")]
     public string? NickName { get; set; }
 
-    [JsonProperty(PropertyName = "steamid", Required = Required.Default)]
+    [JsonPropertyName("steamid")]
     public string? SteamId { get; set; }
 }

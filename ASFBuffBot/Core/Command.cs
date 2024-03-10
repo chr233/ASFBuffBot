@@ -1,7 +1,6 @@
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam;
-using System.Collections.Concurrent;
 
 namespace ASFBuffBot.Core;
 

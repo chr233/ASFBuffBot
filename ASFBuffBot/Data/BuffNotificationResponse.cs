@@ -1,26 +1,26 @@
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace ASFBuffBot.Data;
 public sealed record BuffNotificationResponse : BaseBuffResponse
 {
-    [JsonProperty(PropertyName = "data", Required = Required.Default)]
+    [JsonPropertyName("data")]
     public NotificationData? Data { get; set; }
 }
 
 public sealed record NotificationData
 {
-    [JsonProperty(PropertyName = "to_deliver_order", Required = Required.Default)]
+    [JsonPropertyName("to_deliver_order")]
     public MessageData? ToDeliverOrder { get; set; }
 }
 
 public sealed record MessageData
 {
-    [JsonProperty(PropertyName = "csgo", Required = Required.Default)]
+    [JsonPropertyName("csgo")]
     public int Csgo { get; set; }
 
-    [JsonProperty(PropertyName = "pubg", Required = Required.Default)]
+    [JsonPropertyName("pubg")]
     public int Pubg { get; set; }
 
-    [JsonProperty(PropertyName = "dota2", Required = Required.Default)]
+    [JsonPropertyName("dota2")]
     public int Dota2 { get; set; }
 }

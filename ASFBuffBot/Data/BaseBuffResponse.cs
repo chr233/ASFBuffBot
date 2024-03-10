@@ -1,12 +1,12 @@
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace ASFBuffBot.Data;
 
 public record BaseBuffResponse
 {
-    [JsonProperty(PropertyName = "msg", Required = Required.Default)]
+    [JsonPropertyName("msg")]
     public string? Message { get; set; }
 
-    [JsonProperty(PropertyName = "code", Required = Required.Default)]
+    [JsonPropertyName("code")]
     public string? Code { get; set; }
 }

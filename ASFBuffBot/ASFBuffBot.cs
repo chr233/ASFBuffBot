@@ -3,12 +3,12 @@ using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
 using ASFBuffBot.Data;
-using Newtonsoft.Json.Linq;
 using SteamKit2;
 using System.ComponentModel;
 using System.Composition;
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
 
 namespace ASFBuffBot;
 
@@ -31,19 +31,19 @@ internal sealed class ASFBuffBot : IASF, IBotCommand2, IBotConnection, IBotTrade
     /// </summary>
     /// <param name="additionalConfigProperties"></param>
     /// <returns></returns>
-    public async Task OnASFInit(IReadOnlyDictionary<string, JToken>? additionalConfigProperties = null)
+    public async Task OnASFInit(IReadOnlyDictionary<string, JsonElement>? additionalConfigProperties = null)
     {
         PluginConfig? config = null;
 
         if (additionalConfigProperties != null)
         {
-            foreach ((string configProperty, JToken configValue) in additionalConfigProperties)
+            foreach (var (configProperty, configValue) in additionalConfigProperties)
             {
-                if (configProperty == "ASFEnhance" && configValue.Type == JTokenType.Object)
+                if (configProperty == "ASFEnhance" && configValue.ValueKind == JsonValueKind.Object)
                 {
                     try
                     {
-                        config = configValue.ToObject<PluginConfig>();
+                        config = configValue.Deserialize<PluginConfig>();
                         if (config != null)
                         {
                             break;

@@ -1,10 +1,10 @@
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace ASFBuffBot.Data;
 
 public sealed record BuffSteamTradeResponse : BaseBuffResponse
 {
-    [JsonProperty(PropertyName = "data", Required = Required.Default)]
+    [JsonPropertyName("data")]
     public List<SteamTradeData>? Data { get; set; }
 }
 
@@ -13,150 +13,150 @@ public sealed record SteamTradeData
     /// <summary>
     /// 账户头像
     /// </summary>
-    [JsonProperty(PropertyName = "bot_avatar", Required = Required.Default)]
+    [JsonPropertyName("bot_avatar")]
     public string BotAvatar { get; set; } = "";
 
     /// <summary>
     /// 账户额外信息
     /// </summary>
-    [JsonProperty(PropertyName = "bot_extra_info", Required = Required.Default)]
+    [JsonPropertyName("bot_extra_info")]
     public string BotExtraInfo { get; set; } = "";
 
     /// <summary>
     /// 账户昵称
     /// </summary>
-    [JsonProperty(PropertyName = "bot_name", Required = Required.Default)]
+    [JsonPropertyName("bot_name")]
     public string BotName { get; set; } = "";
 
     /// <summary>
     /// 账户注册时间
     /// </summary>
-    [JsonProperty(PropertyName = "bot_steam_created_at", Required = Required.Default)]
+    [JsonPropertyName("bot_steam_created_at")]
     public long BotSteamCreatedAt { get; set; }
 
     /// <summary>
     /// 订单创建时间
     /// </summary>
-    [JsonProperty(PropertyName = "created_at", Required = Required.Default)]
+    [JsonPropertyName("created_at")]
     public long CreateAt { get; set; }
 
     /// <summary>
     /// 游戏类型
     /// </summary>
-    [JsonProperty(PropertyName = "game", Required = Required.Default)]
+    [JsonPropertyName("game")]
     public string Game { get; set; } = "";
 
     /// <summary>
     /// Buff交易ID
     /// </summary>
-    [JsonProperty(PropertyName = "id", Required = Required.Default)]
+    [JsonPropertyName("id")]
     public string Id { get; set; } = "";
 
     /// <summary>
     /// 待交易物品信息
     /// </summary>
-    [JsonProperty(PropertyName = "items_to_trade", Required = Required.Default)]
+    [JsonPropertyName("items_to_trade")]
     public List<IteamToTradeData> ItemsToTrade { get; set; } = new();
 
-    [JsonProperty(PropertyName = "state", Required = Required.Default)]
+    [JsonPropertyName("state")]
     public int State { get; set; }
 
-    [JsonProperty(PropertyName = "text", Required = Required.Default)]
+    [JsonPropertyName("text")]
     public string Text { get; set; } = "";
 
-    [JsonProperty(PropertyName = "title", Required = Required.Default)]
+    [JsonPropertyName("title")]
     public string Title { get; set; } = "";
 
-    [JsonProperty(PropertyName = "trace_url", Required = Required.Default)]
+    [JsonPropertyName("trace_url")]
     public string TraceUrl { get; set; } = "";
 
-    [JsonProperty(PropertyName = "tradeofferid", Required = Required.Default)]
+    [JsonPropertyName("tradeofferid")]
     public string TradeOfferId { get; set; } = "";
 
-    [JsonProperty(PropertyName = "type", Required = Required.Default)]
+    [JsonPropertyName("type")]
     public int Type { get; set; }
 
-    [JsonProperty(PropertyName = "url", Required = Required.Default)]
+    [JsonPropertyName("url")]
     public string Url { get; set; } = "";
 
-    [JsonProperty(PropertyName = "verify_code", Required = Required.Default)]
+    [JsonPropertyName("verify_code")]
     public string VerifyCode { get; set; } = "";
 }
 
 public sealed record GoodInfoData
 {
-    [JsonProperty(PropertyName = "appid", Required = Required.Default)]
+    [JsonPropertyName("appid")]
     public uint AppId { get; set; }
 
-    [JsonProperty(PropertyName = "description", Required = Required.Default)]
+    [JsonPropertyName("description")]
     public string? Description { get; set; }
 
-    [JsonProperty(PropertyName = "game", Required = Required.Default)]
+    [JsonPropertyName("game")]
     public string Game { get; set; } = "";
 
-    [JsonProperty(PropertyName = "goods_id", Required = Required.Default)]
+    [JsonPropertyName("goods_id")]
     public long GoodsId { get; set; }
 
-    [JsonProperty(PropertyName = "icon_url", Required = Required.Default)]
+    [JsonPropertyName("icon_url")]
     public string IconUrl { get; set; } = "";
 
-    [JsonProperty(PropertyName = "market_hash_name", Required = Required.Default)]
+    [JsonPropertyName("market_hash_name")]
     public string MarketHashName { get; set; } = "";
 
-    [JsonProperty(PropertyName = "market_min_price", Required = Required.Default)]
+    [JsonPropertyName("market_min_price")]
     public double MarketHashPrice { get; set; }
 
-    [JsonProperty(PropertyName = "name", Required = Required.Default)]
+    [JsonPropertyName("name")]
     public string Name { get; set; } = "";
 
-    [JsonProperty(PropertyName = "original_icon_url", Required = Required.Default)]
+    [JsonPropertyName("original_icon_url")]
     public string OriginalIconUrl { get; set; } = "";
 
-    [JsonProperty(PropertyName = "short_name", Required = Required.Default)]
+    [JsonPropertyName("short_name")]
     public string ShortName { get; set; } = "";
 
-    [JsonProperty(PropertyName = "steam_price", Required = Required.Default)]
+    [JsonPropertyName("steam_price")]
     public double SteamPrice { get; set; }
 
-    [JsonProperty(PropertyName = "steam_price_cny", Required = Required.Default)]
+    [JsonPropertyName("steam_price_cny")]
     public double SteamPriceCny { get; set; }
 
-    [JsonProperty(PropertyName = "tags", Required = Required.Default)]
+    [JsonPropertyName("tags")]
     public Dictionary<string, TagData>? Tags { get; set; }
 }
 
 public sealed record IteamToTradeData
 {
-    [JsonProperty(PropertyName = "appid", Required = Required.Default)]
+    [JsonPropertyName("appid")]
     public uint AppId { get; set; }
 
-    [JsonProperty(PropertyName = "assetid", Required = Required.Default)]
+    [JsonPropertyName("assetid")]
     public ulong AssetId { get; set; }
 
-    [JsonProperty(PropertyName = "classid", Required = Required.Default)]
+    [JsonPropertyName("classid")]
     public ulong ClassId { get; set; }
 
-    [JsonProperty(PropertyName = "contextid", Required = Required.Default)]
+    [JsonPropertyName("contextid")]
     public ulong ContextId { get; set; }
 
-    //[JsonProperty(PropertyName = "goods_id", Required = Required.Default)]
+    //[JsonPropertyName("goods_id")]
     //public long GoodsId { get; set; }
 
-    [JsonProperty(PropertyName = "instanceid", Required = Required.Default)]
+    [JsonPropertyName("instanceid")]
     public ulong InstanceID { get; set; }
 }
 
 public sealed record TagData
 {
-    [JsonProperty(PropertyName = "category", Required = Required.Default)]
+    [JsonPropertyName("category")]
     public string Category { get; set; } = "";
 
-    [JsonProperty(PropertyName = "id", Required = Required.Default)]
+    [JsonPropertyName("id")]
     public int Id { get; set; }
 
-    [JsonProperty(PropertyName = "internal_name", Required = Required.Default)]
+    [JsonPropertyName("internal_name")]
     public string InternalName { get; set; } = "";
 
-    [JsonProperty(PropertyName = "localized_name", Required = Required.Default)]
+    [JsonPropertyName("localized_name")]
     public string LocalizedName { get; set; } = "";
 }

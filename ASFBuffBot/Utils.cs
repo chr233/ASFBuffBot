@@ -4,9 +4,10 @@ using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Integration;
 using ArchiSteamFarm.Web;
 using ASFBuffBot.Data;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
 
 namespace ASFBuffBot;
 
@@ -95,7 +96,7 @@ internal static class Utils
             string? raw = await sr.ReadLineAsync().ConfigureAwait(false);
             if (!string.IsNullOrEmpty(raw))
             {
-                var encStorage = JsonConvert.DeserializeObject<Dictionary<string, BotStorage>>(raw);
+                var encStorage = JsonSerializer.Deserialize<Dictionary<string, BotStorage>>(raw);
 
                 BuffBotStorage = new Dictionary<string, BotStorage>();
                 if (encStorage != null)
@@ -169,7 +170,7 @@ internal static class Utils
             string cookieFilePath = GetFilePath();
             using var fs = File.Open(cookieFilePath, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
             using var sw = new StreamWriter(fs);
-            string json = JsonConvert.SerializeObject(encStorage);
+            string json = JsonSerializer.Serialize(encStorage);
             await sw.WriteAsync(json).ConfigureAwait(false);
             return true;
         }
