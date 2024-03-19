@@ -56,7 +56,7 @@ public sealed record SteamTradeData
     /// 待交易物品信息
     /// </summary>
     [JsonPropertyName("items_to_trade")]
-    public List<IteamToTradeData> ItemsToTrade { get; set; } = new();
+    public List<IteamToTradeData> ItemsToTrade { get; set; } = [];
 
     [JsonPropertyName("state")]
     public int State { get; set; }

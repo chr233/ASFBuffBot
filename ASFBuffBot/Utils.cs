@@ -21,9 +21,9 @@ internal static class Utils
     /// <summary>
     /// BuffCookies
     /// </summary>
-    internal static Dictionary<string, BotStorage> BuffBotStorage { get; private set; } = new();
+    internal static Dictionary<string, BotStorage> BuffBotStorage { get; private set; } = [];
 
-    internal static HashSet<string> PaddingBots { get; set; } = new();
+    internal static HashSet<string> PaddingBots { get; set; } = [];
 
     /// <summary>
     /// 更新已就绪
@@ -98,7 +98,7 @@ internal static class Utils
             {
                 var encStorage = JsonSerializer.Deserialize<Dictionary<string, BotStorage>>(raw);
 
-                BuffBotStorage = new Dictionary<string, BotStorage>();
+                BuffBotStorage = [];
                 if (encStorage != null)
                 {
                     foreach (var (botName, storage) in encStorage)
