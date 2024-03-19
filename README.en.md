@@ -45,8 +45,9 @@ Temporary problem with deserialisation, plugin may not work properly，请使用
 
 | ASFBuffBot Version                                                   | Compatible ASF version | Description                                                                                |
 | -------------------------------------------------------------------- | :--------------------: | ------------------------------------------------------------------------------------------ |
-| [1.1.2.3](https://github.com/chr233/ASFBuffBot/releases/tag/1.1.0.0) |        5.5.0.11        | ASF -> 5.5.0.11                                                                            |
-| [1.1.1.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.1.0.0) |        5.4.10.3        | ASF -> 5.4.10.3                                                                            |
+| [1.4.0.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.4.0.0) |        6.0.0.3         | ASF -> 6.0.0.3                                                                             |
+| [1.1.2.3](https://github.com/chr233/ASFBuffBot/releases/tag/1.1.2.3) |        5.5.0.11        | ASF -> 5.5.0.11                                                                            |
+| [1.1.1.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.1.1.0) |        5.4.10.3        | ASF -> 5.4.10.3                                                                            |
 | [1.1.0.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.1.0.0) |        5.4.8.3         | 适配手机验证码登录, 支持存储 `Cookies`, 储存文件格式修改, 需要重新设定启用自动发货的机器人 |
 | [1.0.8.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.8.0) |        5.4.5.2         | Add `RejectNotMatch` option                                                                |
 | [1.0.7.0](https://github.com/chr233/ASFBuffBot/releases/tag/1.0.7.0) |        5.4.5.2         | Add command `UPDATECOOKIESBOT` to manually set bot cookies                                 |
